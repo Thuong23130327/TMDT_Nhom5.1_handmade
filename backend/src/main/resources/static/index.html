@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý User</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+<div class="api-box">
+    <b>1. Lấy danh sách (GET)</b>
+    <button onclick="getAll()">Gọi API</button>
+</div>
+
+<div class="api-box">
+    <b>2. Lấy 1 người (GET)</b>
+    Nhập ID: <input type="number" id="getId">
+    <button onclick="getOne()">Gọi API</button>
+</div>
+
+<div class="api-box">
+    <b>3. Thêm mới (POST)</b>
+    Nhập Tên: <input type="text" id="postName">
+    <button onclick="createUser()">Gọi API</button>
+</div>
+
+<div class="api-box">
+    <b>4. Cập nhật (PUT)</b>
+    ID cần sửa: <input type="number" id="putId"> |
+    Tên mới: <input type="text" id="putName">
+    <button onclick="updateUser()">Gọi API</button>
+</div>
+
+<div class="api-box">
+    <b>5. Xóa (DELETE)</b>
+    Nhập ID: <input type="number" id="deleteId">
+    <button onclick="deleteUser()">Gọi API</button>
+</div>
+
+<hr>
+<div id="ketQua">Bấm nút để xem kết quả...</div>
+
+<script>
+    const API_URL = '/api/users';
+
+    function inKetQua(data) {
+        document.getElementById('ketQua').innerText = JSON.stringify(data);
+    }
+
+    function getAll() {
+        fetch(API_URL)
+            .then(res => res.json())
+            .then(data => inKetQua(data));
+    }
+
+    function getOne() {
+        const id = document.getElementById('getId').value;
+        fetch(API_URL + '/' + id)
+            .then(res => res.text())
+            .then(text => inKetQua(text ? JSON.parse(text) : "Không tìm thấy User này"));
+    }
+
+    function createUser() {
+        const ten = document.getElementById('postName').value;
+        fetch(API_URL, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ten: ten})
+        })
+            .then(res => res.json())
+            .then(data => inKetQua(data));
+    }
+
+    function deleteUser() {
+        const id = document.getElementById('deleteId').value;
+        fetch(API_URL + '/' + id, {
+            method: 'DELETE'
+        })
+            .then(res => res.text())
+            .then(data => inKetQua("Kết quả xóa: " + data));
+    }
+
+
+    function updateUser() {
+        const id = document.getElementById('putId').value;
+        const tenMoi = document.getElementById('putName').value;
+        fetch(API_URL + '/' + id, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ten: tenMoi})
+        })
+            .then(res => res.json())
+            .then(data => inKetQua(data));
+
+    }
+</script>
+</body>
+</html>
