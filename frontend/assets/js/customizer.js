@@ -45,8 +45,28 @@ document.addEventListener('DOMContentLoaded', () => {
   let totalSlots = cfg.slotCount;
   let slots = new Array(totalSlots).fill(null);
 
-  // Demo: Tự động fill đầy charm nếu người dùng click từ product detail (có productId)
-  if (productId) {
+  // Nạp cấu hình charm mẫu ban đầu (từ default_configuration_json của sản phẩm)
+  let loadedFromConfig = false;
+  if (product && product.default_configuration_json) {
+    try {
+      const config = typeof product.default_configuration_json === 'string'
+        ? JSON.parse(product.default_configuration_json)
+        : product.default_configuration_json;
+      if (Array.isArray(config.slots)) {
+        config.slots.forEach((item, idx) => {
+          if (idx < totalSlots) {
+            slots[idx] = item;
+          }
+        });
+        loadedFromConfig = true;
+      }
+    } catch (err) {
+      console.warn('Lỗi đọc default_configuration_json:', err);
+    }
+  }
+
+  // Fallback demo nếu sản phẩm chưa có cấu hình riêng
+  if (!loadedFromConfig && productId) {
     for (let i = 0; i < totalSlots; i++) {
       slots[i] = LIBRARY_ITEMS[i % Math.min(4, LIBRARY_ITEMS.length)];
     }

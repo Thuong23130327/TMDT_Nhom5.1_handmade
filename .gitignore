@@ -1,0 +1,65 @@
+# ==============================================================================
+# .gitignore — DỰ ÁN THƯƠNG MẠI ĐIỆN TỬ AURACRAFT (NHÓM 5.1)
+# ==============================================================================
+
+# 1. File cài đặt và thực thi dung lượng lớn (GitHub giới hạn file < 100MB)
+*.exe
+*.msi
+*.dmg
+*.pkg
+*.deb
+*.rpm
+*.iso
+
+# File nén lớn
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# 2. Thư mục build và file biên dịch của Java Spring Boot
+target/
+**/target/
+*.class
+*.jar
+*.war
+*.nar
+*.ear
+
+# 3. Cấu hình cá nhân của các IDE (IntelliJ, VS Code, Eclipse)
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+.vscode/
+.settings/
+.classpath
+.project
+.factorypath
+.springBeans
+.sts4-cache
+nbproject/
+build/
+**/build/
+
+# 4. File rác của hệ điều hành (Windows, macOS)
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# 5. File log và file tạm
+*.log
+*.tmp
+*.bak
+*.swp
+*~
+
+# 6. File môi trường bí mật
+.env
+.env.local

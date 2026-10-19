@@ -9,7 +9,17 @@ const AURA_PRODUCTS = [
       'https://myumemories.com/wp-content/uploads/2025/11/1-105-600x600.png',
       'https://myumemories.com/wp-content/uploads/2026/03/gen-h-Conan-600x600.jpg'
     ],
-    desc: 'Vòng tay làm thủ công từ hạt gỗ trầm thơm tự nhiên, phối cùng charm bạc 925. Có thể đặt Custom theo số lượng hạt, charm và bố cục riêng của bạn.' },
+    desc: 'Vòng tay làm thủ công từ hạt gỗ trầm thơm tự nhiên, phối cùng charm bạc 925. Có thể đặt Custom theo số lượng hạt, charm và bố cục riêng của bạn.',
+    is_customizable: true,
+    default_configuration_json: JSON.stringify({
+      slotCount: 14,
+      slots: [
+        { name: 'Charm hoa', price: 40000, image: 'https://myumemories.com/wp-content/uploads/2026/01/3-10-300x300.png' },
+        { name: 'Hạt chữ', price: 10000, image: 'https://myumemories.com/wp-content/uploads/2025/11/3-65-300x300.png' },
+        { name: 'Charm tim', price: 35000, image: 'https://myumemories.com/wp-content/uploads/2026/01/8-10-300x300.png' },
+        { name: 'Charm cỏ 4 lá', price: 38000, image: 'https://myumemories.com/wp-content/uploads/2025/11/8-28-300x300.png' }
+      ]
+    }) },
   { id: 2, type: 'bracelet', typeLabel: 'Vòng tay', name: 'Vòng tay dây da charm hoa', shop: 'Tiệm Da Thủ Công Rio',
     price: 95000, oldPrice: null, rating: 4.6, reviews: 58, sold: 210, color: '#E3B7A0', emoji: '🌸',
     image: 'https://myumemories.com/wp-content/uploads/2026/01/z7461915860226_00fb3ad756b0b24c78c89caf38ad44ba-768x512.jpg',

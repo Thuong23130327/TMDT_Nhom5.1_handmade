@@ -87,8 +87,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  document.getElementById('pdCustomCta').href = `customizer.html?type=${product.type}&id=${product.id}`;
-  document.getElementById('pdCustomCtaTitle').textContent = `Custom ${product.typeLabel.toLowerCase()} này`;
+  const customCtaEl = document.getElementById('pdCustomCta');
+  if (customCtaEl) {
+    if (product.is_customizable === false) {
+      customCtaEl.style.display = 'none';
+    } else {
+      customCtaEl.style.display = '';
+      customCtaEl.href = `customizer.html?type=${product.type}&id=${product.id}`;
+      document.getElementById('pdCustomCtaTitle').textContent = `Custom ${product.typeLabel.toLowerCase()} này`;
+    }
+  }
 
   document.getElementById('pdShopAvatar').textContent = product.shop.charAt(0);
   document.getElementById('pdShopName').textContent = product.shop;

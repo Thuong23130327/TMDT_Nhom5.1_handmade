@@ -103,10 +103,10 @@ document.addEventListener("DOMContentLoaded", () => {
       // Điều hướng dựa trên vai trò (Role-based Routing)
       switch (currentUser.role) {
         case "admin":
-          window.location.href = "../pages/admin-orders.html";
+          window.location.href = "admin-orders.html";
           break;
         case "artisan":
-          window.location.href = "../pages/seller-dashboard.html";
+          window.location.href = "seller-dashboard.html";
           break;
         case "buyer":
         default:
