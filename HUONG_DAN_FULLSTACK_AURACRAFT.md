@@ -12,16 +12,17 @@
    - [Bước 2: Tạo CSDL & Import dữ liệu mẫu](#bước-2-tạo-csdl--import-dữ-liệu-mẫu)
    - [Bước 3: Mở & Cấu hình Backend trên IntelliJ IDEA](#bước-3-mở--cấu-hình-backend-trên-intellij-idea)
    - [Bước 4: Mở Frontend trên Trình duyệt / Live Server](#bước-4-mở-frontend-trên-trình-duyệt--live-server)
-3. [Phân Chia 4 Module Fullstack Cho 4 Thành Viên](#3-phân-chia-4-module-fullstack-cho-4-thành-viên)
+3. [Kiến Trúc Phân Hệ, Phân Công Trách Nhiệm & Tích Hợp Kỹ Thuật (Data Mining & AI)](#3-kiến-trúc-phân-hệ-phân-công-trách-nhiệm--tích-hợp-kỹ-thuật-data-mining--ai)
 4. [Quy Tắc Thống Nhất Khi Code (Conventions & Git Workflow)](#4-quy-tắc-thống-nhất-khi-code-conventions--git-workflow)
 5. [Giải Thích Flow Code & Hướng Dẫn Chi Tiết Ví Dụ Mẫu (Admin Users)](#5-giải-thích-flow-code--hướng-dẫn-chi-tiết-ví-dụ-mẫu-admin-users)
-   - [5.1. Kiến trúc 3 tầng chuẩn Spring Boot](#51-kiến-trúc-3-tầng-chuẩn-spring-boot)
+   - [5.1. Kiến trúc phân tầng chuẩn Spring Boot (3-Tier Enterprise Architecture)](#51-kiến-trúc-phân-tầng-chuẩn-spring-boot-3-tier-enterprise-architecture)
    - [5.2. Luồng dữ liệu chạy thực tế (End-to-End Flow)](#52-luồng-dữ-liệu-chạy-thực-tế-end-to-end-flow)
    - [5.3. Chi tiết mã nguồn từng file mẫu](#53-chi-tiết-mã-nguồn-từng-file-mẫu)
    - [5.4. Công thức 5 bước nhân bản cho mọi tính năng mới](#54-công-thức-5-bước-nhân-bản-cho-mọi-tính-năng-mới)
-6. [Những Lưu Ý Sống Còn Khi Code (Tránh Lỗi Phổ Biến)](#6-những-lưu-ý-sống-còn-khi-code-tránh-lỗi-phổ-biến)
+6. [Các Lưu Ý Kỹ Thuật Quan Trọng & Phòng Ngừa Sự Cố](#6-các-lưu-ý-kỹ-thuật-quan-trọng--phòng-ngừa-sự-cố)
 7. [Bảng Phân Loại File: Chỗ Cần Sửa Cho Hợp Máy & File TUYỆT ĐỐI CẤM SỬA](#7-bảng-phân-loại-file-chỗ-cần-sửa-cho-hợp-máy--file-tuyệt-đối-cấm-sửa)
 8. [Quy Định Commit Git: File Nào Được Commit, File Nào CẤM Commit & .gitignore](#8-quy-định-commit-git-file-nào-được-commit-file-nào-cấm-commit--gitignore)
+9. [Hướng Dẫn Sử Dụng Sourcetree Từ A Đến Z (Clone, Mở Dự Án, Add, Commit, Push, Pull & Tạo Nhánh)](#9-hướng-dẫn-sử-dụng-sourcetree-từ-a-đến-z-clone-mở-dự-án-add-commit-push-pull--tạo-nhánh)
 
 ---
 
@@ -88,40 +89,99 @@
 
 ---
 
-## 3. Phân Chia 4 Module Fullstack Cho 4 Thành Viên
+## 3. Kiến Trúc Phân Hệ, Phân Công Trách Nhiệm & Tích Hợp Kỹ Thuật (Data Mining & AI)
 
-Mỗi thành viên sở hữu trọn vẹn 1 phân hệ xuyên suốt từ CSDL, Backend Spring Boot đến Giao diện Frontend:
+> [!NOTE]
+> **Ranh Giới Phạm Vi Dự Án (Project Scope Boundary):**
+> Nhóm tập trung triển khai đầy đủ và hoàn thiện các chức năng theo đúng đề cương yêu cầu (bao gồm 13 chức năng bắt buộc, 10 chức năng tự chọn và 1 phân hệ tùy biến sản phẩm 2D). Dự án tích hợp các giải thuật từ môn **Khai phá dữ liệu (Data Mining - Apriori)** và **Trí tuệ nhân tạo (Google Gemini AI)** nhằm giải quyết bài toán gợi ý thông minh và hỗ trợ phân tích quản trị. Các tính năng nằm ngoài phạm vi đề tài (như WebSocket Chat thời gian thực hay Livestream) được loại trừ để tối ưu chất lượng kiểm thử và tiến độ dự án.
 
 ```
-┌────────────────────────────────────────────────────────────────────────┐
-│                      HỆ THỐNG AURACRAFT (4 MODULE)                     │
-├───────────────────┬───────────────────┬──────────────────┬─────────────┤
-│     BẠN 1         │     BẠN 2         │     BẠN 3        │    BẠN 4    │
-│  Tài khoản &      │  Sản phẩm có sẵn  │  Giỏ hàng &      │  Customized │
-│  Hồ sơ cá nhân    │  (Catalog & Shop) │  Đơn hàng chuẩn  │  Handmade   │
-└───────────────────┴───────────────────┴──────────────────┴─────────────┘
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                      HỆ THỐNG AURACRAFT — PHÂN CHIA 4 THÀNH VIÊN                       │
+├─────────────────────┬─────────────────────┬────────────────────┬───────────────────────┤
+│      PHONG          │       YẾN           │       PHÁT         │      THƯƠNG           │
+│  Xác thực, Auth &   │  Danh mục, SP &     │  Giỏ hàng, Đơn &   │  Quản trị Admin,      │
+│  Customizer 2D      │  Khai phá dữ liệu   │  Thanh toán online │  Thống kê & Trí tuệ   │
+│                     │  (Data Mining)      │                    │  nhân tạo (AI Engine) │
+│  Nhánh: `phong`     │  Nhánh: `yen`       │  Nhánh: `phat`     │  Nhánh: `thuong`      │
+└─────────────────────┴─────────────────────┴────────────────────┴───────────────────────┘
 ```
 
-| Thành viên | Tên Phân Hệ | Các Bảng CSDL | Các Class Backend (Java) | Các Trang Giao Diện (FE) |
+---
+
+### 📋 BẢNG PHÂN CHIA CHI TIẾT THEO YÊU CẦU ĐỀ TÀI
+
+| Thành viên & Nhánh Git | Chức năng BẮT BUỘC đảm nhận | Chức năng TỰ CHỌN đảm nhận | Tính năng NÂNG CAO & KỸ THUẬT CHUYÊN SÂU | Tập tin Backend & Frontend chính |
 |---|---|---|---|---|
-| **BẠN 1** | **Tài khoản & Xác thực** *(Auth & Profile)* | `users` | `User`, `LoginRequest`, `RegisterRequest`, `UserRepository`, `UserService`, `AuthController` | `login.html`, `register.html`, `forgot.html`, `profile.html`, `profile-info.html`, `shop-profile.html` |
-| **BẠN 2** | **Danh mục & Sản phẩm có sẵn** *(Catalog & Seller Products)* | `categories`, `products`, `product_images` | `Category`, `Product`, `ProductImage`, `ProductRepository`, `ProductService`, `ProductController` | `index.html`, `products.html`, `product-detail.html`, `seller-products.html`, `seller-product-form.html` |
-| **BẠN 3** | **Giỏ hàng & Đơn hàng chuẩn** *(Cart & Checkout)* | `cart_items`, `orders`, `order_items` | `CartItem`, `Order`, `OrderItem`, `CartRepository`, `OrderRepository`, `OrderService`, `OrderController` | `cart.html`, `checkout.html`, `success.html`, `order-management.html` |
-| **BẠN 4** | **Đặt làm đồ Custom & Admin** *(Custom Workflow & Admin)* | `custom_requests`, `quotes`, `custom_orders`, `order_milestones`, `disputes` | `CustomRequest`, `Quote`, `CustomOrder`, `Dispute`, `AdminUserService`, `AdminUserController`, `DisputeService` | `customizer.html`, `buyer-request-form.html`, `buyer-requests.html`, `admin-users.html`, `admin-orders.html`, `admin-disputes.html` |
+| **PHONG**<br>`phong` | 1. Đăng ký tài khoản (gửi email xác thực)<br>2. Đăng nhập hệ thống<br>3. Đăng xuất an toàn<br>4. Khôi phục mật khẩu qua email<br>5. Xem lịch sử mua hàng cá nhân | 1. Đăng nhập liên kết Google (OAuth2)<br>2. Cập nhật thông tin hồ sơ cá nhân (Avatar, SĐT, địa chỉ) | **Nâng cấp Customizer 2D trực quan**: Tự phối charm vòng tay theo slot, tính giá tức thời (Real-time Pricing), lưu cấu hình JSON xuống CSDL | • `User.java`, `UserRepository.java`<br>• `CustomMaterial.java`, `CustomDesign.java`<br>• `AuthService.java`, `UserService.java`<br>• `CustomDesignService.java`<br>• `AuthController.java`, `CustomDesignController.java`<br>• `login.html`, `register.html`, `forgot.html`, `profile.html`, `customizer.html` |
+| **YẾN**<br>`yen` | 1. Xem chi tiết sản phẩm (gallery hình ảnh, biến thể màu sắc/kích thước, thông số) | 1. Lọc sản phẩm đa tiêu chí (danh mục, khoảng giá, chất liệu)<br>2. Sắp xếp thứ tự hiển thị (giá tăng/giảm, bán chạy, mới nhất, lượt xem)<br>3. Tìm kiếm gian hàng nghệ nhân<br>4. Xem sản phẩm theo gian hàng (`shop-profile.html`)<br>5. Hiển thị trang chủ: Sản phẩm mới nhất & Sản phẩm xem nhiều nhất | **Khai phá dữ liệu (Data Mining - Apriori Algorithm)**: Khai phá tập mục phổ biến và luật kết hợp từ lịch sử đơn hàng nhằm xây dựng cụm sản phẩm "Thường được mua cùng nhau" (Market Basket Analysis) | • `Category.java`, `Product.java`, `ProductImage.java`<br>• `ProductRepository.java`<br>• `ProductService.java`, `AprioriMiningService.java`<br>• `ProductController.java`<br>• `index.html`, `products.html`, `product-detail.html`, `shop-profile.html` |
+| **PHÁT**<br>`phat` | 1. Quản lý giỏ hàng (thêm, cập nhật số lượng, xóa sản phẩm)<br>2. Đặt hàng (Checkout - nhập địa chỉ nhận hàng, ghi chú)<br>3. Thanh toán trực tuyến (tích hợp mã VietQR động / VNPay Sandbox) | 1. Cập nhật trạng thái vòng đời đơn hàng (PENDING ➔ CRAFTING ➔ SHIPPING ➔ COMPLETED ➔ CANCELLED) | Tự động sinh mã thanh toán QR theo định dạng chuẩn EMVCo kèm mã đơn hàng | • `CartItem.java`, `Order.java`, `OrderItem.java`<br>• `OrderRepository.java`, `CartRepository.java`<br>• `OrderService.java`, `PaymentService.java`<br>• `OrderController.java`, `CartController.java`<br>• `cart.html`, `checkout.html`, `success.html`, `order-detail.html` |
+| **THƯƠNG**<br>`thuong` | 1. Admin quản lý cơ bản: Người dùng *(đã có code mẫu)*, Sản phẩm, Đơn hàng<br>2. Quản lý cơ bản của người bán (Seller Dashboard: kho sản phẩm, doanh thu xưởng, tiến độ đơn)<br>3. Thống kê biểu đồ cột theo khoảng thời gian tùy chọn (từ ngày... đến ngày...)<br>4. Thống kê biểu đồ tròn phân tích tỷ trọng doanh thu theo danh mục | 1. Chợ tiếp nhận báo giá (Khách hàng đăng tải thiết kế yêu cầu, các thợ thủ công gửi báo giá) | **Tích hợp Trí tuệ nhân tạo (Google Gemini AI Engine)**: Trợ lý tư vấn chọn quà thông minh cho khách hàng (AI Stylist) và Trợ lý phân tích insight doanh số kinh doanh cho Admin (AI Executive Insights) | • `CustomRequest.java`, `Quote.java`<br>• `AdminUserController.java`, `AdminAnalyticsController.java`<br>• `GeminiAiService.java`, `AnalyticsService.java`<br>• `buyer-request-form.html`, `seller-dashboard.html`, `admin-*.html` |
+
+---
+
+### 🧠 ĐẶC TẢ KỸ THUẬT: KHAI PHÁ DỮ LIỆU (DATA MINING) & TRÍ TUỆ NHÂN TẠO (AI)
+
+Hệ thống ứng dụng các phương pháp học thuật nhằm giải quyết các bài toán thực tiễn trong thương mại điện tử đồ thủ công:
+
+#### 1. Khai phá dữ liệu: Thuật toán Apriori (Phân tích giỏ hàng - Market Basket Analysis)
+* **Mục tiêu bài toán**: Xác định các mẫu sản phẩm thường xuyên được mua cùng nhau trong các giao dịch đơn hàng để đưa ra khuyến nghị bán kèm (Cross-selling).
+* **Cơ sở lý thuyết**:
+  - Tập dữ liệu giao dịch: $D = \{T_1, T_2, \dots, T_n\}$ trích xuất từ bảng `order_items` theo từng `order_id`.
+  - Một luật kết hợp có dạng $X \Rightarrow Y$, trong đó $X, Y \subset I$ và $X \cap Y = \emptyset$.
+  - Các độ đo thống kê được tính toán:
+    $$\text{Support}(X \Rightarrow Y) = \frac{|\{T \in D \mid X \cup Y \subseteq T\}|}{|D|}$$
+    $$\text{Confidence}(X \Rightarrow Y) = \frac{\text{Support}(X \cup Y)}{\text{Support}(X)}$$
+    $$\text{Lift}(X \Rightarrow Y) = \frac{\text{Confidence}(X \Rightarrow Y)}{\text{Support}(Y)}$$
+* **Quy trình triển khai (Thành viên phụ trách: Yến)**:
+  1. Service `AprioriMiningService.java` định kỳ xử lý các giao dịch hoàn tất từ `order_items`.
+  2. Lọc các tập mục phổ biến đạt ngưỡng hỗ trợ tối thiểu ($\text{min\_sup} \ge 5\%$) và sinh luật kết hợp với độ tin cậy tối thiểu ($\text{min\_conf} \ge 50\%$).
+  3. Cung cấp API `GET /api/v1/products/{id}/frequently-bought-together` để giao diện [product-detail.html](file:///d:/Thuong_Study/Nhom5.1%20TMDT/TMDT_Nhom5.1_handmade/frontend/pages/product-detail.html) hiển thị cụm **"Combo thường được mua cùng nhau"** kèm nút thêm nhanh cả 2 sản phẩm vào giỏ hàng.
+
+#### 2. Học máy: Đo lường độ tương đồng Cosine (Content-Based Recommendation)
+* **Mục tiêu bài toán**: Tìm kiếm các sản phẩm có đặc trưng kỹ thuật và phân khúc tương đồng để hiển thị tại mục "Sản phẩm tương tự".
+* **Cơ sở lý thuyết**: Biểu diễn sản phẩm dưới dạng vector đặc trưng $\vec{V} = [w_1 \cdot \text{CategoryId}, w_2 \cdot \text{NormalizedPrice}, w_3 \cdot \text{MaterialScore}]$. Độ tương đồng giữa hai sản phẩm $A$ và $B$ được xác định theo công thức góc Cosine:
+  $$\text{Cosine Similarity}(\vec{A}, \vec{B}) = \frac{\vec{A} \cdot \vec{B}}{\|\vec{A}\| \|\vec{B}\|} = \frac{\sum_{i=1}^n A_i B_i}{\sqrt{\sum_{i=1}^n A_i^2} \sqrt{\sum_{i=1}^n B_i^2}}$$
+
+#### 3. Ứng Dụng Trí Tuệ Nhân Tạo: Google Gemini AI (Thành viên phụ trách: Thương)
+Dự án tích hợp mô hình ngôn ngữ lớn (Google Gemini API) vào Spring Boot thông qua lớp dịch vụ `GeminiAiService.java`:
+* **Phân hệ Khách hàng (AI Gift Stylist)**:
+  - Tiếp nhận truy vấn tự nhiên từ người dùng (ví dụ: *"Tìm quà kỷ niệm tặng bạn gái mệnh Mộc, ngân sách dưới 300.000đ"*).
+  - Hệ thống kết hợp System Prompt định dạng chuẩn JSON và danh mục sản phẩm hiện có trong CSDL để Gemini phân tích và trả về 2 sản phẩm phù hợp nhất kèm lý do tư vấn chuyên môn.
+* **Phân hệ Quản trị (AI Executive Insights)**:
+  - Tự động phân tích các chỉ số doanh thu tổng hợp từ bảng `orders` theo mốc thời gian.
+  - Sinh báo cáo nhận định kinh doanh tóm tắt: các mặt hàng tăng trưởng tốt, danh mục cần đẩy mạnh truyền thông và cảnh báo các sản phẩm tồn kho cần xử lý.
+
+---
+
+### 🎨 ĐẶC TẢ PHÂN HỆ TÙY BIẾN SẢN PHẨM 2D (CUSTOMIZER) & BÁO GIÁ TỨC THỜI (Thành viên phụ trách: Phong)
+
+Phân hệ Customizer trực quan trên web giải quyết bài toán đặt chế tác đồ thủ công cá nhân hóa:
+
+1. **Mô hình linh kiện theo vị trí (Slot Component Model)**:
+   - Giao diện [customizer.html](file:///d:/Thuong_Study/Nhom5.1%20TMDT/TMDT_Nhom5.1_handmade/frontend/pages/customizer.html) trực quan hóa phôi vòng tay với 16 vị trí mắt xích (16 Slots).
+   - Người dùng lựa chọn linh kiện/charm từ thư viện nguyên liệu (`custom_materials`) để gán trực tiếp vào từng slot tọa độ.
+2. **Cơ chế tính toán chi phí tức thời (Real-time Cost Calculation Engine)**:
+   - Tổng chi phí sản phẩm được cập nhật theo thời gian thực tại phía Client:
+     $$\text{Tổng giá} = \text{Giá phôi cơ sở} + \sum_{k=1}^{N} \text{Giá linh kiện slot}_k$$
+3. **Mô hình lưu trữ cấu hình JSON xuống CSDL**:
+   - Khi hoàn tất, cấu hình được tuần tự hóa (serialize) thành chuỗi JSON:
+     `{"base_id": 1, "slots": [{"slot_index": 1, "material_id": 4, "price": 25000}, ...]}`
+   - Dữ liệu được lưu vào trường `configuration_json` trong bảng `custom_designs`. Xưởng thủ công truy cập Seller Dashboard để xem chính xác bản vẽ phối màu và tiến hành gia công thực tế.
 
 ---
 
 ## 4. Quy Tắc Thống Nhất Khi Code (Conventions & Git Workflow)
 
-### 4.1. Quy tắc Git nhánh (Tuyệt đối không push đè `main`)
+### 4.1. Quy tắc Git nhánh theo tên thành viên (Tuyệt đối không push đè `main`)
 1. Nhánh `main`: Chỉ dùng để lưu bản hoàn thiện cuối cùng khi nộp bài.
 2. Nhánh `develop`: Là nhánh tích hợp chung của cả nhóm.
-3. Mỗi thành viên tạo nhánh tính năng riêng từ `develop`:
-   - Bạn 1: `feature/auth-profile`
-   - Bạn 2: `feature/catalog-product`
-   - Bạn 3: `feature/cart-order`
-   - Bạn 4: `feature/custom-admin`
-4. Khi làm xong, tạo **Pull Request (PR)** để ghép vào nhánh `develop`.
+3. **Mỗi thành viên tạo và làm việc trên nhánh mang tên mình** (tách từ `develop`):
+   - **Phong**: `phong` *(Module Xác thực người dùng & Customizer 2D trực quan)*
+   - **Yến**: `yen` *(Module Danh mục, Sản phẩm & Khai phá dữ liệu - Catalog & Data Mining)*
+   - **Phát**: `phat` *(Module Giỏ hàng, Đặt hàng & Thanh toán trực tuyến - Cart, Order & Payment)*
+   - **Thương**: `thuong` *(Module Quản trị hệ thống, Thống kê biểu đồ & Trí tuệ nhân tạo - Admin & AI Engine)*
+4. Khi hoàn thành một tính năng, tạo **Pull Request (PR)** từ nhánh của mình vào nhánh `develop` để cả nhóm cùng kiểm tra.
 
 ### 4.2. Chuẩn định dạng phản hồi API (`ApiResponse<T>`)
 Tất cả API Backend đều phải bọc trong class [ApiResponse.java](file:///d:/Thuong_Study/Nhom5.1%20TMDT/TMDT_Nhom5.1_handmade/backend/src/main/java/com/example/Handmade/dto/ApiResponse.java):
@@ -154,36 +214,38 @@ Tất cả API Backend đều phải bọc trong class [ApiResponse.java](file:/
 
 Chức năng **Quản lý tài khoản Admin (Admin Users)** đã được cài đặt mẫu hoàn chỉnh 100% để cả nhóm nhìn vào học theo.
 
-### 5.1. Kiến trúc 3 tầng chuẩn Spring Boot
-Hệ thống Backend được phân chia nhiệm vụ giống như một **Nhà hàng ẩm thực**:
+### 5.1. Kiến trúc phân tầng chuẩn Spring Boot (3-Tier Enterprise Architecture)
+Hệ thống Backend được thiết kế theo mô hình 3 tầng phân tách rõ ràng trách nhiệm (Separation of Concerns):
 
 ```
-[NGƯỜI DÙNG BẤM CLICK TRÊN WEB]
+[NGƯỜI DÙNG TƯƠNG TÁC TRÊN TRÌNH DUYỆT]
                │
                ▼
 [FRONTEND: admin-users.html + admin-users.js]
-               │ (1) Gửi yêu cầu qua mạng: fetch("http://localhost:8080/api/v1/admin/users")
+               │ (1) Gửi HTTP Request: fetch("http://localhost:8080/api/v1/admin/users")
                ▼
 ┌──────────────────────────────────────────────────────────────────┐
 │                   BACKEND SPRING BOOT (Cổng 8080)                │
 │                                                                  │
 │  ┌─────────────────────────┐                                     │
-│  │ 1. Controller           │  (LỄ TÂN): Nhận HTTP Request,       │
-│  │ (AdminUserController)   │  kiểm tra tham số và trả ApiResponse│
+│  │ 1. Presentation Layer   │  (AdminUserController): Tiếp nhận   │
+│  │    (Controller)         │  HTTP Request, validate tham số     │
+│  │                         │  và trả về ApiResponse<T> chuẩn hóa │
 │  └────────────┬────────────┘                                     │
 │               ▼                                                  │
 │  ┌─────────────────────────┐                                     │
-│  │ 2. Service              │  (BẾP TRƯỞNG): Xử lý logic nghiệp   │
-│  │ (AdminUserService)      │  vụ, tính toán thống kê, đổi status │
+│  │ 2. Business Logic Layer │  (AdminUserService): Thực thi các quy│
+│  │    (Service)            │  tắc nghiệp vụ, xử lý logic dữ liệu │
+│  │                         │  và quản lý Transaction             │
 │  └────────────┬────────────┘                                     │
 │               ▼                                                  │
 │  ┌─────────────────────────┐                                     │
-│  │ 3. Repository           │  (THỦ KHO): Chuyên giao tiếp với DB,│
-│  │ (UserRepository)        │  thực thi câu lệnh SQL SELECT/UPDATE│
+│  │ 3. Data Access Layer    │  (UserRepository): Thực thi truy vấn│
+│  │    (Repository)         │  CSDL thông qua JPA & Hibernate ORM │
 │  └────────────┬────────────┘                                     │
 └───────────────┼──────────────────────────────────────────────────┘
                 │
-                │ (2) Truy vấn SQL
+                │ (2) Truy vấn CSDL
                 ▼
        [DATABASE: MySQL (auracraft_db)]
 ```
@@ -373,10 +435,10 @@ Khi bạn làm các chức năng tiếp theo (Danh mục, Sản phẩm, Giỏ h�
 
 ---
 
-## 6. Những Lưu Ý Sống Còn Khi Code (Tránh Lỗi Phổ Biến)
+## 6. Các Lưu Ý Kỹ Thuật Quan Trọng & Phòng Ngừa Sự Cố
 
 > [!WARNING]
-> Cả 4 bạn cần đọc kỹ 5 lỗi kinh điển sau để không mất hàng giờ sửa lỗi:
+> Các thành viên cần nắm vững 5 lưu ý kỹ thuật sau nhằm đảm bảo hệ thống vận hành ổn định và đồng nhất:
 
 1. **Lỗi `Access denied for user 'root'@'localhost'`:**
    - *Nguyên nhân*: Do điền mật khẩu trong `application.properties`.
@@ -411,12 +473,12 @@ Khi bạn làm các chức năng tiếp theo (Danh mục, Sản phẩm, Giỏ h�
 | `frontend/assets/js/...` | `const API_BASE = "http://localhost:8080/..."` | • Mặc định giữ nguyên cổng `8080`.<br>• Chỉ sửa nếu máy bạn bị phần mềm khác chiếm mất cổng `8080` và buộc phải đổi cổng Backend sang `8081` trong `application.properties`. |
 
 > [!TIP]
-> **MẸO VÀNG GIT (CHỐNG COMMIT ĐÈ MẬT KHẨU CÁ NHÂN):**  
-> Sau khi bạn đã sửa `application.properties` cho khớp mật khẩu trên máy mình, hãy mở Terminal gõ lệnh sau:  
+> **CẤU HÌNH GIT LOCAL (BẢO VỆ TẬP TIN CẤU HÌNH CÁ NHÂN):**  
+> Sau khi đã sửa `application.properties` phù hợp với máy cá nhân, thực thi lệnh sau trên Terminal để ngăn Git theo dõi thay đổi cục bộ:  
 > ```bash
 > git update-index --assume-unchanged backend/src/main/resources/application.properties
 > ```
-> 👉 **Tác dụng**: Lệnh này báo Git bỏ qua mọi thay đổi ở file cấu hình này trên máy bạn. Bạn có thể thoải mái `git add .` và `git commit` mà không bao giờ sợ vô tình đẩy mật khẩu máy mình lên làm lỗi máy các bạn khác!
+> Lệnh này giúp quá trình `git add .` và `git commit` không ghi nhận các thông số kết nối cục bộ của máy bạn lên kho lưu trữ chung.
 
 ---
 
@@ -434,16 +496,16 @@ Những file này là "xương sống" dùng chung cho cả 4 thành viên. **N�
 
 ---
 
-### 🟡 NHÓM 3: File Phân Quyền Sở Hữu Theo Module (Chỉ người phụ trách mới được code)
+### 🟡 NHÓM 3: File Phân Quyền Sở Hữu Theo Phân Hệ (Trách Nhiệm Riêng Biệt)
 
-Để tránh bị **Merge Conflict** khi ghép nhánh Git, quy định quyền viết code như sau:
+Để phòng ngừa **Merge Conflict** khi hợp nhất các nhánh Git, quy định quyền truy cập và chỉnh sửa mã nguồn như sau:
 
-- **Bạn 1**: Chỉ tạo/sửa các file liên quan đến User & Auth (`User.java`, `UserRepository.java`, `UserService.java`, `AuthController.java`, `login.html`, `profile.html`...).
-- **Bạn 2**: Chỉ tạo/sửa các file liên quan đến Sản phẩm & Danh mục (`Product.java`, `Category.java`, `ProductRepository.java`, `ProductController.java`, `products.html`, `product-detail.html`, `seller-products.html`...).
-- **Bạn 3**: Chỉ tạo/sửa các file liên quan đến Giỏ hàng & Đơn hàng (`CartItem.java`, `Order.java`, `OrderItem.java`, `CartController.java`, `OrderController.java`, `cart.html`, `checkout.html`...).
-- **Bạn 4**: Chỉ tạo/sửa các file liên quan đến Custom Handmade, Tranh chấp & Admin (`CustomRequest.java`, `Quote.java`, `CustomOrder.java`, `Dispute.java`, `AdminUserController.java`, `customizer.html`, `admin-*.html`...).
+- **Phong** (`phong`): Phụ trách tạo và chỉnh sửa các tập tin thuộc phân hệ Xác thực, Người dùng & Customizer 2D (`User.java`, `UserRepository.java`, `UserService.java`, `CustomMaterial.java`, `CustomDesign.java`, `AuthController.java`, `CustomDesignController.java`, `login.html`, `register.html`, `forgot.html`, `profile.html`, `customizer.html`...).
+- **Yến** (`yen`): Phụ trách tạo và chỉnh sửa các tập tin thuộc phân hệ Danh mục, Sản phẩm, Gian hàng & Khai phá dữ liệu (`Category.java`, `Product.java`, `ProductImage.java`, `ProductRepository.java`, `ProductService.java`, `AprioriMiningService.java`, `ProductController.java`, `index.html`, `products.html`, `product-detail.html`, `shop-profile.html`...).
+- **Phát** (`phat`): Phụ trách tạo và chỉnh sửa các tập tin thuộc phân hệ Giỏ hàng, Đơn hàng & Thanh toán (`CartItem.java`, `Order.java`, `OrderItem.java`, `CartRepository.java`, `OrderRepository.java`, `CartService.java`, `OrderService.java`, `PaymentService.java`, `CartController.java`, `OrderController.java`, `cart.html`, `checkout.html`, `success.html`, `order-detail.html`...).
+- **Thương** (`thuong`): Phụ trách tạo và chỉnh sửa các tập tin thuộc phân hệ Quản trị Admin, Quản trị Seller, Chợ báo giá, Thống kê & Trí tuệ nhân tạo (`CustomRequest.java`, `Quote.java`, `AdminUserController.java`, `AdminAnalyticsController.java`, `AnalyticsService.java`, `GeminiAiService.java`, `buyer-request-form.html`, `seller-dashboard.html`, `admin-*.html`...).
 
-> ⚠️ **Nguyên tắc vàng**: *"Code module của ai thì người đó viết. Tuyệt đối không sửa chéo file của nhau khi chưa thống nhất!"*
+> ⚠️ **Nguyên tắc làm việc**: *"Mỗi thành viên chỉ chỉnh sửa các tập tin thuộc phạm vi phân hệ được phân công. Không chỉnh sửa chéo tập tin ngoài phạm vi khi chưa có sự thống nhất chung của nhóm!"*
 
 ---
 
@@ -532,27 +594,171 @@ git add .
 # Bước 3: Ghi chú rõ ràng việc bạn vừa làm (dùng tiếng Việt không dấu hoặc tiếng Anh)
 git commit -m "feat(admin): hoan thanh ket noi api admin users"
 
-# Bước 4: Đẩy lên nhánh tính năng riêng của bạn (KHÔNG push len main)
-git push origin feature/ten-nhanh-cua-ban
+# Bước 4: Đẩy lên nhánh riêng của bạn (KHÔNG push len main)
+git push origin ten-nhanh-cua-ban    # Ví dụ: git push origin thuong
 ```
 
 ---
 
-### 🆘 8.5. Cách Cấp Cứu Khi Lỡ Tay Commit Nhầm File Rác Hoặc File Nặng
+### 8.5. Quy Trình Xử Lý Sự Cố Khi Commit Sai Tập Tin
 
-Nếu bạn lỡ thêm nhầm file vào Git:
+Trường hợp vô tình đưa các tập tin cấu hình cá nhân hoặc tập tin không hợp lệ vào Git:
 
-1. **Trường hợp 1 (Mới gõ `git add .` nhưng CHƯA gõ `git commit`):**
+1. **Trường hợp 1 (Đã thực hiện `git add .` nhưng chưa thực hiện `git commit`):**
+   Hủy đưa tập tin vào hàng đợi chuẩn bị lưu:
    ```bash
-   git reset HEAD <duong_dan_file_bi_nham>
+   git reset HEAD <duong_dan_file>
    ```
-2. **Trường hợp 2 (Đã lỡ gõ `git commit` nhưng CHƯA gõ `git push`):**
-   Xóa file khỏi Git mà vẫn giữ nguyên file trên máy tính của bạn:
+2. **Trường hợp 2 (Đã thực hiện `git commit` nhưng chưa thực hiện `git push`):**
+   Loại bỏ tập tin khỏi chỉ mục của Git và giữ lại tập tin trên hệ thống tập tin cục bộ:
    ```bash
-   git rm --cached <duong_dan_file_bi_nham>
+   git rm --cached <duong_dan_file>
    git commit --amend -C HEAD
    ```
-3. **Trường hợp 3 (File cài đặt `.exe` quá nặng vô tình nằm trong thư mục ảnh):**
-   Hãy tìm và xóa thẳng tay file `.exe` đó ra khỏi thư mục dự án (hoặc di chuyển ra màn hình Desktop).
+3. **Trường hợp 3 (Tập tin nhị phân dung lượng lớn vô tình nằm trong thư mục dự án):**
+   Di chuyển tập tin ra ngoài cây thư mục của dự án và kiểm tra lại trạng thái bằng lệnh `git status`.
+
+---
+
+## 9. Hướng Dẫn Sử Dụng Sourcetree Từ A Đến Z (Clone, Mở Dự Án, Add, Commit, Push, Pull & Tạo Nhánh)
+
+**Sourcetree** là phần mềm giao diện đồ họa (GUI) trực quan giúp cả nhóm quản lý Git bằng chuột, xem sơ đồ nhánh và lịch sử code rõ ràng mà không cần phải nhớ các câu lệnh gõ trong Terminal.
+
+```
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                      SƠ ĐỒ THAO TÁC CƠ BẢN TRÊN SOURCETREE                             │
+│                                                                                        │
+│  [GitHub Remote] ──(Clone / Pull)──> [Máy tính cá nhân]                                │
+│                                            │                                           │
+│                                      (Code & Sửa file)                                 │
+│                                            │                                           │
+│                                            ▼                                           │
+│  [Unstaged Files] ────(Stage / Add)───> [Staged Files]                                 │
+│                                            │                                           │
+│                                        (Commit)                                        │
+│                                            │                                           │
+│                                            ▼                                           │
+│  [Local Repository] ─────(Push)──────> [GitHub: thuong, yen, phong, phat]      │
+└────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+### 🟢 9.1. Cách Mở Dự Án Đã Có Sẵn Trên Máy Vào Sourcetree
+
+Nếu bạn đã tải (clone) thư mục dự án về máy rồi (ví dụ nằm tại `D:\Thuong_Study\Nhom5.1 TMDT\TMDT_Nhom5.1_handmade`), bạn **không cần Clone lại**, mà chỉ cần mở nó lên trong Sourcetree bằng 1 trong 2 cách cực kỳ đơn giản sau:
+
+#### Cách 1: Kéo thả trực tiếp (Nhanh nhất - 3 giây)
+1. Khởi động phần mềm **Sourcetree**.
+2. Mở cửa sổ **File Explorer** của Windows (`Windows + E`), tìm đến thư mục chứa dự án: `TMDT_Nhom5.1_handmade`.
+3. Nhấn giữ chuột trái vào thư mục `TMDT_Nhom5.1_handmade` và **kéo thả trực tiếp** vào màn hình chính của Sourcetree!
+4. Sourcetree sẽ nhận diện thư mục ẩn `.git` và mở ngay dự án ra cho bạn làm việc.
+
+#### Cách 2: Dùng nút "Add" trên thanh công cụ
+1. Mở **Sourcetree** ➔ Nhìn lên thanh tab trên cùng, bấm vào dấu **`+`** (Tab mới).
+2. Ở menu các thẻ ngang, chọn tab **`Add`** (hoặc `Add Existing Local Repository`).
+3. Tại ô **Working Directory**, bấm nút **`Browse...`** (Duyệt thư mục).
+4. Điều hướng và chọn đúng thư mục dự án của bạn: `D:\Thuong_Study\Nhom5.1 TMDT\TMDT_Nhom5.1_handmade`.
+5. Sourcetree sẽ hiện dòng chữ màu xanh lá xác nhận: *"This is a valid Git repository"*.
+6. Bấm nút **`Add`** ở góc dưới bên phải. Dự án sẽ xuất hiện ngay trong danh sách, bấm đúp chuột vào là mở ra toàn bộ lịch sử!
+
+---
+
+### 🌐 9.2. Cách Clone Dự Án Từ GitHub Về Máy
+
+Các bạn mới chưa có mã nguồn trên máy chỉ cần thực hiện 4 bước sau để tải toàn bộ dự án về:
+
+1. Khởi động **Sourcetree** ➔ Bấm vào dấu **`+`** trên thanh tab ➔ Chọn tab **`Clone`**.
+2. Điền các thông tin:
+   - **Source Path / URL**: Dán chính xác đường link GitHub của nhóm:
+     ```
+     https://github.com/Thuong23130327/TMDT_Nhom5.1_handmade.git
+     ```
+   - **Destination Path**: Bấm nút **`Browse...`** và chọn thư mục trên máy bạn muốn lưu dự án (Ví dụ: `D:\Nhom5_Handmade\TMDT_Nhom5.1_handmade`).
+   - **Name**: Để tên mặc định là `TMDT_Nhom5.1_handmade`.
+3. Chờ 3-5 giây để Sourcetree kiểm tra đường truyền và hiện dòng thông báo: *"This is a Git repository"*.
+4. Bấm nút **`Clone`** ở góc dưới. Toàn bộ mã nguồn, cấu hình CSDL và giao diện sẽ được tải về máy bạn 100%!
+
+---
+
+### 🌿 9.3. Tạo & Chuyển Sang Nhánh Riêng Của Bạn (`thuong`, `yen`, `phong`, `phat`)
+
+Để không bị đè code lên nhau, mỗi bạn bắt buộc tạo nhánh riêng mang tên mình:
+
+1. Trong giao diện dự án trên Sourcetree, nhìn lên thanh công cụ (Toolbar) trên cùng, bấm vào nút **`Branch`** (Biểu tượng nhánh cây).
+2. Hộp thoại tạo nhánh xuất hiện:
+   - Tại ô **New Branch**: Nhập đúng tên nhánh phân công của bạn:
+     - Thương: `thuong`
+     - Yến: `yen`
+     - Phong: `phong`
+     - Phát: `phat`
+   - Đảm bảo ô vuông **"Checkout new branch"** đã được **tích chọn** (để sau khi tạo xong sẽ tự động chuyển sang làm việc trên nhánh này ngay).
+3. Bấm nút **`Create Branch`**.
+4. Nhìn sang cột bên trái (Mục **BRANCHES**): Bạn sẽ thấy tên nhánh của mình đang được **in đậm kèm một chấm tròn nhỏ** bên cạnh ➔ Bạn đã ở trên nhánh riêng an toàn!
+
+---
+
+### 📝 9.4. Cách Xem File Thay Đổi & Đưa File Vào Hàng Đợi (Stage / Add)
+
+Mỗi khi bạn vừa tạo file mới hoặc sửa code trên máy mình:
+
+1. Nhìn sang menu bên trái, bấm vào mục **`File Status`** (Trạng thái file).
+2. Màn hình sẽ chia làm 2 khu vực rõ ràng:
+   - **Unstaged files** (Khu vực dưới): Danh sách các file bạn vừa thay đổi nhưng chưa đưa vào hàng đợi lưu.
+   - **Staged files** (Khu vực trên): Các file đã sẵn sàng để lưu lại (commit).
+3. Cách đưa file lên chuẩn bị commit:
+   - **Cách 1 (Lưu toàn bộ)**: Bấm nút **`Stage All`** (hoặc tích vào ô vuông trên cùng của khung Unstaged files). Toàn bộ file sẽ nhảy lên khung Staged files.
+   - **Cách 2 (Lưu từng file cụ thể)**: Tích vào ô vuông nhỏ trước từng file bạn muốn lưu.
+   - Khi bấm vào tên một file, khung bên phải sẽ hiển thị chi tiết màu xanh lá (dòng code mới viết thêm) và màu đỏ (dòng code vừa xóa đi) cực kỳ trực quan!
+
+---
+
+### 💾 9.5. Cách Commit (Lưu Mốc Làm Việc Trên Máy Cá Nhân)
+
+Sau khi các file cần lưu đã nằm gọn gàng trong khung **Staged files**:
+
+1. Nhìn xuống khung soạn thảo văn bản ở góc dưới cùng màn hình Sourcetree.
+2. Gõ dòng thông điệp mô tả ngắn gọn việc bạn vừa làm (Commit Message), ví dụ:
+   - `feat(catalog): hoan thanh giao dien trang chi tiet san pham`
+   - `feat(cart): viet api them san pham vao gio hang`
+   - `feat(auth): hoan thanh dang nhap bang google`
+3. Bấm nút **`Commit`** ở góc dưới cùng bên phải màn hình.
+4. Mốc làm việc đã được lưu trữ an toàn vào lịch sử Git cục bộ trên máy tính của bạn!
+
+---
+
+### 🚀 9.6. Cách Push (Đẩy Code Lên GitHub Cho Cả Nhóm Cùng Thấy)
+
+Sau khi bấm Commit, mốc code mới chỉ nằm trên máy bạn. Để đưa lên GitHub:
+
+1. Nhìn lên thanh công cụ trên cùng, bạn sẽ thấy nút **`Push`** (Biểu tượng mũi tên chỉ lên) xuất hiện số `1` (báo hiệu có 1 mốc commit đang chờ đẩy).
+2. Bấm vào nút **`Push`**.
+3. Một bảng danh sách các nhánh sẽ hiện ra:
+   - Tìm đến đúng dòng mang **tên nhánh của bạn** (ví dụ `thuong`, `yen`, `phong`, `phat`).
+   - **Tích chọn ô vuông** ở cột *Push* tương ứng với nhánh của bạn.
+   - *(Lưu ý: Không tích vào nhánh `main` khi chưa họp nhóm).*
+4. Bấm nút **`Push`** ở góc dưới cùng.
+5. Chờ 3 giây khi thanh tiến trình chạy xong là code của bạn đã lên GitHub an toàn!
+
+---
+
+### 📥 9.7. Cách Pull (Đồng Bộ Mã Nguồn Mới Nhất Về Máy Cục Bộ)
+
+> [!TIP]
+> **QUY TRÌNH ĐỒNG BỘ ĐẦU PHIÊN LÀM VIỆC**: Trước khi bắt đầu làm việc, thành viên luôn thực hiện thao tác **Pull** trên Sourcetree nhằm đảm bảo mã nguồn cục bộ đồng bộ với kho lưu trữ chung, hạn chế nguy cơ xung đột (conflict).
+
+1. Nhìn lên thanh công cụ trên cùng, bấm nút **`Pull`** (Biểu tượng mũi tên chỉ xuống).
+2. Hộp thoại hiện ra: Giữ nguyên các tùy chọn mặc định.
+3. Bấm nút **`OK`** (hoặc *Pull*).
+4. Sourcetree sẽ tự động tải các cập nhật mới nhất từ GitHub về máy bạn, giúp dự án luôn đồng bộ với các bạn trong nhóm!
+
+---
+
+### ⚠️ 9.8. Các Nguyên Tắc Phòng Ngừa Xung Đột Mã Nguồn (Merge Conflict)
+
+1. **Tuyệt đối không commit trực tiếp vào nhánh `main`**: Luôn làm việc và commit trên nhánh cá nhân được phân công (`phong`, `yen`, `phat`, `thuong`).
+2. **Tuân thủ quyền sở hữu tập tin**: Mỗi thành viên chỉ thao tác trên các tập tin thuộc phân hệ của mình (theo phân quyền tại Mục 7).
+3. **Quy trình xử lý xung đột**: Trường hợp Sourcetree thông báo xung đột (Merge Conflict), cần thông báo cho nhóm để cùng đối chiếu và chọn phương án hợp nhất chính xác.
+
 
 

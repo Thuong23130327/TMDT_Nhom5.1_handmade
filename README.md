@@ -18,7 +18,7 @@ Xem ngay file **[HUONG_DAN_FULLSTACK_AURACRAFT.md](file:///d:/Thuong_Study/Nhom5
 - **Frontend:** HTML5, CSS3, JavaScript ES6+ (Fetch API).
 - **Backend:** Java Spring Boot 2.7.18 (Java 11, Spring Data JPA, Lombok).
 - **Database:** MySQL 8.x (WampServer 64-bit, port 3306, DB `auracraft_db`).
-- **Quản lý mã nguồn:** Git & GitHub (nhánh chung `develop`, nhánh tính năng `feature/...`).
+- **Quản lý mã nguồn:** Git & GitHub (nhánh chung `develop`, nhánh riêng `thuong`, `yen`, `phong`, `phat`).
 
 ---
 
