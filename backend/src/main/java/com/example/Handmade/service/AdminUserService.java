@@ -20,7 +20,7 @@ public class AdminUserService {
 
     // 1. Thống kê 4 số thẻ trên đầu trang
     public UserStatsResponse getStats() {
-        List<User.Role> buyerRoles = Arrays.asList(User.Role.BUYER, User.Role.ROLE_BUYER);
+        List<User.Role> buyerRoles = Arrays.asList(User.Role.BUYER, User.Role.ROLE_BUYER, User.Role.ROLE_CUSTOMER);
         List<User.Role> artisanRoles = Arrays.asList(User.Role.ARTISAN, User.Role.ROLE_ARTISAN);
 
         long total = userRepository.count();
@@ -48,6 +48,9 @@ public class AdminUserService {
             try {
                 roles.add(User.Role.valueOf("ROLE_" + cleanRole));
             } catch (IllegalArgumentException ignored) {}
+            if ("BUYER".equals(cleanRole)) {
+                roles.add(User.Role.ROLE_CUSTOMER);
+            }
         }
 
         User.UserStatus status = null;
