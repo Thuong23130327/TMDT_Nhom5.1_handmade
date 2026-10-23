@@ -2,6 +2,7 @@ package com.example.Handmade.model;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -18,6 +19,9 @@ public class User {
     @Id // 8. Khóa chính
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 9. Tự tăng (Auto Increment: 1, 2, 3...)
     private Long id; // Dùng Long (64-bit) để lưu trữ được lượng ID cực lớn
+
+    @Column(nullable = false, unique = true, length = 20)
+    private String username;
 
     @Column(nullable = false, unique = true, length = 100)
     private String email;
@@ -39,11 +43,13 @@ public class User {
 
     @Enumerated(EnumType.STRING) // 10. Lưu chữ ("BUYER", "ARTISAN") thay vì số 0, 1
     @Column(nullable = false)
-    private Role role; // Vai trò người dùng
+    @Builder.Default
+    private Role role = Role.ROLE_CUSTOMER; // Vai trò người dùng
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserStatus status; // Trạng thái tài khoản
+    @Builder.Default
+    private UserStatus status = UserStatus.ACTIVE; // Trạng thái tài khoản
 
     @Column(columnDefinition = "TEXT") // 11. Ép kiểu cột thành TEXT để lưu được bài giới thiệu dài
     private String introduction;
@@ -51,17 +57,32 @@ public class User {
     @Column(name = "portfolio_url")
     private String portfolioUrl;
 
+    @Column(name = "reset_token", length = 100)
+    private String resetToken;
+
+    @Column(name = "reset_token_expiry")
+    private LocalDateTime resetTokenExpiry;
+
+    @Column(name = "otp_attempts", nullable = false)
+    @Builder.Default
+    private Integer otpAttempts = 0;
+
     @CreationTimestamp // 12. Tự động điền ngày giờ hiện tại khi INSERT vào DB
     @Column(name = "created_at", updatable = false) // updatable = false: Không bị đổi giờ khi UPDATE thông tin
     private LocalDateTime createdAt;
 
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
     // 13. Khai báo danh sách các giá trị cố định (Enum)
     public enum Role {
         BUYER, ARTISAN, ADMIN,
-        ROLE_BUYER, ROLE_ARTISAN, ROLE_ADMIN
+        ROLE_BUYER, ROLE_ARTISAN, ROLE_ADMIN,
+        ROLE_CUSTOMER
     }
 
     public enum UserStatus {
-        ACTIVE, PENDING, SUSPENDED
+        ACTIVE, PENDING, SUSPENDED, INACTIVE, BLOCKED
     }
 }
