@@ -17,12 +17,12 @@
     <main class="success-page">
         <div class="container">
             <div class="success-card">
-                <div class="success-icon-wrap">
+                <div class="success-icon-wrap" id="successIconWrap">
                     <i class="fa-solid fa-circle-check"></i>
                 </div>
 
-                <h1>Đặt hàng thành công!</h1>
-                <p class="success-subtext">
+                <h1 id="successHeading">Đặt hàng thành công!</h1>
+                <p class="success-subtext" id="successSubtext">
                     Cảm ơn bạn đã lựa chọn AuraCraft. Đơn hàng của bạn đã được chuyển tới các nghệ nhân thủ công để
                     chuẩn bị chế tác và giao đến tay bạn trong thời gian sớm nhất.
                 </p>
@@ -42,33 +42,33 @@
 
                     <div class="detail-line">
                         <span class="detail-label">Người nhận:</span>
-                        <span class="detail-val" id="detailCustomer">Nguyễn Văn A (0912345678)</span>
+                        <span class="detail-val" id="detailCustomer">--</span>
                     </div>
 
                     <div class="detail-line">
                         <span class="detail-label">Địa chỉ giao hàng:</span>
-                        <span class="detail-val" id="detailAddress">Số 123 Đường Thủ Đức, TP. Hồ Chí Minh</span>
+                        <span class="detail-val" id="detailAddress">--</span>
                     </div>
 
                     <div class="detail-line">
                         <span class="detail-label">Ghi chú:</span>
-                        <span class="detail-val" id="detailNote">Vui lòng giao hàng vào buổi chiều</span>
+                        <span class="detail-val" id="detailNote">--</span>
                     </div>
 
                     <div class="detail-line">
                         <span class="detail-label">Phương thức thanh toán:</span>
-                        <span class="detail-val" id="detailPayment">Thanh toán khi nhận hàng (COD)</span>
+                        <span class="detail-val" id="detailPayment">--</span>
                     </div>
 
                     <div class="detail-line">
                         <span class="detail-label">Phí vận chuyển:</span>
-                        <span class="detail-val" id="detailShipping">30.000đ</span>
+                        <span class="detail-val" id="detailShipping">25.300đ</span>
                     </div>
 
                     <div class="detail-line">
                         <span class="detail-label">Tổng thanh toán:</span>
                         <span class="detail-val" id="detailTotal"
-                            style="color:var(--primary-blue); font-weight:700;">420.000đ</span>
+                            style="color:var(--primary-blue, #1a73e8); font-weight:700;">--</span>
                     </div>
 
                     <div class="detail-line">
@@ -77,13 +77,8 @@
                     </div>
                 </div>
 
-
-
                 <div class="success-actions">
-                    <a href="tracking.html" id="btnGoTracking" class="btn btn-primary">
-                        <i class="fa-solid fa-truck-fast"></i> Theo dõi đơn hàng
-                    </a>
-                    <a href="products.html" class="btn btn-outline">
+                    <a href="products.html" class="btn btn-primary">
                         <i class="fa-solid fa-bag-shopping"></i> Tiếp tục mua sắm
                     </a>
                     <a href="../index.html" class="btn btn-outline">
@@ -98,6 +93,34 @@
 
     <script src="../assets/js/checkout.js"></script>
     <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const vnpayStatus = urlParams.get("vnpayStatus");
+            const transactionNo = urlParams.get("transactionNo");
+            const orderIdParam = urlParams.get("orderId");
+
+            if (orderIdParam) {
+                const el = document.getElementById("displayOrderCode");
+                if (el) el.textContent = orderIdParam;
+            }
+
+            if (vnpayStatus === "SUCCESS") {
+                const paymentEl = document.getElementById("detailPayment");
+                if (paymentEl) {
+                    paymentEl.innerHTML = `<span style="color:#137333;font-weight:700;"><i class="fa-solid fa-circle-check"></i> Đã thanh toán qua VNPay</span>` + (transactionNo ? ` (Mã GD: ${transactionNo})` : "");
+                }
+                const subtext = document.getElementById("successSubtext");
+                if (subtext) {
+                    subtext.textContent = "Thanh toán trực tuyến VNPay thành công! Đơn hàng của bạn đã được thanh toán và chuyển tới nghệ nhân chế tác.";
+                }
+            } else if (vnpayStatus === "FAILED") {
+                const paymentEl = document.getElementById("detailPayment");
+                if (paymentEl) {
+                    paymentEl.innerHTML = `<span style="color:#c5221f;font-weight:700;"><i class="fa-solid fa-circle-xmark"></i> Thanh toán VNPay thất bại</span>`;
+                }
+            }
+        });
+
         fetch('../components/header.html')
             .then(r => r.text())
             .then(html => {
@@ -112,7 +135,7 @@
             })
             .catch(err => console.error('Lỗi tải Footer:', err));
     </script>
-<script src="../assets/js/popup.js"></script>
+    <script src="../assets/js/popup.js"></script>
 </body>
 
 </html>
