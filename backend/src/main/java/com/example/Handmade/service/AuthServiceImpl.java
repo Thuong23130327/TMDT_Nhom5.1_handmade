@@ -66,7 +66,7 @@ public class AuthServiceImpl implements AuthService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setFullName(request.getFullName().trim());
         user.setPhone(StringUtils.hasText(request.getPhone()) ? request.getPhone().trim() : null);
-        user.setRole(User.Role.ROLE_CUSTOMER);
+        user.setRole(User.Role.ROLE_BUYER);
         user.setStatus(User.UserStatus.ACTIVE);
         user.setOtpAttempts(0);
         return issueTokens(userRepository.save(user));

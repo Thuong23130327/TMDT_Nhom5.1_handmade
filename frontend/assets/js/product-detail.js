@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+﻿document.addEventListener('DOMContentLoaded', () => {
   const formatVND = n => n.toLocaleString('vi-VN') + ' ₫';
   const params = new URLSearchParams(window.location.search);
   const id = parseInt(params.get('id'), 10) || AURA_PRODUCTS[0].id;
@@ -164,11 +164,22 @@ document.addEventListener('DOMContentLoaded', () => {
     qty.value = parseInt(qty.value || '1', 10) + 1;
   });
 
-  document.getElementById('pdAddToCartBtn')?.addEventListener('click', () => {
-    alert(`Đã thêm ${qty.value} x ${product.name} vào giỏ hàng`);
+    document.getElementById('pdAddToCartBtn')?.addEventListener('click', async () => {
+    const quantity = parseInt(qty.value || '1', 10);
+    if (window.AuraCraftCart) {
+      await window.AuraCraftCart.addProduct(product.id, quantity);
+    } else {
+      alert(`Đã thêm ${quantity} x ${product.name} vào giỏ hàng`);
+    }
   });
 
-  document.getElementById('pdBuyNowBtn')?.addEventListener('click', () => {
-    window.location.href = 'checkout.html';
+  document.getElementById('pdBuyNowBtn')?.addEventListener('click', async () => {
+    const quantity = parseInt(qty.value || '1', 10);
+    if (window.AuraCraftCart) {
+      await window.AuraCraftCart.addProduct(product.id, quantity);
+      window.location.href = 'cart.html';
+    } else {
+      window.location.href = 'checkout.html';
+    }
   });
 });

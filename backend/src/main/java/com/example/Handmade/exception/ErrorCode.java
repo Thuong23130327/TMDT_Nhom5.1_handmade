@@ -20,7 +20,18 @@ public enum ErrorCode {
     PASSWORD_REUSED(1012, "Mật khẩu mới không được trùng mật khẩu hiện tại", HttpStatus.BAD_REQUEST),
     INVALID_REFRESH_TOKEN(1013, "Refresh token không hợp lệ hoặc đã hết hạn", HttpStatus.UNAUTHORIZED),
     PASSWORD_TOO_LONG(1014, "Mật khẩu không được vượt quá 72 byte UTF-8", HttpStatus.BAD_REQUEST),
-    SYSTEM_ERROR(9999, "Hệ thống gặp sự cố, vui lòng thử lại sau", HttpStatus.INTERNAL_SERVER_ERROR);
+    SYSTEM_ERROR(9999, "Hệ thống gặp sự cố, vui lòng thử lại sau", HttpStatus.INTERNAL_SERVER_ERROR),
+
+    // Auth / User
+    UNAUTHENTICATED(1016, "Chưa xác thực", HttpStatus.UNAUTHORIZED),
+    USER_NOT_FOUND(1017, "Không tìm thấy người dùng", HttpStatus.NOT_FOUND),
+
+    // Product / Cart / Order
+    PRODUCT_NOT_FOUND(2001, "Không tìm thấy sản phẩm", HttpStatus.NOT_FOUND),
+    CART_ITEM_NOT_FOUND(2002, "Không tìm thấy sản phẩm trong giỏ hàng", HttpStatus.NOT_FOUND),
+    CART_EMPTY(2003, "Giỏ hàng trống", HttpStatus.BAD_REQUEST),
+    INSUFFICIENT_STOCK(2004, "Sản phẩm không đủ số lượng trong kho", HttpStatus.BAD_REQUEST),
+    ORDER_NOT_FOUND(2005, "Không tìm thấy đơn hàng", HttpStatus.NOT_FOUND);
 
     private final int code;
     private final String message;
