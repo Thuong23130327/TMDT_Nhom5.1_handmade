@@ -24,7 +24,11 @@
             <!-- Đã đăng nhập -->
             <a href="profile.html" id="nav-profile" class="icon-btn" style="display: none;" title="Trang cá nhân"><i class="fa-regular fa-user"></i></a>
             
-            <a href="cart.html" class="icon-btn" title="Giỏ hàng"><i class="fa-solid fa-cart-shopping"></i></a>
+            <!-- Giỏ hàng có badge hiển thị số lượng -->
+            <a href="cart.html" class="icon-btn cart-icon-btn" id="nav-cart" title="Giỏ hàng">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="cart-badge" id="cartBadge" style="display: none;">0</span>
+            </a>
         </nav>
     </div>
     <div class="menu-overlay" id="menu-overlay" onclick="document.getElementById('nav-menu-mobile').classList.remove('active'); document.getElementById('menu-overlay').classList.remove('active')"></div>

@@ -1,5 +1,5 @@
 // ============================================================
-// AuraCraft — checkout.js (kết nối Backend API /api/orders & VNPay Sandbox)
+// AuraCraft - checkout.js (kết nối Backend API /api/orders & VNPay Sandbox)
 // ============================================================
 
 const SHIPPING_FEE = 25300;
@@ -178,11 +178,21 @@ async function submitOrder(fullNameEl, phoneEl, addressEl, noteEl, paymentMethod
     }));
 
     sessionStorage.removeItem("auracraft_cart");
+    if (window.AuraCraft?.updateCartBadge) window.AuraCraft.updateCartBadge();
 
     if (paymentMethod === "VNPAY") {
-      // Chuyển hướng sang Cổng thanh toán VNPay Sandbox thực tế!
+      // Chuyển hướng sang Cổng thanh toán VNPay Sandbox thực tế
       if (btnText) btnText.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang chuyển hướng sang cổng VNPay...';
-      const payRes = await window.AuraCraft.apiGet(`/payment/create-vnpay?orderCode=${encodeURIComponent(orderData.orderCode)}`);
+      
+      const currentOrigin = window.location.origin;
+      const currentPath = window.location.pathname;
+      const successPath = currentPath.substring(0, currentPath.lastIndexOf("/")) + "/success.html";
+      const frontendUrl = (currentOrigin && currentOrigin.startsWith("http")) ? (currentOrigin + successPath) : "";
+
+      const queryUrl = `/payment/create-vnpay?orderCode=${encodeURIComponent(orderData.orderCode)}` +
+        (frontendUrl ? `&frontendUrl=${encodeURIComponent(frontendUrl)}` : "");
+
+      const payRes = await window.AuraCraft.apiGet(queryUrl);
       if (payRes && payRes.paymentUrl) {
         window.location.href = payRes.paymentUrl;
         return;

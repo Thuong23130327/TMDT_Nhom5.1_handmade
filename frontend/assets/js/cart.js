@@ -1,5 +1,5 @@
 // ============================================================
-// AuraCraft — cart.js (kết nối Backend API /api/cart)
+// AuraCraft - cart.js (kết nối Backend API /api/cart)
 // ============================================================
 
 const SHIPPING_FEE = 25300;
@@ -7,7 +7,7 @@ const SHIPPING_FEE = 25300;
 // Dùng helper từ auth.js
 function requireLogin() {
   if (!window.AuraCraft || !window.AuraCraft.isLoggedIn()) {
-    window.location.href = "login.html?redirect=cart.html";
+    window.location.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`;
     return false;
   }
   return true;
@@ -19,18 +19,21 @@ function formatVND(amount) {
 
 // --- Render giỏ hàng ---
 async function loadCart() {
-  if (!requireLogin()) return;
-
   const container = document.querySelector(".cart-items");
   const summaryEl = document.querySelector(".cart-summary");
 
-  if (container) container.innerHTML = '<p class="loading-msg" style="text-align:center;padding:40px;color:#888"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải giỏ hàng...</p>';
+  // Nếu không phải trang giỏ hàng (không có .cart-items) thì không chạy tiếp
+  if (!container) return;
+
+  if (!requireLogin()) return;
+
+  container.innerHTML = '<p class="loading-msg" style="text-align:center;padding:40px;color:#888"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải giỏ hàng...</p>';
 
   try {
     const cart = await window.AuraCraft.apiGet("/cart");
     renderCart(cart, container, summaryEl);
   } catch (err) {
-    if (container) container.innerHTML = `<p style="text-align:center;padding:40px;color:#e55">Lỗi: ${err.message}</p>`;
+    container.innerHTML = `<p style="text-align:center;padding:40px;color:#e55">Lỗi: ${err.message}</p>`;
   }
 }
 
@@ -45,6 +48,7 @@ function renderCart(cart, container, summaryEl) {
         <a href="products.html" class="btn btn-primary" style="display:inline-block;margin-top:10px;">Khám phá sản phẩm</a>
       </div>`;
     if (summaryEl) summaryEl.style.display = "none";
+    if (window.AuraCraft?.updateCartBadge) window.AuraCraft.updateCartBadge();
     return;
   }
 
@@ -81,7 +85,7 @@ function renderCart(cart, container, summaryEl) {
         </div>
         <div class="cart-item-right">
           <div class="item-quantity">
-            <button class="qty-btn" data-action="decrease" data-id="${item.id}" data-qty="${item.quantity}">−</button>
+            <button class="qty-btn" data-action="decrease" data-id="${item.id}" data-qty="${item.quantity}">-</button>
             <span class="qty-value">${item.quantity}</span>
             <button class="qty-btn" data-action="increase" data-id="${item.id}" data-qty="${item.quantity}">+</button>
           </div>
@@ -124,6 +128,9 @@ function renderCart(cart, container, summaryEl) {
   // Lưu cartData vào sessionStorage để checkout.js dùng
   sessionStorage.setItem("auracraft_cart", JSON.stringify(cart));
 
+  // Cập nhật số lượng trên icon giỏ hàng
+  if (window.AuraCraft?.updateCartBadge) window.AuraCraft.updateCartBadge();
+
   // Gắn event listeners
   attachCartEvents();
 }
@@ -148,6 +155,7 @@ function attachCartEvents() {
         btn.disabled = true;
         await window.AuraCraft.apiPut(`/cart/${id}`, { quantity: newQty });
         await loadCart();
+        if (window.AuraCraft?.updateCartBadge) window.AuraCraft.updateCartBadge();
       } catch (err) {
         alert(err.message);
         btn.disabled = false;
@@ -168,6 +176,7 @@ async function removeCartItem(id) {
   try {
     await window.AuraCraft.apiDelete(`/cart/${id}`);
     await loadCart();
+    if (window.AuraCraft?.updateCartBadge) window.AuraCraft.updateCartBadge();
   } catch (err) {
     alert("Không thể xóa sản phẩm: " + err.message);
   }
@@ -187,14 +196,20 @@ function proceedCheckout() {
 window.AuraCraftCart = {
   async addProduct(productId, quantity = 1, notes = "") {
     if (!window.AuraCraft || !window.AuraCraft.isLoggedIn()) {
-      window.location.href = "login.html";
-      return;
+      alert("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
+      window.location.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`;
+      return false;
     }
     try {
       await window.AuraCraft.apiPost("/cart", { productId, quantity, customNotes: notes });
-      alert("Đã thêm vào giỏ hàng!");
+      alert("Đã thêm sản phẩm vào giỏ hàng thành công!");
+      if (window.AuraCraft?.updateCartBadge) {
+        await window.AuraCraft.updateCartBadge();
+      }
+      return true;
     } catch (err) {
       alert("Không thể thêm vào giỏ: " + err.message);
+      return false;
     }
   }
 };

@@ -91,7 +91,7 @@
 
     <div id="footer-placeholder"></div>
 
-    <script src="../assets/js/checkout.js"></script>
+    <script src="../assets/js/auth.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const urlParams = new URLSearchParams(window.location.search);
@@ -103,6 +103,25 @@
                 const el = document.getElementById("displayOrderCode");
                 if (el) el.textContent = orderIdParam;
             }
+
+            // Đọc thông tin đơn hàng từ sessionStorage nếu có
+            try {
+                const raw = sessionStorage.getItem("auracraft_latest_order");
+                if (raw) {
+                    const o = JSON.parse(raw);
+                    if (o.orderId && !orderIdParam) {
+                        const el = document.getElementById("displayOrderCode");
+                        if (el) el.textContent = o.orderId;
+                    }
+                    if (o.fullName) document.getElementById("detailCustomer").textContent = o.fullName + (o.phone ? " - " + o.phone : "");
+                    if (o.address) document.getElementById("detailAddress").textContent = o.address;
+                    if (o.note) document.getElementById("detailNote").textContent = o.note;
+                    if (o.paymentMethod) document.getElementById("detailPayment").textContent = o.paymentMethod;
+                    if (o.shippingFee) document.getElementById("detailShipping").textContent = o.shippingFee;
+                    if (o.total) document.getElementById("detailTotal").textContent = o.total;
+                    if (o.createdAt) document.getElementById("detailTime").textContent = o.createdAt;
+                }
+            } catch (e) {}
 
             if (vnpayStatus === "SUCCESS") {
                 const paymentEl = document.getElementById("detailPayment");
@@ -118,6 +137,17 @@
                 if (paymentEl) {
                     paymentEl.innerHTML = `<span style="color:#c5221f;font-weight:700;"><i class="fa-solid fa-circle-xmark"></i> Thanh toán VNPay thất bại</span>`;
                 }
+            }
+
+            // Copy mã đơn hàng
+            const btnCopy = document.getElementById("btnCopyCode");
+            if (btnCopy) {
+                btnCopy.addEventListener("click", () => {
+                    const code = document.getElementById("displayOrderCode")?.textContent || "";
+                    navigator.clipboard.writeText(code).then(() => {
+                        alert("Đã sao chép mã đơn hàng: " + code);
+                    }).catch(() => {});
+                });
             }
         });
 

@@ -1,5 +1,5 @@
-﻿document.addEventListener('DOMContentLoaded', () => {
-  const formatVND = n => n.toLocaleString('vi-VN') + ' ₫';
+document.addEventListener('DOMContentLoaded', () => {
+  const formatVND = n => n.toLocaleString('vi-VN') + ' đ';
   const params = new URLSearchParams(window.location.search);
   const id = parseInt(params.get('id'), 10) || AURA_PRODUCTS[0].id;
   const product = AURA_PRODUCTS.find(p => p.id === id) || AURA_PRODUCTS[0];
@@ -65,7 +65,7 @@
   document.getElementById('pdRating').innerHTML =
     `★★★★★ <span>${product.rating} (${product.reviews} đánh giá) · Đã bán ${product.sold}</span>`;
   document.getElementById('pdPrice').textContent = formatVND(product.price);
-  document.title = product.name + ' — AuraCraft';
+  document.title = product.name + ' - AuraCraft';
   document.getElementById('pdDesc').textContent = product.desc;
   document.getElementById('pdDescLong').textContent = product.desc;
 
@@ -98,8 +98,8 @@
     }
   }
 
-  document.getElementById('pdShopAvatar').textContent = product.shop.charAt(0);
-  document.getElementById('pdShopName').textContent = product.shop;
+  document.getElementById('pdShopAvatar').textContent = product.shop ? product.shop.charAt(0) : 'A';
+  document.getElementById('pdShopName').textContent = product.shop || 'Shop AuraCraft';
   document.getElementById('pdShopMeta').textContent = `★ ${product.rating} · Đã bán ${product.sold}`;
 
   function thumbBox(p) {
@@ -111,21 +111,23 @@
   if (product.type === 'charm') {
     const grid = document.getElementById('pdCharmGalleryGrid');
     const charmGallery = document.getElementById('pdCharmGallery');
-    const others = AURA_PRODUCTS.filter(p => p.type === 'charm' && p.shop === product.shop && p.id !== product.id);
-    others.forEach(p => {
-      const box = thumbBox(p);
-      const item = document.createElement('article');
-      item.className = 'charm-gallery-item';
-      item.innerHTML = `
-        <div class="charm-gallery-img" style="background:${box.background}">${box.content}</div>
-        <div class="charm-gallery-body">
-          <strong>${p.name}</strong>
-          <span>${formatVND(p.price)}</span>
-        </div>`;
-      item.addEventListener('click', () => { window.location.href = `product-detail.html?id=${p.id}`; });
-      grid.appendChild(item);
-    });
-    charmGallery.hidden = others.length === 0;
+    if (grid && charmGallery) {
+      const others = AURA_PRODUCTS.filter(p => p.type === 'charm' && p.shop === product.shop && p.id !== product.id);
+      others.forEach(p => {
+        const box = thumbBox(p);
+        const item = document.createElement('article');
+        item.className = 'charm-gallery-item';
+        item.innerHTML = `
+          <div class="charm-gallery-img" style="background:${box.background}">${box.content}</div>
+          <div class="charm-gallery-body">
+            <strong>${p.name}</strong>
+            <span>${formatVND(p.price)}</span>
+          </div>`;
+        item.addEventListener('click', () => { window.location.href = `product-detail.html?id=${p.id}`; });
+        grid.appendChild(item);
+      });
+      charmGallery.hidden = others.length === 0;
+    }
   }
 
   const MIN_SIMILAR = 4;
@@ -164,7 +166,8 @@
     qty.value = parseInt(qty.value || '1', 10) + 1;
   });
 
-    document.getElementById('pdAddToCartBtn')?.addEventListener('click', async () => {
+  // Thêm vào giỏ hàng
+  document.getElementById('pdAddToCartBtn')?.addEventListener('click', async () => {
     const quantity = parseInt(qty.value || '1', 10);
     if (window.AuraCraftCart) {
       await window.AuraCraftCart.addProduct(product.id, quantity);
@@ -173,13 +176,16 @@
     }
   });
 
+  // Mua ngay: thêm vào giỏ và chuyển ngay tới cart.html
   document.getElementById('pdBuyNowBtn')?.addEventListener('click', async () => {
     const quantity = parseInt(qty.value || '1', 10);
     if (window.AuraCraftCart) {
-      await window.AuraCraftCart.addProduct(product.id, quantity);
-      window.location.href = 'cart.html';
+      const success = await window.AuraCraftCart.addProduct(product.id, quantity);
+      if (success) {
+        window.location.href = 'cart.html';
+      }
     } else {
-      window.location.href = 'checkout.html';
+      window.location.href = 'cart.html';
     }
   });
 });
