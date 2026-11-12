@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Chi tiết sản phẩm — AuraCraft</title>
+<title>Chi tiết sản phẩm - AuraCraft</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="../assets/css/style.css">
 <link rel="stylesheet" href="../assets/css/header-footer.css">
@@ -14,21 +14,21 @@
 <main class="container pd-wrap">
 
   <nav class="breadcrumb">
-    <a href="products.html">Sản phẩm</a> / <span id="pdBreadType">—</span> / <span id="pdBreadName">—</span>
+    <a href="products.html">Sản phẩm</a> / <span id="pdBreadType">-</span> / <span id="pdBreadName">-</span>
   </nav>
 
   <section class="pd-top">
     <div class="pd-gallery">
       <div class="pd-gallery-main" id="pdGalleryMain">
         <div class="pd-gallery-zoom" id="pdGalleryZoom"></div>
-        —
+        -
       </div>
       <div class="pd-gallery-thumbs" id="pdThumbs"></div>
     </div>
 
     <div class="pd-info">
-      <span class="tag" id="pdTag">—</span>
-      <h1 id="pdTitle">—</h1>
+      <span class="tag" id="pdTag">-</span>
+      <h1 id="pdTitle">-</h1>
       <div class="pd-rating" id="pdRating"></div>
       <div class="pd-price" id="pdPrice"></div>
       <p id="pdDesc"></p>
@@ -56,7 +56,7 @@
       <div class="pd-qty-row">
         <label for="qty">Số lượng</label>
         <div class="stepper">
-          <button type="button" id="qtyMinus" aria-label="Giảm">−</button>
+          <button type="button" id="qtyMinus" aria-label="Giảm">-</button>
           <input type="number" id="qty" value="1" min="1">
           <button type="button" id="qtyPlus" aria-label="Tăng">+</button>
         </div>
@@ -68,7 +68,7 @@
       </div>
 
       <a href="#" class="custom-cta" id="pdCustomCta">
-        <span class="custom-cta-icon">✎</span>
+        <span class="custom-cta-icon">✦</span>
         <span>
           <strong id="pdCustomCtaTitle">Custom sản phẩm này</strong>
           <small id="pdCustomCtaSub">Kéo thả vật liệu, charm vào đúng vị trí mong muốn</small>
@@ -85,7 +85,7 @@
         <strong class="pd-shop-name" id="pdShopName">Tên shop</strong>
         <span class="pd-shop-meta" id="pdShopMeta">★ 4.9 · 82 đơn Custom</span>
       </span>
-      <span class="pd-shop-arrow">›</span>
+      <span class="pd-shop-arrow">&gt;</span>
     </a>
   </section>
 
@@ -117,7 +117,7 @@
         </div>
       </article>
       <article class="review-card card">
-        <div class="review-head"><strong>Gia Bảo</strong><span>★★★★☆</span></div>
+        <div class="review-head"><strong>Gia Bảo</strong><span>★★★★★</span></div>
         <p>Ổn trong tầm giá, mong shop ra thêm nhiều mẫu mới.</p>
         <div class="review-images">
           <img src="https://myumemories.com/wp-content/uploads/2026/01/2-11-300x300.png" alt="Ảnh thực tế do khách gửi kèm đánh giá">
@@ -132,7 +132,11 @@
 
 </main>
 <div id="footer-placeholder"></div>
+
+<!-- Đầy đủ script: data, auth, cart, detail -->
 <script src="../assets/js/products-data.js"></script>
+<script src="../assets/js/auth.js"></script>
+<script src="../assets/js/cart.js"></script>
 <script src="../assets/js/product-detail.js"></script>
 <script>
         fetch('../components/header.html').then(response => response.text()).then(data => { let html = data.replace(/href="index\.html"/g, 'href="../index.html"'); document.getElementById('header-placeholder').innerHTML = html; }).catch(error => console.error('Error loading header:', error));

@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giỏ hàng – AuraCraft</title>
+    <title>Giỏ hàng - AuraCraft</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/header-footer.css">
     <link rel="stylesheet" href="../assets/css/pages/styleCart.css">
     <style>
-        .cart-group { margin-bottom: 20px; border: 1px solid var(--gray-light, #eee); border-radius: 10px; overflow: hidden; }
-        .cart-shop-header { display: flex; align-items: center; gap: 8px; padding: 12px 16px; background: #faf6f4; border-bottom: 1px solid var(--gray-light, #eee); font-weight: 600; }
+        .cart-group { margin-bottom: 20px; border: 1px solid var(--gray-light, #eee); border-radius: 10px; overflow: hidden; background: #fff; }
+        .cart-shop-header { display: flex; align-items: center; gap: 8px; padding: 12px 16px; background: #faf6f4; border-bottom: 1px solid var(--gray-light, #eee); font-weight: 600; color: #5a3e36; }
         .item-subtotal { font-weight: 700; color: var(--primary-brown, #7b5144); font-size: 15px; min-width: 90px; text-align: right; }
         .summary-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0e8e3; }
         .summary-row.total-row { border-bottom: none; padding-top: 14px; font-size: 18px; }
-        .summary-row.total-row .total-price { color: var(--primary-brown, #7b5144); font-size: 22px; }
+        .summary-row.total-row .total-price { color: var(--primary-brown, #7b5144); font-size: 22px; font-weight: 700; }
         .checkout-btn { width: 100%; margin-top: 18px; font-size: 16px; padding: 14px; }
         .loading-msg { color: #888; }
     </style>
@@ -40,16 +40,11 @@
 
     <div id="footer-placeholder"></div>
 
-    <!-- Load auth.js trước để có window.AuraCraft -->
+    <!-- Scripts: auth.js trước rồi cart.js -->
     <script src="../assets/js/auth.js"></script>
     <script src="../assets/js/cart.js"></script>
     <script src="../assets/js/popup.js"></script>
     <script>
-        // Ghi đè selector để cart.js dùng đúng container
-        document.addEventListener("DOMContentLoaded", () => {
-            // cart.js sẽ tự gọi loadCart()
-        });
-
         fetch('../components/header.html')
             .then(r => r.text())
             .then(html => {
