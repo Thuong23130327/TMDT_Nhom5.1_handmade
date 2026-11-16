@@ -23,4 +23,12 @@ public class ProductController {
     public ApiResponse<ProductDto.ProductResponse> getById(@PathVariable Long id) {
         return ApiResponse.ok("Lấy thông tin sản phẩm thành công", productService.getProductById(id));
     }
+
+    @GetMapping("/{id}/similar-cosine")
+    public ApiResponse<List<ProductDto.RecommendationResponse>> getSimilarProductsCosine(
+            @PathVariable Long id,
+            @RequestParam(value = "limit", defaultValue = "4") int limit) {
+        return ApiResponse.ok("Gợi ý AI sản phẩm tương tự (Cosine Similarity)", 
+                productService.getSimilarProductsCosine(id, limit));
+    }
 }

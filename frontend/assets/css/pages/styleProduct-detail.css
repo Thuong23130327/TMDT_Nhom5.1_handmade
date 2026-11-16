@@ -250,3 +250,443 @@
   .pd-top{grid-template-columns:1fr;}
   .review-grid{grid-template-columns:1fr;}
 }
+
+/* ============================================================
+   AI RECOMMENDATIONS (COSINE SIMILARITY) STYLING
+   ============================================================ */
+.ai-recommendations-section {
+  margin: 40px 0 20px;
+  background: linear-gradient(135deg, #ffffff 0%, #faf6f4 100%);
+  border: 1px solid #ebdcd3;
+  border-radius: var(--radius-lg, 16px);
+  padding: 30px;
+  box-shadow: 0 4px 20px rgba(123, 81, 68, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.ai-recommendations-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, #7b5144 0%, #e09f67 50%, #8a4af3 100%);
+}
+
+.ai-sec-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.ai-pill-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #6c35de 0%, #905cf5 100%);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 8px;
+}
+
+.ai-sec-title {
+  font-size: 1.4rem;
+  color: #2b1f1d;
+  margin: 4px 0 6px;
+  font-weight: 700;
+}
+
+.ai-sec-subtitle {
+  font-size: 0.9rem;
+  color: #776c69;
+  margin: 0;
+}
+
+.btn-ai-explain {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  color: #6c35de;
+  border: 1.5px solid #d4c3f7;
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(108, 53, 222, 0.08);
+}
+
+.btn-ai-explain:hover {
+  background: #6c35de;
+  color: #ffffff;
+  border-color: #6c35de;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(108, 53, 222, 0.2);
+}
+
+.ai-recommend-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.ai-recommend-card {
+  background: #ffffff;
+  border: 1px solid #ebdcd3;
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.ai-recommend-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(123, 81, 68, 0.12);
+  border-color: #7b5144;
+}
+
+.ai-card-thumb-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: #fbf7f5;
+  overflow: hidden;
+}
+
+.ai-card-thumb-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.ai-recommend-card:hover .ai-card-thumb-wrap img {
+  transform: scale(1.04);
+}
+
+.ai-cosine-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(43, 31, 29, 0.85);
+  backdrop-filter: blur(4px);
+  color: #ffde59;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  z-index: 2;
+  border: 1px solid rgba(255, 222, 89, 0.4);
+}
+
+.ai-card-body {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.ai-card-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: #887d7b;
+  margin-bottom: 6px;
+}
+
+.ai-card-shop {
+  font-weight: 600;
+  color: #7b5144;
+}
+
+.ai-card-rating {
+  color: #f59e0b;
+  font-weight: 700;
+}
+
+.ai-card-title {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #2b1f1d;
+  margin: 0 0 10px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.6em;
+}
+
+.ai-card-reasons {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 12px;
+  background: #faf6f4;
+  padding: 8px 10px;
+  border-radius: 8px;
+}
+
+.ai-reason-pill {
+  font-size: 0.75rem;
+  color: #554440;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  line-height: 1.3;
+}
+
+.ai-reason-pill i {
+  color: #10b981;
+  font-size: 10px;
+}
+
+.ai-card-price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px dashed #eee3dc;
+}
+
+.ai-card-price {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #7b5144;
+}
+
+.ai-card-old-price {
+  font-size: 0.8rem;
+  color: #a89f9d;
+  text-decoration: line-through;
+  margin-left: 6px;
+}
+
+.ai-btn-view {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #6c35de;
+}
+
+/* MODAL GIẢI THÍCH COSINE SIMILARITY */
+.ai-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(3px);
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.ai-modal-overlay.active {
+  display: flex;
+}
+
+.ai-modal-box {
+  background: #ffffff;
+  border-radius: 18px;
+  max-width: 680px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+  animation: aiModalFadeIn 0.25s ease-out;
+}
+
+@keyframes aiModalFadeIn {
+  from { opacity: 0; transform: translateY(15px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.ai-modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 26px;
+  border-bottom: 1px solid #ebdcd3;
+}
+
+.ai-modal-head-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ai-modal-head-title i {
+  color: #6c35de;
+  font-size: 1.3rem;
+}
+
+.ai-modal-head-title h3 {
+  margin: 0;
+  font-size: 1.18rem;
+  color: #2b1f1d;
+}
+
+.ai-modal-close {
+  background: transparent;
+  border: none;
+  font-size: 26px;
+  color: #887d7b;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.ai-modal-close:hover {
+  color: #2b1f1d;
+}
+
+.ai-modal-body {
+  padding: 24px 26px 30px;
+}
+
+.ai-modal-badge {
+  display: inline-block;
+  font-size: 11px;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #6c35de;
+  background: #f2ebfc;
+  padding: 3px 10px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+.ai-modal-intro h4 {
+  font-size: 1rem;
+  color: #2b1f1d;
+  margin: 18px 0 10px;
+}
+
+.ai-formula-box {
+  background: #f8f6f5;
+  border: 1px solid #e5d8d0;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 18px;
+}
+
+.ai-formula-math {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 1.15rem;
+  text-align: center;
+  color: #2b1f1d;
+  margin: 8px 0;
+  overflow-x: auto;
+}
+
+.ai-formula-desc {
+  font-size: 0.85rem;
+  color: #665b59;
+  margin: 8px 0 0;
+  line-height: 1.5;
+}
+
+.ai-features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.ai-feature-card {
+  background: #ffffff;
+  border: 1px solid #ebdcd3;
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  gap: 10px;
+}
+
+.feat-icon {
+  font-size: 1.2rem;
+  color: #6c35de;
+  margin-top: 2px;
+}
+
+.feat-info strong {
+  display: block;
+  font-size: 0.82rem;
+  color: #2b1f1d;
+  margin-bottom: 3px;
+}
+
+.feat-info span {
+  display: block;
+  font-size: 0.74rem;
+  color: #776c69;
+  line-height: 1.35;
+}
+
+.ai-compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+  margin-top: 10px;
+}
+
+.ai-compare-table th, .ai-compare-table td {
+  padding: 10px 12px;
+  border: 1px solid #ebdcd3;
+  text-align: left;
+}
+
+.ai-compare-table th {
+  background: #fdfaf8;
+  color: #7b5144;
+  font-weight: 700;
+}
+
+.tag-match {
+  background: #eef8f2;
+  color: #0d8a57;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+@media (max-width: 992px) {
+  .ai-recommend-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .ai-features-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 576px) {
+  .ai-recommend-grid {
+    grid-template-columns: 1fr;
+  }
+  .ai-sec-header {
+    flex-direction: column;
+  }
+  .btn-ai-explain {
+    width: 100%;
+    justify-content: center;
+  }
+}
