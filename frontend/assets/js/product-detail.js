@@ -130,6 +130,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Gợi ý sản phẩm tương tự bằng AI Cosine Similarity
+  if (window.AuraCraftAI && typeof window.AuraCraftAI.renderRecommendations === 'function') {
+    window.AuraCraftAI.renderRecommendations(product, AURA_PRODUCTS);
+  }
+
   const MIN_SIMILAR = 4;
   const suggestSection = document.getElementById('pdShopSuggestions');
   const suggestGrid = document.getElementById('pdShopSuggestGrid');

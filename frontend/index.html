@@ -12,18 +12,20 @@
     <div id="header-placeholder"></div>
 
     <main>
+        <!-- Hero Section -->
         <section class="hero-section">
             <div class="hero-overlay"></div>
             <div class="hero-content">
                 <h1 class="hero-title">Khởi nguồn sáng tạo<br>với đồ thủ công độc bản</h1>
                 <p class="hero-subtitle">Nền tảng thương mại điện tử kết nối người mua và thợ thủ công.<br>Khám phá hàng ngàn sản phẩm handmade hoặc tự tay thiết kế món đồ mang đậm dấu ấn cá nhân.</p>
                 <div class="hero-buttons">
-                    <a href="#featured" class="btn btn-primary">Mua sắm ngay</a>
-                    <a href="pages/buyer-request-form.html" class="btn btn-outline">Tạo Yêu Cầu Custom</a>
+                    <a href="#latest-products" class="btn btn-primary"><i class="fa-solid fa-bag-shopping"></i> Mua sắm ngay</a>
+                    <a href="pages/buyer-requests.html" class="btn btn-outline"><i class="fa-solid fa-handshake"></i> Chợ Báo Giá Custom</a>
                 </div>
             </div>
         </section>
 
+        <!-- Cách thức hoạt động -->
         <section class="how-it-works">
             <div class="container">
                 <h2 class="section-title">Cách thức hoạt động</h2>
@@ -52,67 +54,93 @@
             </div>
         </section>
 
-        <section id="custom" class="custom-highlight">
-            <div class="container custom-container">
-                <div class="custom-text">
-                    <h2>Tự tay thiết kế trang sức độc bản</h2>
-                    <p>Hệ thống Custom của AuraCraft cho phép bạn thỏa sức sáng tạo:</p>
-                    <ul>
-                        <li><i class="fa-solid fa-check"></i> Tùy chọn đa dạng: Vòng tay, Dây chuyền, Lắc chân,...</li>
-                        <li><i class="fa-solid fa-check"></i> Thư viện Charm phong phú: Charm hoa, Charm tim, Hạt chữ,...</li>
-                        <li><i class="fa-solid fa-check"></i> Tùy chỉnh vị trí và số lượng theo ý thích</li>
-                        <li><i class="fa-solid fa-check"></i> Tính giá cơ sở tự động, minh bạch</li>
-                    </ul>
-                    <a href="pages/customizer.html" class="btn btn-primary mt-4">Bắt đầu thiết kế ngay</a>
+        <!-- 1. SẢN PHẨM MỚI NHẤT -->
+        <section id="latest-products" class="home-section">
+            <div class="container">
+                <div class="section-header-wrap">
+                    <div class="section-header-left">
+                        <span class="section-title-tag tag-new"><i class="fa-solid fa-sparkles"></i> Mới ra mắt</span>
+                        <h2>Sản phẩm mới nhất</h2>
+                        <p>Những tác phẩm thủ công vừa được các nghệ nhân hoàn thiện và ra mắt trên sàn</p>
+                    </div>
+                    <a href="pages/products.html" class="section-view-all">Xem tất cả sản phẩm <i class="fa-solid fa-arrow-right"></i></a>
                 </div>
-                <div class="custom-image">
-                    <img src="https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=800&auto=format&fit=crop" alt="Thiết kế trang sức Custom">
+                <!-- Render tự động bởi home.js -->
+                <div class="product-grid-4" id="latestProductsContainer">
+                    <p style="text-align:center;grid-column:1/-1;padding:40px;color:#888;"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải sản phẩm mới nhất...</p>
                 </div>
             </div>
         </section>
 
-        <section id="featured" class="featured-products">
+        <!-- 2. CHỢ BÁO GIÁ: BANNER NỔI BẬT ĐẶT LÀM THEO MẪU -->
+        <section class="market-cta-section">
             <div class="container">
-                <h2 class="section-title">Sản phẩm nổi bật</h2>
-                <div class="product-grid">
-                    <div class="product-card has-image" onclick="window.location.href='pages/product-detail.html?id=1'" style="cursor: pointer;">
-                        <img src="https://myumemories.com/wp-content/uploads/2026/01/z7461915860226_00fb3ad756b0b24c78c89caf38ad44ba-768x512.jpg" alt="Vòng tay hạt gỗ thơm &amp; Charm bạc">
-                        <div class="product-info">
-                            <h3>Vòng tay hạt gỗ thơm &amp; Charm bạc</h3>
-                            <p class="product-shop"><i class="fa-solid fa-store"></i> Xưởng Mộc An</p>
-                            <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
-                                <span class="rating-score">4.8</span>
-                            </div>
-                            <p class="price">120.000đ <span style="text-decoration: line-through; color: #999; margin-left: 10px; font-size: 0.9em;">150.000đ</span></p>
-                        </div>
+                <div class="market-cta-header">
+                    <span class="section-title-tag" style="background:rgba(255,255,255,0.2);color:#fff;margin-bottom:12px;"><i class="fa-solid fa-handshake"></i> Chợ Báo Giá AuraCraft</span>
+                    <h2>Đặt làm đồ thủ công theo ý tưởng riêng</h2>
+                    <p>Bạn có ảnh mẫu hoặc ý tưởng độc đáo? Hãy đăng tải lên Chợ Báo Giá để các nghệ nhân lành nghề gửi báo giá cạnh tranh cùng thời gian chế tác, giúp bạn tự do so sánh và chọn thợ ưng ý nhất!</p>
+                </div>
+
+                <div class="market-steps-grid">
+                    <div class="market-step-item">
+                        <div class="market-step-num">1</div>
+                        <h3>Người mua đăng mẫu</h3>
+                        <p>Tải ảnh phác thảo, mô tả chất liệu, kiểu dáng và mức giá dự kiến bạn mong muốn.</p>
                     </div>
-                    
-                    <div class="product-card has-image" onclick="window.location.href='pages/product-detail.html?id=5'" style="cursor: pointer;">
-                        <img src="./assets/img/products/necklace_02.jpg" alt="Dây chuyền mặt trăng">
-                        <div class="product-info">
-                            <h3>Dây chuyền mặt trăng đá tự nhiên</h3>
-                            <p class="product-shop"><i class="fa-solid fa-store"></i> Đá Quý Thảo Nguyên</p>
-                            <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-                                <span class="rating-score">5.0</span>
-                            </div>
-                            <p class="price">210.000đ</p>
-                        </div>
+                    <div class="market-step-item">
+                        <div class="market-step-num">2</div>
+                        <h3>Các thợ gửi báo giá</h3>
+                        <p>Nhiều nghệ nhân xem mẫu, gửi đề xuất chi phí hợp lý và cam kết số ngày hoàn thành.</p>
                     </div>
-                    
-                    <div class="product-card has-image" onclick="window.location.href='pages/product-detail.html?id=2'" style="cursor: pointer;">
-                        <img src="./assets/img/products/anket_01.jpg" alt="Vòng tay dây da">
-                        <div class="product-info">
-                            <h3>Vòng tay dây da charm hoa</h3>
-                            <p class="product-shop"><i class="fa-solid fa-store"></i> Tiệm Da Thủ Công Rio</p>
-                            <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
-                                <span class="rating-score">4.6</span>
-                            </div>
-                            <p class="price">95.000đ</p>
-                        </div>
+                    <div class="market-step-item">
+                        <div class="market-step-num">3</div>
+                        <h3>So sánh &amp; Chọn thợ</h3>
+                        <p>Xem hồ sơ, đánh giá sao, so sánh giá &amp; thời gian để chọn thợ phù hợp nhất và chốt đơn.</p>
                     </div>
+                </div>
+
+                <div class="market-cta-actions">
+                    <a href="pages/buyer-request-form.html" class="btn btn-primary"><i class="fa-solid fa-cloud-arrow-up"></i> Đăng mẫu cần làm ngay</a>
+                    <a href="pages/buyer-requests.html" class="btn btn-outline"><i class="fa-solid fa-store"></i> Khám phá Chợ Báo Giá</a>
+                    <a href="pages/choose-seller.html" class="btn btn-outline"><i class="fa-solid fa-clipboard-check"></i> Xem báo giá của bạn</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. SẢN PHẨM ĐƯỢC XEM NHIỀU NHẤT -->
+        <section class="home-section home-section-bg">
+            <div class="container">
+                <div class="section-header-wrap">
+                    <div class="section-header-left">
+                        <span class="section-title-tag tag-hot"><i class="fa-solid fa-fire"></i> Xu hướng thịnh hành</span>
+                        <h2>Sản phẩm được xem nhiều nhất</h2>
+                        <p>Những mẫu vòng tay, dây chuyền và phụ kiện handmade thu hút lượng quan tâm lớn nhất</p>
+                    </div>
+                    <a href="pages/products.html" class="section-view-all">Khám phá thêm <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+                <!-- Render tự động bởi home.js -->
+                <div class="product-grid-4" id="mostViewedProductsContainer">
+                    <p style="text-align:center;grid-column:1/-1;padding:40px;color:#888;"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải sản phẩm thịnh hành...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Custom Highlight -->
+        <section id="custom" class="custom-highlight">
+            <div class="container custom-container">
+                <div class="custom-text">
+                    <h2>Tự tay thiết kế trang sức độc bản</h2>
+                    <p>Hệ thống Custom trực quan của AuraCraft cho phép bạn thỏa sức sáng tạo:</p>
+                    <ul>
+                        <li><i class="fa-solid fa-check"></i> Tùy chọn đa dạng: Vòng tay, Dây chuyền, Lắc chân, Nhẫn...</li>
+                        <li><i class="fa-solid fa-check"></i> Thư viện Charm phong phú: Charm hoa, Charm tim, Hạt chữ...</li>
+                        <li><i class="fa-solid fa-check"></i> Tùy chỉnh vị trí và số lượng hạt/charm theo ý thích</li>
+                        <li><i class="fa-solid fa-check"></i> Tính giá cơ sở tự động, minh bạch từng chi tiết</li>
+                    </ul>
+                    <a href="pages/customizer.html" class="btn btn-primary mt-4"><i class="fa-solid fa-palette"></i> Bắt đầu thiết kế ngay</a>
+                </div>
+                <div class="custom-image">
+                    <img src="https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=800&auto=format&fit=crop" alt="Thiết kế trang sức Custom">
                 </div>
             </div>
         </section>
@@ -120,6 +148,8 @@
 
     <div id="footer-placeholder"></div>
 
+    <script src="assets/js/products-data.js"></script>
+    <script src="assets/js/home.js"></script>
     <script src="assets/js/auth.js"></script>
     <script>
         fetch('./components/header.html')
@@ -138,6 +168,6 @@
             })
             .catch(error => console.error('Error loading footer:', error));
     </script>
-<script src="assets/js/popup.js"></script>
+    <script src="assets/js/popup.js"></script>
 </body>
 </html>
