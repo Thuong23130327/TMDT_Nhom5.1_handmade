@@ -125,15 +125,47 @@
       </article>
     </div>
   </section>
+  <!-- AI RECOMMENDATION (COSINE SIMILARITY) -->
+  <section class="ai-recommendations-section" id="aiRecommendationsSection" hidden>
+    <div class="ai-sec-header">
+      <div class="ai-sec-title-wrap">
+        <span class="ai-pill-tag"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Gợi ý thông minh</span>
+        <h2 class="ai-sec-title">Sản phẩm tương tự được AI đề xuất</h2>
+        <p class="ai-sec-subtitle">Phân tích không gian vector đặc trưng (chất liệu, kiểu dáng, mức giá) qua thuật toán <b>Cosine Similarity</b></p>
+      </div>
+      <button type="button" class="btn-ai-explain" id="btnAiExplain">
+        <i class="fa-solid fa-brain"></i> Giải thích thuật toán AI
+      </button>
+    </div>
+    <div class="ai-recommend-grid" id="aiRecommendationsGrid"></div>
+  </section>
+
+  <!-- MODAL GIẢI THÍCH THUẬT TOÁN COSINE -->
+  <div class="ai-modal-overlay" id="aiExplainModal">
+    <div class="ai-modal-box">
+      <div class="ai-modal-head">
+        <div class="ai-modal-head-title">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+          <h3>Cơ chế thuật toán AI Cosine Similarity - AuraCraft</h3>
+        </div>
+        <button type="button" class="ai-modal-close" id="aiExplainClose" aria-label="Đóng">&times;</button>
+      </div>
+      <div class="ai-modal-body" id="aiExplainContent">
+        <!-- Render tự động bởi AuraCraftAI -->
+      </div>
+    </div>
+  </div>
+
   <section class="pd-shop-suggestions" id="pdShopSuggestions" hidden>
-    <h2 class="section-title">Sản phẩm tương tự</h2>
+    <h2 class="section-title">Sản phẩm khác từ các nghệ nhân</h2>
     <div class="shop-suggest-grid" id="pdShopSuggestGrid"></div>
   </section>
 
 </main>
 <div id="footer-placeholder"></div>
-<!-- Đầy đủ script: data, auth, cart, detail -->
+<!-- Đầy đủ script: data, AI recommendation, auth, cart, detail -->
 <script src="../assets/js/products-data.js"></script>
+<script src="../assets/js/ai-recommendation.js"></script>
 <script src="../assets/js/auth.js"></script>
 <script src="../assets/js/cart.js"></script>
 <script src="../assets/js/product-detail.js"></script>

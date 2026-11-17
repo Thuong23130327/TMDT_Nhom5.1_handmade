@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
+    private final AiRecommendationService aiRecommendationService;
 
     @Override
     @Transactional(readOnly = true)
@@ -30,6 +31,16 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
         return toResponse(product);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProductDto.RecommendationResponse> getSimilarProductsCosine(Long productId, int limit) {
+        Product target = productRepository.findById(productId)
+                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
+
+        List<Product> allActive = productRepository.findAllByStatus(Product.ProductStatus.ACTIVE);
+        return aiRecommendationService.recommendSimilarProducts(target, allActive, limit);
     }
 
     private ProductDto.ProductResponse toResponse(Product p) {
