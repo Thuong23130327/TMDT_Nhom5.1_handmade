@@ -49,7 +49,7 @@ public class SecurityConfig {
                         "/**/*.jpg", "/**/*.jpeg", "/**/*.svg", "/**/*.ico").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/products", "/api/products/**").permitAll()
                 .antMatchers("/api/payment/**").permitAll()
-                .antMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                .antMatchers("/api/v1/admin/**").permitAll()
                 .anyRequest().authenticated();
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

@@ -5,17 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Khôi phục mật khẩu - AuraCraft</title>
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- CSS Hệ thống chuẩn cấu trúc lùi 1 cấp -->
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/header-footer.css">
     <link rel="stylesheet" href="../assets/css/pages/styleLogin.css">
 </head>
 
 <body>
-    <!-- <div id="header-placeholder"></div> -->
-
     <main class="form-page">
         <div class="container">
             <div class="auth-wrapper">
@@ -39,19 +35,11 @@
                         <a href="login.html" class="auth-nav-back">← Quay lại Đăng nhập</a>
                     </div>
 
+                    <!-- Bước 1: Nhập email gửi mã OTP -->
                     <div id="requestState">
                         <div class="form-header">
-                            <div class="icon-box">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                                    <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
-                                </svg>
-                            </div>
                             <h2>Quên mật khẩu?</h2>
-                            <p class="auth-subtitle">Đừng lo lắng! Hãy nhập địa chỉ email đã đăng ký. AuraCraft sẽ gửi
-                                cho bạn liên kết để thiết lập lại mật khẩu.</p>
+                            <p class="auth-subtitle">Nhập địa chỉ email đăng ký. Chúng tôi sẽ gửi mã xác thực (OTP) để bạn đặt lại mật khẩu.</p>
                         </div>
 
                         <form id="forgotForm" novalidate>
@@ -65,16 +53,66 @@
                             </div>
 
                             <button type="submit" class="btn btn-primary btn-submit" id="submitBtn">
-                                <span class="btn-text">Gửi liên kết khôi phục</span>
+                                <span class="btn-text">Gửi mã xác thực</span>
                                 <div class="spinner" id="btnSpinner"></div>
                             </button>
                         </form>
                     </div>
 
-                    <div id="successState" class="success-state" style="display:none;">
-                        <i class="fa-solid fa-circle-check success-icon"></i>
-                        <h2>Kiểm tra hộp thư!</h2>
-                        <p class="auth-subtitle">Liên kết khôi phục đã được gửi tới địa chỉ email của bạn.</p>
+                    <!-- Bước 2: Nhập OTP và Mật khẩu mới -->
+                    <div id="resetState" style="display:none;">
+                        <div class="form-header">
+                            <h2>Đặt lại mật khẩu</h2>
+                            <p class="auth-subtitle" id="resetSubtitle">Mã OTP đã được gửi về email của bạn. Vui lòng nhập mã và mật khẩu mới.</p>
+                        </div>
+
+                        <form id="resetForm" novalidate>
+                            <div class="input-group" id="otpGroup">
+                                <label for="otpCode">Mã xác thực (OTP 6 số)</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-key field-icon"></i>
+                                    <input type="text" id="otpCode" placeholder="Nhập 6 chữ số" maxlength="6" required>
+                                </div>
+                                <span class="error-msg">Mã OTP không hợp lệ hoặc đã hết hạn.</span>
+                            </div>
+
+                            <div class="input-group" id="newPassGroup">
+                                <label for="newPassword">Mật khẩu mới</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-lock field-icon"></i>
+                                    <input type="password" id="newPassword" placeholder="••••••••" required>
+                                    <button type="button" class="btn-toggle-pass" onclick="togglePass('newPassword', this)">
+                                        <i class="fa-regular fa-eye"></i>
+                                    </button>
+                                </div>
+                                <span class="error-msg">Mật khẩu tối thiểu 6 ký tự.</span>
+                            </div>
+
+                            <div class="input-group" id="confirmPassGroup">
+                                <label for="confirmNewPassword">Xác nhận mật khẩu mới</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-lock field-icon"></i>
+                                    <input type="password" id="confirmNewPassword" placeholder="••••••••" required>
+                                    <button type="button" class="btn-toggle-pass" onclick="togglePass('confirmNewPassword', this)">
+                                        <i class="fa-regular fa-eye"></i>
+                                    </button>
+                                </div>
+                                <span class="error-msg">Mật khẩu xác nhận không khớp.</span>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-submit" id="btnResetSubmit">
+                                <span class="btn-text">Xác nhận đổi mật khẩu</span>
+                                <div class="spinner" id="btnResetSpinner"></div>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Bước 3: Đổi mật khẩu thành công -->
+                    <div id="successState" class="success-state" style="display:none; text-align:center; padding: 20px 0;">
+                        <i class="fa-solid fa-circle-check success-icon" style="font-size: 50px; color: #2ecc71; margin-bottom: 16px;"></i>
+                        <h2>Đổi mật khẩu thành công!</h2>
+                        <p class="auth-subtitle" style="margin-bottom: 24px;">Mật khẩu của bạn đã được cập nhật thành công. Bạn có thể đăng nhập ngay bây giờ.</p>
+                        <a href="login.html" class="btn btn-primary" style="display:inline-block; padding: 12px 28px; text-decoration:none;">Đăng nhập ngay</a>
                     </div>
 
                     <div class="auth-footer-text">
@@ -86,12 +124,8 @@
         </div>
     </main>
 
-    <!-- <div id="footer-placeholder"></div> -->
-
     <script src="../assets/js/auth.js"></script>
-
-<script src="../assets/js/popup.js"></script>
+    <script src="../assets/js/popup.js"></script>
 </body>
 
 </html>
-

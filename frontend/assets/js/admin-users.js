@@ -1,3 +1,9 @@
+/**
+ * AuraCraft Admin - Quản lý Thợ & Tài khoản
+ * Kết nối trực tiếp với Spring Boot Admin User API (/api/v1/admin/users)
+ * Tối ưu giao diện: Trực quan, hiện đại, loại bỏ hoàn toàn [Mở portfolio]
+ */
+
 document.addEventListener("DOMContentLoaded", () => {
   const tableBody = document.getElementById("userTableBody");
   const searchInput = document.getElementById("userSearch");
@@ -6,13 +12,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const emptyState = document.getElementById("emptyUsers");
   const feedback = document.getElementById("userFeedback");
 
-  // Địa chỉ API Spring Boot Backend
   const API_BASE = "http://localhost:8080/api/v1/admin/users";
   let isBackendOnline = false;
   let debounceTimeout = null;
 
   const roleLabels = { 
     buyer: "Người mua", 
+    customer: "Người mua",
     artisan: "Thợ thủ công",
     admin: "Quản trị viên"
   };
@@ -23,6 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     suspended: "Tạm khóa"
   };
 
+  // Helper tạo thẻ td
   function createCell(content, className) {
     const cell = document.createElement("td");
     if (className) cell.className = className;
@@ -31,53 +38,107 @@ document.addEventListener("DOMContentLoaded", () => {
     return cell;
   }
 
+  // 1. Tạo ô Tài khoản (Avatar + Tên + Email + SĐT)
   function createAccountCell(user) {
-    const content = document.createElement("div");
-    const name = document.createElement("span");
-    const email = document.createElement("span");
-    name.className = "user-name";
-    name.textContent = user.fullName || "Chưa có tên";
-    email.className = "user-email";
-    email.textContent = user.email || "Chưa có email";
-    content.append(name, email);
-    return content;
+    const wrapper = document.createElement("div");
+    wrapper.style.display = "flex";
+    wrapper.style.alignItems = "center";
+    wrapper.style.gap = "12px";
+
+    const name = user.fullName || user.username || "Chưa có tên";
+    const initial = name.trim().charAt(0).toUpperCase();
+
+    // Avatar tròn sinh động
+    const avatar = document.createElement("div");
+    avatar.style.width = "40px";
+    avatar.style.height = "40px";
+    avatar.style.borderRadius = "50%";
+    avatar.style.backgroundColor = getAvatarColor(name);
+    avatar.style.color = "#ffffff";
+    avatar.style.display = "flex";
+    avatar.style.alignItems = "center";
+    avatar.style.justifyContent = "center";
+    avatar.style.fontWeight = "700";
+    avatar.style.fontSize = "16px";
+    avatar.style.flexShrink = "0";
+    avatar.textContent = initial;
+
+    const info = document.createElement("div");
+    const nameEl = document.createElement("div");
+    nameEl.style.fontWeight = "600";
+    nameEl.style.color = "#2c3e50";
+    nameEl.textContent = name;
+
+    const emailEl = document.createElement("div");
+    emailEl.style.fontSize = "12px";
+    emailEl.style.color = "#7f8c8d";
+    emailEl.textContent = user.email || user.username || "";
+
+    info.append(nameEl, emailEl);
+    if (user.phone) {
+      const phoneEl = document.createElement("div");
+      phoneEl.style.fontSize = "11px";
+      phoneEl.style.color = "#95a5a6";
+      phoneEl.innerHTML = `<i class="fa-solid fa-phone" style="font-size:10px;"></i> ${user.phone}`;
+      info.append(phoneEl);
+    }
+
+    wrapper.append(avatar, info);
+    return wrapper;
   }
 
-  function createProfileCell(user) {
-    const content = document.createElement("div");
-    content.className = "user-profile-summary";
-    content.textContent = user.introduction || "Chưa có thông tin giới thiệu.";
+  // Màu sắc ngẫu nhiên nhưng ổn định theo tên
+  function getAvatarColor(str) {
+    const colors = ["#3498db", "#9b59b6", "#e67e22", "#1abc9c", "#e74c3c", "#2ecc71", "#f39c12", "#34495e"];
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return colors[Math.abs(hash) % colors.length];
+  }
 
-    const portfolioUrl = user.portfolio || user.portfolioUrl;
-    if (portfolioUrl) {
-      try {
-        const parsedUrl = new URL(portfolioUrl);
-        if (parsedUrl.protocol === "https:" || parsedUrl.protocol === "http:") {
-          const link = document.createElement("a");
-          link.className = "user-portfolio";
-          link.href = parsedUrl.href;
-          link.target = "_blank";
-          link.rel = "noopener noreferrer";
-          link.textContent = "Mở portfolio";
-          content.append(document.createElement("br"), link);
-        }
-      } catch (error) {
-        // Bỏ qua nếu url không đúng định dạng
+  // 2. Tạo ô Hồ sơ / Giới thiệu (ĐÃ BỎ HOÀN TOÀN [Mở portfolio])
+  function createProfileCell(user) {
+    const wrapper = document.createElement("div");
+    wrapper.style.maxWidth = "320px";
+    wrapper.style.fontSize = "13px";
+    wrapper.style.lineHeight = "1.5";
+    wrapper.style.color = "#555";
+
+    const intro = user.introduction ? user.introduction.trim() : "";
+    if (intro) {
+      wrapper.textContent = intro;
+    } else {
+      const cleanRole = (user.role || "").toLowerCase().replace("role_", "");
+      if (cleanRole === "artisan") {
+        wrapper.innerHTML = `<span style="color:#bdc3c7; font-style:italic;">Thợ chế tác thủ công AuraCraft</span>`;
+      } else {
+        wrapper.innerHTML = `<span style="color:#bdc3c7; font-style:italic;">Khách hàng mua sắm</span>`;
       }
     }
 
-    return content;
+    return wrapper;
   }
 
-  function createStatusSelect(user) {
-    const select = document.createElement("select");
-    select.className = "filter-select";
-    select.style.padding = "6px 12px";
-    select.style.fontSize = "13px";
-    select.style.borderRadius = "6px";
-    select.setAttribute("aria-label", `Trạng thái tài khoản ${user.email}`);
+  // 3. Tạo ô Trạng thái & Thao tác nhanh
+  function createStatusCell(user) {
+    const wrapper = document.createElement("div");
+    wrapper.style.display = "flex";
+    wrapper.style.alignItems = "center";
+    wrapper.style.gap = "8px";
+    wrapper.style.flexWrap = "wrap";
 
     const currentStatus = (user.status || "active").toLowerCase();
+
+    // Selectbox trạng thái
+    const select = document.createElement("select");
+    select.className = "filter-select";
+    select.style.padding = "5px 10px";
+    select.style.fontSize = "13px";
+    select.style.borderRadius = "6px";
+    select.style.border = "1px solid #ced4da";
+    select.style.background = "#fff";
+    select.setAttribute("aria-label", `Trạng thái ${user.email}`);
 
     Object.entries(statusLabels).forEach(([value, label]) => {
       const option = document.createElement("option");
@@ -88,52 +149,61 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     select.addEventListener("change", async () => {
-      const newStatus = select.value;
-      if (isBackendOnline) {
-        // GỌI API PUT THẬT VỀ SPRING BOOT
-        try {
-          feedback.style.color = "#2980b9";
-          feedback.textContent = `Đang cập nhật trạng thái cho ${user.email}...`;
-
-          const res = await fetch(`${API_BASE}/${user.id}/status`, {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ status: newStatus })
-          });
-
-          const json = await res.json();
-          if (json.success) {
-            feedback.style.color = "#27ae60";
-            feedback.textContent = `✓ Đã cập nhật trạng thái của ${user.email} thành "${statusLabels[newStatus]}".`;
-            user.status = newStatus;
-            // Làm mới lại 4 số thẻ thống kê và danh sách
-            await fetchStats();
-            await fetchUsers();
-          } else {
-            throw new Error(json.message || "Cập nhật thất bại");
-          }
-        } catch (error) {
-          feedback.style.color = "#c0392b";
-          feedback.textContent = `✕ Lỗi cập nhật: ${error.message}`;
-          select.value = currentStatus; // Phục hồi giá trị cũ
-        }
-      } else {
-        // DỰ PHÒNG NẾU CHƯA BẬT BACKEND: Cập nhật qua localStorage
-        try {
-          if (window.AuraCraftUsers && window.AuraCraftUsers.updateStatus(user.id, newStatus)) {
-            feedback.style.color = "#e67e22";
-            feedback.textContent = `[Dữ liệu mẫu] Đã đổi trạng thái ${user.email} thành "${statusLabels[newStatus]}".`;
-            loadLocalData();
-          }
-        } catch (err) {
-          feedback.textContent = err.message;
-        }
-      }
+      await updateStatus(user, select.value);
     });
 
-    return select;
+    wrapper.append(select);
+
+    // Nút duyệt nhanh nếu là thợ đang chờ duyệt
+    const cleanRole = (user.role || "").toLowerCase().replace("role_", "");
+    if (cleanRole === "artisan" && currentStatus === "pending") {
+      const approveBtn = document.createElement("button");
+      approveBtn.className = "btn btn-sm";
+      approveBtn.style.padding = "4px 8px";
+      approveBtn.style.fontSize = "12px";
+      approveBtn.style.background = "#27ae60";
+      approveBtn.style.color = "#fff";
+      approveBtn.style.border = "none";
+      approveBtn.style.borderRadius = "4px";
+      approveBtn.style.cursor = "pointer";
+      approveBtn.title = "Duyệt nhanh thợ này";
+      approveBtn.innerHTML = `<i class="fa-solid fa-check"></i> Duyệt`;
+      approveBtn.addEventListener("click", async () => {
+        select.value = "active";
+        await updateStatus(user, "active");
+      });
+      wrapper.append(approveBtn);
+    }
+
+    return wrapper;
+  }
+
+  // Hàm gọi API cập nhật trạng thái
+  async function updateStatus(user, newStatus) {
+    try {
+      feedback.style.color = "#2980b9";
+      feedback.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Đang cập nhật trạng thái cho ${user.fullName || user.email}...`;
+
+      const res = await fetch(`${API_BASE}/${user.id}/status`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus.toUpperCase() })
+      });
+
+      const json = await res.json();
+      if (res.ok && (json.code === 1000 || json.success)) {
+        feedback.style.color = "#27ae60";
+        feedback.innerHTML = `<i class="fa-solid fa-circle-check"></i> Đã cập nhật trạng thái của <strong>${user.fullName || user.email}</strong> thành "<strong>${statusLabels[newStatus]}</strong>".`;
+        user.status = newStatus;
+        await fetchStats();
+        await fetchUsers();
+      } else {
+        throw new Error(json.message || "Không thể cập nhật trạng thái.");
+      }
+    } catch (err) {
+      feedback.style.color = "#c0392b";
+      feedback.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> Lỗi: ${err.message}`;
+    }
   }
 
   function updateStatsUI(stats) {
@@ -154,52 +224,61 @@ document.addEventListener("DOMContentLoaded", () => {
 
     users.forEach((user) => {
       const row = document.createElement("tr");
+
+      // Badge Vai trò
       const role = document.createElement("span");
       const cleanRole = (user.role || "").toLowerCase().replace("role_", "");
 
       if (cleanRole === "artisan") {
         role.className = "badge crafting";
-        role.textContent = "Thợ thủ công";
+        role.innerHTML = `<i class="fa-solid fa-hammer" style="margin-right:4px;"></i> Thợ thủ công`;
       } else if (cleanRole === "admin") {
         role.className = "badge done";
-        role.textContent = "Quản trị viên";
+        role.innerHTML = `<i class="fa-solid fa-shield-halved" style="margin-right:4px;"></i> Quản trị viên`;
       } else {
         role.className = "badge shipping";
-        role.textContent = "Người mua";
+        role.innerHTML = `<i class="fa-solid fa-user" style="margin-right:4px;"></i> Người mua`;
       }
 
-      const createdAt = user.createdAt
-        ? new Intl.DateTimeFormat("vi-VN", { dateStyle: "medium" }).format(new Date(user.createdAt))
-        : "Không rõ";
+      // Ngày tạo
+      let createdAtText = "Hôm nay";
+      if (user.createdAt) {
+        try {
+          const d = new Date(user.createdAt);
+          if (!isNaN(d.getTime())) {
+            createdAtText = d.toLocaleDateString("vi-VN");
+          }
+        } catch (e) {}
+      }
 
       row.append(
         createCell(createAccountCell(user)),
         createCell(role),
         createCell(createProfileCell(user)),
-        createCell(createdAt),
-        createCell(createStatusSelect(user))
+        createCell(createdAtText),
+        createCell(createStatusCell(user))
       );
       tableBody.append(row);
     });
   }
 
-  // 1. Gọi API Backend lấy 4 số thẻ thống kê
+  // 1. Lấy dữ liệu 4 thẻ thống kê
   async function fetchStats() {
     try {
       const res = await fetch(`${API_BASE}/stats`);
-      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-      const json = await res.json();
-      if (json.success && json.data) {
-        updateStatsUI(json.data);
-        return true;
+      if (res.ok) {
+        const json = await res.json();
+        const data = json.data || json.result;
+        if (data) {
+          updateStatsUI(data);
+          return true;
+        }
       }
-    } catch (err) {
-      return false;
-    }
+    } catch (err) {}
     return false;
   }
 
-  // 2. Gọi API Backend lấy danh sách người dùng kèm bộ lọc
+  // 2. Lấy danh sách tài khoản kèm bộ lọc
   async function fetchUsers() {
     const keyword = searchInput.value.trim();
     const role = roleFilter.value;
@@ -212,69 +291,37 @@ document.addEventListener("DOMContentLoaded", () => {
       if (keyword) url.searchParams.append("keyword", keyword);
 
       const res = await fetch(url.toString());
-      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-      const json = await res.json();
-
-      if (json.success && Array.isArray(json.data)) {
-        isBackendOnline = true;
-        renderTableRows(json.data);
-        return true;
+      if (res.ok) {
+        const json = await res.json();
+        const data = json.data || json.result;
+        if (Array.isArray(data)) {
+          isBackendOnline = true;
+          renderTableRows(data);
+          return true;
+        }
       }
-    } catch (err) {
-      isBackendOnline = false;
-      return false;
-    }
+    } catch (err) {}
     return false;
   }
 
-  // Cơ chế dự phòng khi Backend chưa bật (dùng localStorage để giao diện vẫn hiển thị đẹp)
-  function loadLocalData() {
-    if (!window.AuraCraftUsers) return;
-    const users = window.AuraCraftUsers.getAll();
-    const keyword = searchInput.value.trim().toLowerCase();
-    const visibleUsers = users
-      .filter((user) => {
-        const searchableText = `${user.fullName || ""} ${user.email || ""}`.toLowerCase();
-        return searchableText.includes(keyword)
-          && (roleFilter.value === "all" || user.role === roleFilter.value)
-          && (statusFilter.value === "all" || user.status === statusFilter.value);
-      })
-      .sort((first, second) => (second.createdAt || "").localeCompare(first.createdAt || ""));
-
-    updateStatsUI({
-      totalUsers: users.length,
-      buyerUsers: users.filter((u) => u.role === "buyer").length,
-      pendingArtisans: users.filter((u) => u.role === "artisan" && u.status === "pending").length,
-      suspendedUsers: users.filter((u) => u.status === "suspended").length
-    });
-
-    renderTableRows(visibleUsers);
-  }
-
-  // Khởi động trang web: Ưu tiên gọi API Backend, nếu chưa bật thì fallback
+  // Khởi tạo
   async function init() {
     const statsOk = await fetchStats();
     const usersOk = await fetchUsers();
 
     if (statsOk && usersOk) {
       isBackendOnline = true;
-      feedback.style.color = "#27ae60";
-      feedback.innerHTML = '<i class="fa-solid fa-circle-check"></i> Đang kết nối trực tiếp CSDL MySQL qua Spring Boot API (cổng 8080).';
+      feedback.style.display = "none";
+      feedback.innerHTML = "";
     } else {
-      isBackendOnline = false;
-      feedback.style.color = "#e67e22";
-      feedback.innerHTML = '<i class="fa-solid fa-circle-info"></i> Đang chạy chế độ dữ liệu xem trước. Bật Spring Boot (cổng 8080) để kết nối MySQL thực tế!';
-      loadLocalData();
+      feedback.style.display = "block";
+      feedback.style.color = "#c0392b";
+      feedback.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Không thể kết nối với máy chủ Backend. Vui lòng kiểm tra cổng 8080.';
     }
   }
 
-  // Lắng nghe sự kiện tìm kiếm và bộ lọc
   function handleFilterChange() {
-    if (isBackendOnline) {
-      fetchUsers();
-    } else {
-      loadLocalData();
-    }
+    fetchUsers();
   }
 
   searchInput.addEventListener("input", () => {
@@ -285,6 +332,5 @@ document.addEventListener("DOMContentLoaded", () => {
   roleFilter.addEventListener("change", handleFilterChange);
   statusFilter.addEventListener("change", handleFilterChange);
 
-  // Chạy khởi tạo
   init();
 });

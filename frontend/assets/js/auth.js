@@ -1,15 +1,9 @@
-// ============================================================
-// AuraCraft — auth.js (kết nối với Backend API thật)
-// ============================================================
-
 const API_BASE = "http://localhost:8080/api";
 
-// ---- Helper: Lưu / Đọc session ----
 function saveSession(data) {
   localStorage.setItem("auracraft_token", data.accessToken);
   localStorage.setItem("auracraft_refresh", data.refreshToken);
   localStorage.setItem("auracraft_user", JSON.stringify(data.userSummary));
-  // Đồng bộ thêm để tương thích ngược với code cũ
   localStorage.setItem("currentUser", JSON.stringify({
     fullName: data.userSummary.fullName,
     email: data.userSummary.email,
@@ -25,7 +19,7 @@ function getCurrentUser() {
   try {
     const raw = localStorage.getItem("auracraft_user");
     return raw ? JSON.parse(raw) : null;
-  } catch {
+  } catch (e) {
     return null;
   }
 }
@@ -47,10 +41,21 @@ function logout() {
   localStorage.removeItem("auracraft_refresh");
   localStorage.removeItem("auracraft_user");
   localStorage.removeItem("currentUser");
-  window.location.reload();
+  sessionStorage.clear();
+
+  const pathname = window.location.pathname;
+  const isPagesDir = pathname.includes("/pages/");
+  const needsAuthPage = pathname.includes("profile") || pathname.includes("checkout") || pathname.includes("admin") || pathname.includes("seller");
+
+  if (needsAuthPage) {
+    window.location.href = isPagesDir ? "login.html" : "pages/login.html";
+  } else {
+    window.location.reload();
+  }
 }
 
-// ---- Expose global API helper ----
+window.logout = logout;
+
 window.AuraCraft = {
   API_BASE,
   getToken,
@@ -74,13 +79,17 @@ async function apiFetch(method, path, body) {
   });
   const json = await res.json();
   if (!res.ok) {
+    if (res.status === 401) {
+      localStorage.removeItem("auracraft_token");
+      localStorage.removeItem("auracraft_user");
+      localStorage.removeItem("currentUser");
+    }
     const msg = json?.message || `Lỗi ${res.status}`;
     throw new Error(msg);
   }
   return json.result;
 }
 
-// ---- Toggle hiện/ẩn mật khẩu ----
 function togglePass(inputId, btn) {
   const input = document.getElementById(inputId);
   if (!input) return;
@@ -98,7 +107,6 @@ function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-// ---- Điều hướng theo role hoặc tham số redirect ----
 function redirectByRole(role) {
   const params = new URLSearchParams(window.location.search);
   const redirect = params.get("redirect");
@@ -117,9 +125,16 @@ function redirectByRole(role) {
 }
 
 function syncHeaderAuth() {
+  if (window.location.pathname.includes("/pages/")) {
+    document.querySelectorAll('a[href="index.html"]').forEach(a => {
+      a.setAttribute("href", "../index.html");
+    });
+  }
+
   const navLogin = document.getElementById("nav-login");
   const navProfile = document.getElementById("nav-profile");
-  if (!navLogin && !navProfile) return;
+  const navLogout = document.getElementById("nav-logout");
+
   if (isLoggedIn()) {
     if (navLogin) navLogin.style.display = "none";
     if (navProfile) {
@@ -129,14 +144,23 @@ function syncHeaderAuth() {
         navProfile.setAttribute("title", user.fullName + " (" + (user.role || "") + ")");
       }
     }
+    if (navLogout) navLogout.style.display = "inline-flex";
   } else {
     if (navLogin) navLogin.style.display = "";
     if (navProfile) navProfile.style.display = "none";
+    if (navLogout) navLogout.style.display = "none";
   }
 }
 
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest('[data-action="logout"], .logout-item a, #nav-logout, #btnLogout');
+  if (btn) {
+    e.preventDefault();
+    logout();
+  }
+});
+
 document.addEventListener("DOMContentLoaded", () => {
-  // Đồng bộ header
   const hp = document.getElementById("header-placeholder");
   if (hp) {
     const observer = new MutationObserver(() => syncHeaderAuth());
@@ -145,9 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setTimeout(syncHeaderAuth, 300);
   setTimeout(syncHeaderAuth, 800);
 
-  // ==============================
-  // FORM ĐĂNG NHẬP
-  // ==============================
+  // Form dang nhap
   const loginForm = document.getElementById("loginForm");
   if (loginForm) {
     loginForm.addEventListener("submit", async (e) => {
@@ -189,7 +211,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const json = await res.json();
 
         if (!res.ok) {
-          const msg = json?.message || "Tài khoản hoặc mật khẩu không chính xác.";
+          const msg = json?.message || "Tên đăng nhập hoặc mật khẩu không chính xác.";
           emailInput.closest(".input-group").classList.add("invalid");
           const errEl = emailInput.closest(".input-group").querySelector(".error-msg");
           if (errEl) errEl.textContent = msg;
@@ -201,7 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
         redirectByRole(user.role);
       } catch (err) {
         const errEl = emailInput.closest(".input-group").querySelector(".error-msg");
-        if (errEl) errEl.textContent = "Không thể kết nối server (Spring Boot port 8080). Vui lòng thử lại.";
+        if (errEl) errEl.textContent = "Không thể kết nối máy chủ. Vui lòng thử lại.";
         emailInput.closest(".input-group").classList.add("invalid");
       } finally {
         if (btnSubmit) btnSubmit.disabled = false;
@@ -210,9 +232,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ==============================
-  // FORM ĐĂNG KÝ
-  // ==============================
+  // Form dang ky
   const registerForm = document.getElementById("registerForm");
   if (registerForm) {
     const accountRole = document.getElementById("accountRole");
@@ -300,7 +320,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const json = await res.json();
 
         if (!res.ok) {
-          const msg = json?.message || "Đăng ký thất bại.";
+          const msg = json?.message || "Đăng ký không thành công.";
           emailEl.closest(".input-group").classList.add("invalid");
           const errEl = emailEl.closest(".input-group").querySelector(".error-msg");
           if (errEl) errEl.textContent = msg;
@@ -308,25 +328,26 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         saveSession(json.result);
-        alert("Đăng ký tài khoản thành công! Dữ liệu đã được lưu vào cơ sở dữ liệu.");
+        alert("Đăng ký tài khoản thành công!");
         window.location.href = "../index.html";
       } catch (err) {
-        alert("Không thể kết nối server (Spring Boot port 8080). Vui lòng thử lại.");
+        alert("Không thể kết nối máy chủ. Vui lòng thử lại sau.");
       } finally {
         if (btnSubmit) btnSubmit.disabled = false;
       }
     });
   }
 
-  // ==============================
-  // FORM QUÊN MẬT KHẨU
-  // ==============================
+  // Form quen mat khau - Buoc 1: Gui OTP
+  let currentRecoveryEmail = "";
   const forgotForm = document.getElementById("forgotForm");
   if (forgotForm) {
     forgotForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const recoveryEmail = document.getElementById("recoveryEmail");
       const emailGroup = document.getElementById("emailGroup");
+      const submitBtn = document.getElementById("submitBtn");
+      const btnSpinner = document.getElementById("btnSpinner");
 
       if (!isValidEmail(recoveryEmail.value.trim())) {
         emailGroup.classList.add("invalid");
@@ -334,20 +355,106 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       emailGroup.classList.remove("invalid");
+      currentRecoveryEmail = recoveryEmail.value.trim();
+
+      if (submitBtn) submitBtn.disabled = true;
+      if (btnSpinner) btnSpinner.style.display = "block";
 
       try {
         await fetch(`${API_BASE}/auth/forgot-password`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: recoveryEmail.value.trim() }),
+          body: JSON.stringify({ email: currentRecoveryEmail }),
         });
+
+        const requestState = document.getElementById("requestState");
+        const resetState = document.getElementById("resetState");
+        const resetSubtitle = document.getElementById("resetSubtitle");
+
+        if (requestState) requestState.style.display = "none";
+        if (resetState) {
+          resetState.style.display = "block";
+          if (resetSubtitle) {
+            resetSubtitle.textContent = `Mã xác thực OTP đã được gửi về email ${currentRecoveryEmail}. Vui lòng nhập mã và mật khẩu mới.`;
+          }
+        }
       } catch (err) {
+        alert("Không thể gửi email xác thực: " + err.message);
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
+        if (btnSpinner) btnSpinner.style.display = "none";
+      }
+    });
+  }
+
+  // Form quen mat khau - Buoc 2: Nhap OTP va doi mat khau
+  const resetForm = document.getElementById("resetForm");
+  if (resetForm) {
+    resetForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const otpCodeEl = document.getElementById("otpCode");
+      const newPasswordEl = document.getElementById("newPassword");
+      const confirmNewPasswordEl = document.getElementById("confirmNewPassword");
+      const btnResetSubmit = document.getElementById("btnResetSubmit");
+      const btnResetSpinner = document.getElementById("btnResetSpinner");
+
+      let isValid = true;
+
+      if (!otpCodeEl.value.trim() || otpCodeEl.value.trim().length < 4) {
+        otpCodeEl.closest(".input-group").classList.add("invalid");
+        isValid = false;
+      } else {
+        otpCodeEl.closest(".input-group").classList.remove("invalid");
       }
 
-      const requestState = document.getElementById("requestState");
-      const successState = document.getElementById("successState");
-      if (requestState) requestState.style.display = "none";
-      if (successState) successState.style.display = "block";
+      if (newPasswordEl.value.length < 6) {
+        newPasswordEl.closest(".input-group").classList.add("invalid");
+        isValid = false;
+      } else {
+        newPasswordEl.closest(".input-group").classList.remove("invalid");
+      }
+
+      if (!confirmNewPasswordEl.value || confirmNewPasswordEl.value !== newPasswordEl.value) {
+        confirmNewPasswordEl.closest(".input-group").classList.add("invalid");
+        isValid = false;
+      } else {
+        confirmNewPasswordEl.closest(".input-group").classList.remove("invalid");
+      }
+
+      if (!isValid) return;
+
+      if (btnResetSubmit) btnResetSubmit.disabled = true;
+      if (btnResetSpinner) btnResetSpinner.style.display = "block";
+
+      try {
+        const res = await fetch(`${API_BASE}/auth/reset-password`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: currentRecoveryEmail,
+            otpCode: otpCodeEl.value.trim(),
+            newPassword: newPasswordEl.value,
+            confirmPassword: confirmNewPasswordEl.value,
+          }),
+        });
+
+        const json = await res.json();
+        if (!res.ok) {
+          const msg = json?.message || "Đổi mật khẩu thất bại.";
+          alert(msg);
+          return;
+        }
+
+        const resetState = document.getElementById("resetState");
+        const successState = document.getElementById("successState");
+        if (resetState) resetState.style.display = "none";
+        if (successState) successState.style.display = "block";
+      } catch (err) {
+        alert("Lỗi khi đặt lại mật khẩu: " + err.message);
+      } finally {
+        if (btnResetSubmit) btnResetSubmit.disabled = false;
+        if (btnResetSpinner) btnResetSpinner.style.display = "none";
+      }
     });
   }
 });

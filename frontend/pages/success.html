@@ -23,20 +23,18 @@
 
                 <h1 id="successHeading">Đặt hàng thành công!</h1>
                 <p class="success-subtext" id="successSubtext">
-                    Cảm ơn bạn đã lựa chọn AuraCraft. Đơn hàng của bạn đã được chuyển tới các nghệ nhân thủ công để
-                    chuẩn bị chế tác và giao đến tay bạn trong thời gian sớm nhất.
+                    Cảm ơn bạn đã lựa chọn AuraCraft. Đơn hàng của bạn đã được tiếp nhận và chuyển đến nghệ nhân để chuẩn bị chế tác và giao hàng.
                 </p>
 
                 <div class="order-code-box">
                     <span>Mã đơn hàng:</span>
-                    <strong id="displayOrderCode">#AC-982415</strong>
+                    <strong id="displayOrderCode">#AC-000000</strong>
                     <button type="button" class="btn-copy-code" id="btnCopyCode" title="Sao chép mã đơn hàng"
                         aria-label="Sao chép mã đơn hàng">
                         <i class="fa-regular fa-copy"></i>
                     </button>
                 </div>
 
-                <!-- Chi tiết đơn hàng -->
                 <div class="success-order-details">
                     <h3><i class="fa-solid fa-file-invoice"></i> Chi tiết đơn hàng</h3>
 
@@ -91,7 +89,7 @@
 
     <div id="footer-placeholder"></div>
 
-    <script src="../assets/js/checkout.js"></script>
+    <script src="../assets/js/auth.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const urlParams = new URLSearchParams(window.location.search);
@@ -99,9 +97,35 @@
             const transactionNo = urlParams.get("transactionNo");
             const orderIdParam = urlParams.get("orderId");
 
-            if (orderIdParam) {
+            // Tải thông tin đơn hàng từ sessionStorage
+            let orderInfo = null;
+            try {
+                const raw = sessionStorage.getItem("auracraft_latest_order");
+                if (raw) orderInfo = JSON.parse(raw);
+            } catch (e) {}
+
+            const displayCode = orderIdParam || (orderInfo ? orderInfo.orderId : "");
+            if (displayCode) {
                 const el = document.getElementById("displayOrderCode");
-                if (el) el.textContent = orderIdParam;
+                if (el) el.textContent = displayCode;
+            }
+
+            if (orderInfo) {
+                const custEl = document.getElementById("detailCustomer");
+                const addrEl = document.getElementById("detailAddress");
+                const noteEl = document.getElementById("detailNote");
+                const payEl = document.getElementById("detailPayment");
+                const shipEl = document.getElementById("detailShipping");
+                const totEl = document.getElementById("detailTotal");
+                const timeEl = document.getElementById("detailTime");
+
+                if (custEl) custEl.textContent = (orderInfo.fullName || "") + (orderInfo.phone ? " - " + orderInfo.phone : "");
+                if (addrEl) addrEl.textContent = orderInfo.address || "--";
+                if (noteEl) noteEl.textContent = orderInfo.note || "Không có";
+                if (payEl) payEl.textContent = orderInfo.paymentMethod || "COD";
+                if (shipEl && orderInfo.shippingFee) shipEl.textContent = orderInfo.shippingFee;
+                if (totEl && orderInfo.total) totEl.textContent = orderInfo.total;
+                if (timeEl && orderInfo.createdAt) timeEl.textContent = orderInfo.createdAt;
             }
 
             if (vnpayStatus === "SUCCESS") {
@@ -111,13 +135,25 @@
                 }
                 const subtext = document.getElementById("successSubtext");
                 if (subtext) {
-                    subtext.textContent = "Thanh toán trực tuyến VNPay thành công! Đơn hàng của bạn đã được thanh toán và chuyển tới nghệ nhân chế tác.";
+                    subtext.textContent = "Thanh toán trực tuyến VNPay thành công! Đơn hàng đã được thanh toán và chuyển tới nghệ nhân chế tác.";
                 }
             } else if (vnpayStatus === "FAILED") {
                 const paymentEl = document.getElementById("detailPayment");
                 if (paymentEl) {
                     paymentEl.innerHTML = `<span style="color:#c5221f;font-weight:700;"><i class="fa-solid fa-circle-xmark"></i> Thanh toán VNPay thất bại</span>`;
                 }
+            }
+
+            const copyBtn = document.getElementById("btnCopyCode");
+            if (copyBtn) {
+                copyBtn.addEventListener("click", () => {
+                    const code = document.getElementById("displayOrderCode")?.textContent || "";
+                    if (code && navigator.clipboard) {
+                        navigator.clipboard.writeText(code).then(() => {
+                            alert("Đã sao chép mã đơn hàng: " + code);
+                        });
+                    }
+                });
             }
         });
 
@@ -126,14 +162,14 @@
             .then(html => {
                 document.getElementById('header-placeholder').innerHTML = html.replace(/href="index\.html"/g, 'href="../index.html"');
             })
-            .catch(err => console.error('Lỗi tải Header:', err));
+            .catch(err => console.error(err));
 
         fetch('../components/footer.html')
             .then(r => r.text())
             .then(html => {
                 document.getElementById('footer-placeholder').innerHTML = html.replace(/href="index\.html"/g, 'href="../index.html"');
             })
-            .catch(err => console.error('Lỗi tải Footer:', err));
+            .catch(err => console.error(err));
     </script>
     <script src="../assets/js/popup.js"></script>
 </body>

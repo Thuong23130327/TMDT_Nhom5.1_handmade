@@ -1,10 +1,5 @@
-// ============================================================
-// AuraCraft — cart.js (kết nối Backend API /api/cart)
-// ============================================================
-
 const SHIPPING_FEE = 25300;
 
-// Dùng helper từ auth.js
 function requireLogin() {
   if (!window.AuraCraft || !window.AuraCraft.isLoggedIn()) {
     window.location.href = "login.html?redirect=cart.html";
@@ -17,20 +12,33 @@ function formatVND(amount) {
   return Number(amount).toLocaleString("vi-VN") + "đ";
 }
 
-// --- Render giỏ hàng ---
 async function loadCart() {
   if (!requireLogin()) return;
 
   const container = document.querySelector(".cart-items");
   const summaryEl = document.querySelector(".cart-summary");
 
-  if (container) container.innerHTML = '<p class="loading-msg" style="text-align:center;padding:40px;color:#888"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải giỏ hàng...</p>';
+  if (container) {
+    container.innerHTML = '<p class="loading-msg" style="text-align:center;padding:40px;color:#888"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải giỏ hàng...</p>';
+  }
 
   try {
     const cart = await window.AuraCraft.apiGet("/cart");
     renderCart(cart, container, summaryEl);
   } catch (err) {
-    if (container) container.innerHTML = `<p style="text-align:center;padding:40px;color:#e55">Lỗi: ${err.message}</p>`;
+    if (container) {
+      if (err.message && (err.message.includes("đăng nhập") || err.message.includes("401"))) {
+        container.innerHTML = `
+          <div style="text-align:center;padding:50px 20px;">
+            <i class="fa-solid fa-lock" style="font-size:48px;color:#c9a24b;margin-bottom:16px;"></i>
+            <h3 style="color:#7b5144;margin-bottom:10px;">Chưa đăng nhập hoặc phiên đã hết hạn</h3>
+            <p style="color:#888;margin-bottom:18px;">Vui lòng đăng nhập lại để xem và quản lý giỏ hàng của bạn.</p>
+            <a href="login.html?redirect=cart.html" class="btn btn-primary" style="display:inline-block;padding:10px 24px;border-radius:8px;">Đăng nhập ngay</a>
+          </div>`;
+      } else {
+        container.innerHTML = `<p style="text-align:center;padding:40px;color:#e55">Lỗi: ${err.message}</p>`;
+      }
+    }
   }
 }
 
@@ -48,7 +56,6 @@ function renderCart(cart, container, summaryEl) {
     return;
   }
 
-  // Nhóm sản phẩm theo artisan
   const groups = {};
   cart.items.forEach(item => {
     const artisan = item.artisanName || "Shop AuraCraft";
@@ -93,12 +100,11 @@ function renderCart(cart, container, summaryEl) {
       </div>`;
     });
 
-    html += `</div>`; // end cart-group
+    html += `</div>`;
   });
 
   container.innerHTML = html;
 
-  // Render summary
   const subtotal = cart.total;
   const total = Number(subtotal) + SHIPPING_FEE;
   if (summaryEl) {
@@ -121,15 +127,11 @@ function renderCart(cart, container, summaryEl) {
       </button>`;
   }
 
-  // Lưu cartData vào sessionStorage để checkout.js dùng
   sessionStorage.setItem("auracraft_cart", JSON.stringify(cart));
-
-  // Gắn event listeners
   attachCartEvents();
 }
 
 function attachCartEvents() {
-  // Nút tăng/giảm số lượng
   document.querySelectorAll(".qty-btn").forEach(btn => {
     btn.addEventListener("click", async () => {
       const id = parseInt(btn.dataset.id);
@@ -155,7 +157,6 @@ function attachCartEvents() {
     });
   });
 
-  // Nút xóa
   document.querySelectorAll(".remove-btn").forEach(btn => {
     btn.addEventListener("click", async () => {
       const id = parseInt(btn.dataset.id);
@@ -183,7 +184,6 @@ function proceedCheckout() {
   window.location.href = "checkout.html";
 }
 
-// Hàm global để product-detail.js / products.js gọi
 window.AuraCraftCart = {
   async addProduct(productId, quantity = 1, notes = "") {
     if (!window.AuraCraft || !window.AuraCraft.isLoggedIn()) {
@@ -192,7 +192,7 @@ window.AuraCraftCart = {
     }
     try {
       await window.AuraCraft.apiPost("/cart", { productId, quantity, customNotes: notes });
-      alert("Đã thêm vào giỏ hàng!");
+      alert("Đã thêm vào giỏ hàng thành công!");
     } catch (err) {
       alert("Không thể thêm vào giỏ: " + err.message);
     }

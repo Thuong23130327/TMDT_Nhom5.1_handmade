@@ -1,7 +1,3 @@
-// ============================================================
-// AuraCraft — checkout.js (kết nối Backend API /api/orders & VNPay Sandbox)
-// ============================================================
-
 const SHIPPING_FEE = 25300;
 
 function formatVND(amount) {
@@ -12,13 +8,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const checkoutForm = document.getElementById("checkoutForm");
   if (!checkoutForm) return;
 
-  // ---- Kiểm tra đăng nhập ----
   if (!window.AuraCraft || !window.AuraCraft.isLoggedIn()) {
     window.location.href = "login.html?redirect=checkout.html";
     return;
   }
 
-  // ---- Pre-fill thông tin từ user đang đăng nhập ----
   const user = window.AuraCraft.getCurrentUser();
   if (user) {
     const nameEl = document.getElementById("fullName");
@@ -27,7 +21,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (emailEl && !emailEl.value) emailEl.value = user.email || "";
   }
 
-  // ---- Tải dữ liệu giỏ hàng từ sessionStorage (đã lưu bởi cart.js) ----
   let cart = null;
   try {
     const stored = sessionStorage.getItem("auracraft_cart");
@@ -40,7 +33,6 @@ document.addEventListener("DOMContentLoaded", () => {
     renderOrderSummary(cart);
   }
 
-  // ---- Xử lý chọn phương thức thanh toán ----
   const paymentCards = document.querySelectorAll(".payment-method-card");
   paymentCards.forEach((card) => {
     const radio = card.querySelector('input[type="radio"]');
@@ -51,7 +43,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // ---- Submit đặt hàng ----
   checkoutForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -101,7 +92,7 @@ async function loadCartFromAPI() {
   try {
     const cart = await window.AuraCraft.apiGet("/cart");
     if (!cart || !cart.items || cart.items.length === 0) {
-      alert("Giỏ hàng trống. Vui lòng thêm sản phẩm trước.");
+      alert("Giỏ hàng của bạn đang trống.");
       window.location.href = "cart.html";
       return;
     }
@@ -153,7 +144,7 @@ async function submitOrder(fullNameEl, phoneEl, addressEl, noteEl, paymentMethod
   const btnText = document.getElementById("btnConfirmText");
 
   if (btnConfirm) btnConfirm.disabled = true;
-  if (btnText) btnText.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang tạo đơn hàng...';
+  if (btnText) btnText.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang xử lý đơn hàng...';
 
   try {
     const orderData = await window.AuraCraft.apiPost("/orders", {
@@ -169,8 +160,8 @@ async function submitOrder(fullNameEl, phoneEl, addressEl, noteEl, paymentMethod
       fullName: fullNameEl.value.trim(),
       phone: phoneEl.value.trim(),
       address: addressEl.value.trim(),
-      note: noteEl ? noteEl.value.trim() : "",
-      paymentMethod: paymentMethod === "VNPAY" ? "Thanh toán trực tuyến (VNPay)" : "Thanh toán khi nhận hàng (COD)",
+      note: noteEl ? noteEl.value.trim() : "Không có",
+      paymentMethod: paymentMethod === "VNPAY" ? "Thanh toán VNPay" : "Thanh toán khi nhận hàng (COD)",
       shippingFee: formatVND(SHIPPING_FEE),
       subtotal: formatVND(window._checkoutSubtotal || 0),
       total: formatVND(window._checkoutTotal || 0),
@@ -180,8 +171,7 @@ async function submitOrder(fullNameEl, phoneEl, addressEl, noteEl, paymentMethod
     sessionStorage.removeItem("auracraft_cart");
 
     if (paymentMethod === "VNPAY") {
-      // Chuyển hướng sang Cổng thanh toán VNPay Sandbox thực tế!
-      if (btnText) btnText.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang chuyển hướng sang cổng VNPay...';
+      if (btnText) btnText.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang chuyển sang VNPay...';
       const payRes = await window.AuraCraft.apiGet(`/payment/create-vnpay?orderCode=${encodeURIComponent(orderData.orderCode)}`);
       if (payRes && payRes.paymentUrl) {
         window.location.href = payRes.paymentUrl;

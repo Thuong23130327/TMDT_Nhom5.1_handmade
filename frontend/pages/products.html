@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,6 +13,7 @@
     <!-- Products Page Style -->
     <link rel="stylesheet" href="../assets/css/pages/styleProducts.css">
 </head>
+
 <body>
     <div id="header-placeholder"></div>
 
@@ -24,22 +26,25 @@
                         <li><label><input type="checkbox" value="vòng tay" checked> Vòng tay</label></li>
                         <li><label><input type="checkbox" value="dây chuyền" checked> Dây chuyền</label></li>
                         <li><label><input type="checkbox" value="lắc chân" checked> Lắc chân (Anklet)</label></li>
-                        <li><label><input type="checkbox" value="armlet|vòng tay bắp" checked> Vòng tay bắp (Armlet)</label></li>
+                        <li><label><input type="checkbox" value="armlet|vòng tay bắp" checked> Vòng tay bắp
+                                (Armlet)</label></li>
                         <li><label><input type="checkbox" value="vòng bụng" checked> Vòng bụng (Belly)</label></li>
                         <li><label><input type="checkbox" value="dây đeo đt" checked> Dây đeo điện thoại</label></li>
                     </ul>
                 </div>
-                
+
                 <div class="filter-group">
                     <h3 class="filter-title">Mức giá</h3>
                     <ul class="filter-list">
                         <li><label><input type="radio" name="price" value="0-100000"> Dưới 100.000đ</label></li>
-                        <li><label><input type="radio" name="price" value="100000-300000"> 100.000đ - 300.000đ</label></li>
-                        <li><label><input type="radio" name="price" value="300000-500000"> 300.000đ - 500.000đ</label></li>
+                        <li><label><input type="radio" name="price" value="100000-300000"> 100.000đ - 300.000đ</label>
+                        </li>
+                        <li><label><input type="radio" name="price" value="300000-500000"> 300.000đ - 500.000đ</label>
+                        </li>
                         <li><label><input type="radio" name="price" value="500000-99999999"> Trên 500.000đ</label></li>
                     </ul>
                 </div>
-                
+
                 <div class="filter-group">
                     <h3 class="filter-title">Đánh giá</h3>
                     <ul class="filter-list">
@@ -48,7 +53,7 @@
                         <li><label><input type="radio" name="rating" value="3"> Từ 3 sao trở lên</label></li>
                     </ul>
                 </div>
-                
+
                 <button class="btn-filter" id="btn-apply-filter">Áp dụng Lọc</button>
             </aside>
 
@@ -67,49 +72,63 @@
 
                 <div class="product-grid">
                     <!-- Products 1-4 -->
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'" style="cursor: pointer;">
-                        <img src="https://myumemories.com/wp-content/uploads/2026/01/z7461915860226_00fb3ad756b0b24c78c89caf38ad44ba-768x512.jpg" alt="Vòng tay hạt gỗ thơm & Charm bạc">
+                    <div class="product-card has-image" onclick="window.location.href='product-detail.html?id=1'"
+                        style="cursor: pointer;">
+                        <img src="../assets/img/products/bracelet_01.jpg" alt="Vòng tay hạt gỗ thơm & Charm bạc">
                         <div class="product-info">
                             <h3>Vòng tay hạt gỗ thơm & Charm bạc</h3>
                             <p class="product-shop"><i class="fa-solid fa-store"></i> Xưởng Mộc An</p>
                             <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star-half-stroke"></i>
                                 <span class="rating-score">4.8</span>
                             </div>
-                            <p class="price">120.000đ <span style="text-decoration: line-through; color: #999; margin-left: 10px; font-size: 0.9em;">150.000đ</span></p>
+                            <p class="price">120.000đ <span
+                                    style="text-decoration: line-through; color: #999; margin-left: 10px; font-size: 0.9em;">150.000đ</span>
+                            </p>
                         </div>
                     </div>
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'" style="cursor: pointer;">
+                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
+                        style="cursor: pointer;">
                         <img src="../assets/img/products/necklace_02.jpg" alt="Dây chuyền Charm">
                         <div class="product-info">
                             <h3>Dây chuyền mặt trăng</h3>
                             <p class="product-shop"><i class="fa-solid fa-store"></i> Silver Soul Studio</p>
                             <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i>
                                 <span class="rating-score">5.0</span>
                             </div>
                             <p class="price">350.000đ</p>
                         </div>
                     </div>
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'" style="cursor: pointer;">
+                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
+                        style="cursor: pointer;">
                         <img src="../assets/img/products/anket_01.jpg" alt="Lắc chân Bạc">
                         <div class="product-info">
                             <h3>Lắc chân chuông bạc</h3>
                             <p class="product-shop"><i class="fa-solid fa-store"></i> Handmade By My</p>
                             <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-regular fa-star"></i>
                                 <span class="rating-score">4.0</span>
                             </div>
                             <p class="price">220.000đ</p>
                         </div>
                     </div>
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'" style="cursor: pointer;">
+                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
+                        style="cursor: pointer;">
                         <img src="../assets/img/products/armlet_01.jpg" alt="Vòng tay bắp">
                         <div class="product-info">
                             <h3>Armlet Bohemian</h3>
                             <p class="product-shop"><i class="fa-solid fa-store"></i> Vintage Vibes</p>
                             <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star-half-stroke"></i>
                                 <span class="rating-score">4.6</span>
                             </div>
                             <p class="price">180.000đ</p>
@@ -117,49 +136,61 @@
                     </div>
 
                     <!-- Products 5-8 -->
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'" style="cursor: pointer;">
+                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
+                        style="cursor: pointer;">
                         <img src="../assets/img/products/belly_01.jpg" alt="Vòng bụng">
                         <div class="product-info">
                             <h3>Vòng bụng hạt cườm</h3>
                             <p class="product-shop"><i class="fa-solid fa-store"></i> Beachy Crafts</p>
                             <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-regular fa-star"></i>
                                 <span class="rating-score">4.2</span>
                             </div>
                             <p class="price">130.000đ</p>
                         </div>
                     </div>
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'" style="cursor: pointer;">
+                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
+                        style="cursor: pointer;">
                         <img src="../assets/img/products/phoneStrap_01.jpg" alt="Dây đeo điện thoại">
                         <div class="product-info">
                             <h3>Dây đeo đt Custom</h3>
                             <p class="product-shop"><i class="fa-solid fa-store"></i> Cute Phone</p>
                             <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i>
                                 <span class="rating-score">4.9</span>
                             </div>
                             <p class="price">90.000đ</p>
                         </div>
                     </div>
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'" style="cursor: pointer;">
+                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
+                        style="cursor: pointer;">
                         <img src="../assets/img/products/bracelet_02.jpg" alt="Vòng tay">
                         <div class="product-info">
                             <h3>Vòng tay vintage</h3>
                             <p class="product-shop"><i class="fa-solid fa-store"></i> Xu?ng M?c An</p>
                             <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-regular fa-star"></i>
                                 <span class="rating-score">4.1</span>
                             </div>
                             <p class="price">120.000đ</p>
                         </div>
                     </div>
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'" style="cursor: pointer;">
+                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
+                        style="cursor: pointer;">
                         <img src="../assets/img/products/necklace_03.jpg" alt="Dây chuyền">
                         <div class="product-info">
                             <h3>Dây chuyền đá quý</h3>
                             <p class="product-shop"><i class="fa-solid fa-store"></i> Ngọc Craft</p>
                             <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i>
                                 <span class="rating-score">4.9</span>
                             </div>
                             <p class="price">450.000đ</p>
@@ -167,49 +198,61 @@
                     </div>
 
                     <!-- Products 9-12 -->
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'" style="cursor: pointer;">
+                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
+                        style="cursor: pointer;">
                         <img src="../assets/img/products/anket_02.jpg" alt="Lắc chân">
                         <div class="product-info">
                             <h3>Lắc chân biển</h3>
                             <p class="product-shop"><i class="fa-solid fa-store"></i> Handmade By My</p>
                             <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star-half-stroke"></i>
                                 <span class="rating-score">4.5</span>
                             </div>
                             <p class="price">190.000đ</p>
                         </div>
                     </div>
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'" style="cursor: pointer;">
+                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
+                        style="cursor: pointer;">
                         <img src="../assets/img/products/armlet_02.jpg" alt="Vòng tay bắp">
                         <div class="product-info">
                             <h3>Vòng tay bắp cá tính</h3>
                             <p class="product-shop"><i class="fa-solid fa-store"></i> Vintage Vibes</p>
                             <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i>
                                 <span class="rating-score">5.0</span>
                             </div>
                             <p class="price">210.000đ</p>
                         </div>
                     </div>
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'" style="cursor: pointer;">
+                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
+                        style="cursor: pointer;">
                         <img src="../assets/img/products/belly_02.jpg" alt="Vòng bụng">
                         <div class="product-info">
                             <h3>Vòng bụng đi biển</h3>
                             <p class="product-shop"><i class="fa-solid fa-store"></i> Beachy Crafts</p>
                             <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-regular fa-star"></i>
                                 <span class="rating-score">4.0</span>
                             </div>
                             <p class="price">145.000đ</p>
                         </div>
                     </div>
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'" style="cursor: pointer;">
+                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
+                        style="cursor: pointer;">
                         <img src="../assets/img/products/phoneStrap_02.jpg" alt="Dây đeo điện thoại">
                         <div class="product-info">
                             <h3>Dây đeo đt hạt cườm</h3>
                             <p class="product-shop"><i class="fa-solid fa-store"></i> Cute Phone</p>
                             <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star-half-stroke"></i>
                                 <span class="rating-score">4.7</span>
                             </div>
                             <p class="price">85.000đ</p>
@@ -217,49 +260,61 @@
                     </div>
 
                     <!-- Products 13-16 -->
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'" style="cursor: pointer;">
+                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
+                        style="cursor: pointer;">
                         <img src="../assets/img/products/bracelet_03.jpg" alt="Vòng tay Handmade">
                         <div class="product-info">
                             <h3>Vòng tay chỉ đỏ may mắn</h3>
                             <p class="product-shop"><i class="fa-solid fa-store"></i> Xu?ng M?c An</p>
                             <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i>
                                 <span class="rating-score">5.0</span>
                             </div>
                             <p class="price">99.000đ</p>
                         </div>
                     </div>
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'" style="cursor: pointer;">
+                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
+                        style="cursor: pointer;">
                         <img src="../assets/img/products/necklace_04.jpg" alt="Dây chuyền Charm">
                         <div class="product-info">
                             <h3>Dây chuyền bạc 925</h3>
                             <p class="product-shop"><i class="fa-solid fa-store"></i> Silver Soul Studio</p>
                             <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i>
                                 <span class="rating-score">4.9</span>
                             </div>
                             <p class="price">550.000đ</p>
                         </div>
                     </div>
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'" style="cursor: pointer;">
+                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
+                        style="cursor: pointer;">
                         <img src="../assets/img/products/anket_03.jpg" alt="Lắc chân">
                         <div class="product-info">
                             <h3>Lắc chân vintage</h3>
                             <p class="product-shop"><i class="fa-solid fa-store"></i> Handmade By My</p>
                             <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-regular fa-star"></i>
                                 <span class="rating-score">4.3</span>
                             </div>
                             <p class="price">160.000đ</p>
                         </div>
                     </div>
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'" style="cursor: pointer;">
+                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
+                        style="cursor: pointer;">
                         <img src="../assets/img/products/belly_03.jpg" alt="Vòng bụng">
                         <div class="product-info">
                             <h3>Vòng bụng kim loại</h3>
                             <p class="product-shop"><i class="fa-solid fa-store"></i> Vintage Vibes</p>
                             <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star-half-stroke"></i>
                                 <span class="rating-score">4.6</span>
                             </div>
                             <p class="price">250.000đ</p>
@@ -267,49 +322,61 @@
                     </div>
 
                     <!-- Products 17-20 -->
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'" style="cursor: pointer;">
+                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
+                        style="cursor: pointer;">
                         <img src="../assets/img/products/phoneStrap_03.jpg" alt="Dây đeo điện thoại">
                         <div class="product-info">
                             <h3>Dây đeo đt gấu bông</h3>
                             <p class="product-shop"><i class="fa-solid fa-store"></i> Cute Phone</p>
                             <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i>
                                 <span class="rating-score">4.9</span>
                             </div>
                             <p class="price">110.000đ</p>
                         </div>
                     </div>
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'" style="cursor: pointer;">
+                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
+                        style="cursor: pointer;">
                         <img src="../assets/img/products/bracelet_04.jpg" alt="Vòng tay Handmade">
                         <div class="product-info">
                             <h3>Vòng tay ngọc trai</h3>
                             <p class="product-shop"><i class="fa-solid fa-store"></i> Xu?ng M?c An</p>
                             <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star-half-stroke"></i>
                                 <span class="rating-score">4.8</span>
                             </div>
                             <p class="price">320.000đ</p>
                         </div>
                     </div>
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'" style="cursor: pointer;">
+                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
+                        style="cursor: pointer;">
                         <img src="../assets/img/products/necklace_05.jpg" alt="Dây chuyền">
                         <div class="product-info">
                             <h3>Dây chuyền titan</h3>
                             <p class="product-shop"><i class="fa-solid fa-store"></i> Silver Soul Studio</p>
                             <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i>
                                 <span class="rating-score">5.0</span>
                             </div>
                             <p class="price">280.000đ</p>
                         </div>
                     </div>
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'" style="cursor: pointer;">
+                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
+                        style="cursor: pointer;">
                         <img src="../assets/img/products/bracelet_05.jpg" alt="Vòng tay Handmade">
                         <div class="product-info">
                             <h3>Vòng tay mix hạt</h3>
                             <p class="product-shop"><i class="fa-solid fa-store"></i> Xu?ng M?c An</p>
                             <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-regular fa-star"></i>
                                 <span class="rating-score">4.2</span>
                             </div>
                             <p class="price">150.000đ</p>
@@ -343,7 +410,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             const productGrid = document.querySelector('.product-grid');
             const products = Array.from(productGrid.querySelectorAll('.product-card'));
-            
+
             // Function to extract numerical price
             const getPrice = (card) => {
                 const priceText = card.querySelector('.price').innerText;
@@ -423,7 +490,8 @@
             document.getElementById('sort-select').addEventListener('change', applyFilterAndSort);
         });
     </script>
-<script src="../assets/js/popup.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/popup.js"></script>
 </body>
-</html>
 
+</html>

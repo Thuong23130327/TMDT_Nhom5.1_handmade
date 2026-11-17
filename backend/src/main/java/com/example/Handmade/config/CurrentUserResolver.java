@@ -19,8 +19,9 @@ public class CurrentUserResolver {
         if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
-        String username = auth.getName();
-        return userRepository.findByUsernameIgnoreCase(username)
+        String identifier = auth.getName();
+        return userRepository.findByEmailIgnoreCase(identifier)
+                .or(() -> userRepository.findByUsernameIgnoreCase(identifier))
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
     }
 }

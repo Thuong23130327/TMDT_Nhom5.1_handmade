@@ -29,10 +29,10 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('czShopInfo').innerHTML =
     `Yêu cầu Custom này sẽ gửi trực tiếp đến <strong>${shopName}</strong> — shop sẽ báo giá thực tế cho riêng bạn.`;
   const LIBRARY_ITEMS = [
-    { name: 'Hạt chữ', price: 10000, image: 'https://myumemories.com/wp-content/uploads/2025/11/3-65-300x300.png' },
-    { name: 'Charm hoa', price: 40000, image: 'https://myumemories.com/wp-content/uploads/2026/01/3-10-300x300.png' },
-    { name: 'Charm tim', price: 35000, image: 'https://myumemories.com/wp-content/uploads/2026/01/8-10-300x300.png' },
-    { name: 'Charm cỏ 4 lá', price: 38000, image: 'https://myumemories.com/wp-content/uploads/2025/11/8-28-300x300.png' },
+    { name: 'Hạt chữ H', price: 10000, image: '../assets/img/products/letter_H.png' },
+    { name: 'Hạt chữ T', price: 10000, image: '../assets/img/products/letter_T.png' },
+    { name: 'Charm chuông bạc', price: 35000, image: '../assets/img/products/anket_01.jpg' },
+    { name: 'Charm cỏ 4 lá', price: 38000, image: '../assets/img/products/necklace_04.jpg' },
     ...EXTRA_CHARMS.map(c => ({ name: c.name, price: c.price, image: c.image }))
   ];
 
