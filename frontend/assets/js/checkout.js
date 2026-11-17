@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
   try {
     const stored = sessionStorage.getItem("auracraft_cart");
     cart = stored ? JSON.parse(stored) : null;
-  } catch (e) {}
+  } catch (e) { }
 
   if (!cart || !cart.items || cart.items.length === 0) {
     loadCartFromAPI();
@@ -177,7 +177,7 @@ async function submitOrder(fullNameEl, phoneEl, addressEl, noteEl, paymentMethod
     if (paymentMethod === "VNPAY") {
       // Chuyển hướng sang Cổng thanh toán VNPay Sandbox thực tế
       if (btnText) btnText.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang chuyển hướng sang cổng VNPay...';
-      
+
       const currentOrigin = window.location.origin;
       const currentPath = window.location.pathname;
       const successPath = currentPath.substring(0, currentPath.lastIndexOf("/")) + "/success.html";

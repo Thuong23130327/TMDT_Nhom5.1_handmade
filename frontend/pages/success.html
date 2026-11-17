@@ -23,7 +23,8 @@
 
                 <h1 id="successHeading">Đặt hàng thành công!</h1>
                 <p class="success-subtext" id="successSubtext">
-                    Cảm ơn bạn đã lựa chọn AuraCraft. Đơn hàng của bạn đã được tiếp nhận và chuyển đến nghệ nhân để chuẩn bị chế tác và giao hàng.
+                    Cảm ơn bạn đã lựa chọn AuraCraft. Đơn hàng của bạn đã được tiếp nhận và chuyển đến nghệ nhân để
+                    chuẩn bị chế tác và giao hàng.
                 </p>
 
                 <div class="order-code-box">
@@ -102,7 +103,7 @@
             try {
                 const raw = sessionStorage.getItem("auracraft_latest_order");
                 if (raw) orderInfo = JSON.parse(raw);
-            } catch (e) {}
+            } catch (e) { }
 
             const displayCode = orderIdParam || (orderInfo ? orderInfo.orderId : "");
             if (displayCode) {
@@ -152,10 +153,8 @@
                     if (code && navigator.clipboard) {
                         navigator.clipboard.writeText(code).then(() => {
                             alert("Đã sao chép mã đơn hàng: " + code);
-                        }).catch(() => {});
+                        }).catch(() => { });
                     }
-                });
-            }
                 });
             }
         });
