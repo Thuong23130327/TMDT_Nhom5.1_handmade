@@ -56,12 +56,43 @@ function logout() {
 
 window.logout = logout;
 
+// ---- Cập nhật số lượng sản phẩm trên icon Giỏ hàng ----
+async function updateCartBadge() {
+  const badge = document.getElementById("cartBadge");
+  if (!badge) return;
+  if (!isLoggedIn()) {
+    badge.style.display = "none";
+    badge.textContent = "0";
+    return;
+  }
+  try {
+    const res = await apiFetch("GET", "/cart");
+    if (res && res.items && res.items.length > 0) {
+      const totalQty = res.items.reduce((sum, item) => sum + (item.quantity || 1), 0);
+      if (totalQty > 0) {
+        badge.textContent = totalQty > 99 ? "99+" : totalQty;
+        badge.style.display = "inline-block";
+      } else {
+        badge.style.display = "none";
+        badge.textContent = "0";
+      }
+    } else {
+      badge.style.display = "none";
+      badge.textContent = "0";
+    }
+  } catch (e) {
+    badge.style.display = "none";
+  }
+}
+
+// ---- Expose global API helper ----
 window.AuraCraft = {
   API_BASE,
   getToken,
   getCurrentUser,
   isLoggedIn,
   logout,
+  updateCartBadge,
   apiGet: (path) => apiFetch("GET", path),
   apiPost: (path, body) => apiFetch("POST", path, body),
   apiPut: (path, body) => apiFetch("PUT", path, body),
@@ -145,10 +176,13 @@ function syncHeaderAuth() {
       }
     }
     if (navLogout) navLogout.style.display = "inline-flex";
+    updateCartBadge();
   } else {
     if (navLogin) navLogin.style.display = "";
     if (navProfile) navProfile.style.display = "none";
     if (navLogout) navLogout.style.display = "none";
+    const badge = document.getElementById("cartBadge");
+    if (badge) badge.style.display = "none";
   }
 }
 

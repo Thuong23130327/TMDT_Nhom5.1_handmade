@@ -144,15 +144,18 @@
                 }
             }
 
-            const copyBtn = document.getElementById("btnCopyCode");
-            if (copyBtn) {
-                copyBtn.addEventListener("click", () => {
+            // Copy mã đơn hàng
+            const btnCopy = document.getElementById("btnCopyCode");
+            if (btnCopy) {
+                btnCopy.addEventListener("click", () => {
                     const code = document.getElementById("displayOrderCode")?.textContent || "";
                     if (code && navigator.clipboard) {
                         navigator.clipboard.writeText(code).then(() => {
                             alert("Đã sao chép mã đơn hàng: " + code);
-                        });
+                        }).catch(() => {});
                     }
+                });
+            }
                 });
             }
         });

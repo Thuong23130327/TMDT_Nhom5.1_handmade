@@ -1,8 +1,12 @@
+// ============================================================
+// AuraCraft - cart.js (kết nối Backend API /api/cart)
+// ============================================================
+
 const SHIPPING_FEE = 25300;
 
 function requireLogin() {
   if (!window.AuraCraft || !window.AuraCraft.isLoggedIn()) {
-    window.location.href = "login.html?redirect=cart.html";
+    window.location.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`;
     return false;
   }
   return true;
@@ -13,14 +17,13 @@ function formatVND(amount) {
 }
 
 async function loadCart() {
-  if (!requireLogin()) return;
-
   const container = document.querySelector(".cart-items");
   const summaryEl = document.querySelector(".cart-summary");
 
-  if (container) {
-    container.innerHTML = '<p class="loading-msg" style="text-align:center;padding:40px;color:#888"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải giỏ hàng...</p>';
-  }
+  if (!container) return;
+  if (!requireLogin()) return;
+
+  container.innerHTML = '<p class="loading-msg" style="text-align:center;padding:40px;color:#888"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải giỏ hàng...</p>';
 
   try {
     const cart = await window.AuraCraft.apiGet("/cart");
@@ -53,6 +56,7 @@ function renderCart(cart, container, summaryEl) {
         <a href="products.html" class="btn btn-primary" style="display:inline-block;margin-top:10px;">Khám phá sản phẩm</a>
       </div>`;
     if (summaryEl) summaryEl.style.display = "none";
+    if (window.AuraCraft?.updateCartBadge) window.AuraCraft.updateCartBadge();
     return;
   }
 
@@ -79,23 +83,27 @@ function renderCart(cart, container, summaryEl) {
       html += `
       <div class="cart-item-content" data-id="${item.id}">
         <div class="cart-item-left">
-          <img src="${imgUrl}" alt="${item.productName}" onerror="this.src='https://placehold.co/80x80/f5ece8/7b5144?text=SP'">
-          <div class="item-info">
-            <h3>${item.productName}</h3>
-            ${item.customNotes ? `<p class="item-category">Ghi chú: ${item.customNotes}</p>` : ""}
-            <p class="item-price">${formatVND(item.unitPrice)}</p>
+          <img src="${imgUrl}" alt="${item.productName}" class="cart-item-img"
+               onerror="this.src='https://placehold.co/80x80/f5ece8/7b5144?text=SP'">
+          <div class="cart-item-info">
+            <h3 class="cart-item-title">${item.productName}</h3>
+            ${item.customNotes ? `<p class="cart-item-variant">Tùy biến: ${item.customNotes}</p>` : ""}
+            <div class="cart-item-price-mobile">${formatVND(item.unitPrice)}</div>
           </div>
         </div>
-        <div class="cart-item-right">
-          <div class="item-quantity">
-            <button class="qty-btn" data-action="decrease" data-id="${item.id}" data-qty="${item.quantity}">−</button>
-            <span class="qty-value">${item.quantity}</span>
+        <div class="cart-item-middle">
+          <span class="unit-price">${formatVND(item.unitPrice)}</span>
+          <div class="quantity-control">
+            <button class="qty-btn" data-action="decrease" data-id="${item.id}" data-qty="${item.quantity}">-</button>
+            <input type="number" class="qty-input" value="${item.quantity}" readonly>
             <button class="qty-btn" data-action="increase" data-id="${item.id}" data-qty="${item.quantity}">+</button>
           </div>
-          <div class="item-subtotal">${formatVND(item.subtotal)}</div>
-          <div class="item-actions">
-            <button class="action-btn remove-btn" data-id="${item.id}">Xóa</button>
-          </div>
+          <span class="subtotal-price">${formatVND(item.subtotal)}</span>
+        </div>
+        <div class="cart-item-right">
+          <button class="remove-btn" data-id="${item.id}" title="Xóa sản phẩm">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
         </div>
       </div>`;
     });
@@ -105,9 +113,10 @@ function renderCart(cart, container, summaryEl) {
 
   container.innerHTML = html;
 
-  const subtotal = cart.total;
-  const total = Number(subtotal) + SHIPPING_FEE;
   if (summaryEl) {
+    const subtotal = cart.totalAmount || 0;
+    const total = subtotal + SHIPPING_FEE;
+
     summaryEl.style.display = "";
     summaryEl.innerHTML = `
       <div class="summary-row">
@@ -128,6 +137,7 @@ function renderCart(cart, container, summaryEl) {
   }
 
   sessionStorage.setItem("auracraft_cart", JSON.stringify(cart));
+  if (window.AuraCraft?.updateCartBadge) window.AuraCraft.updateCartBadge();
   attachCartEvents();
 }
 
@@ -150,6 +160,7 @@ function attachCartEvents() {
         btn.disabled = true;
         await window.AuraCraft.apiPut(`/cart/${id}`, { quantity: newQty });
         await loadCart();
+        if (window.AuraCraft?.updateCartBadge) window.AuraCraft.updateCartBadge();
       } catch (err) {
         alert(err.message);
         btn.disabled = false;
@@ -169,6 +180,7 @@ async function removeCartItem(id) {
   try {
     await window.AuraCraft.apiDelete(`/cart/${id}`);
     await loadCart();
+    if (window.AuraCraft?.updateCartBadge) window.AuraCraft.updateCartBadge();
   } catch (err) {
     alert("Không thể xóa sản phẩm: " + err.message);
   }
@@ -187,14 +199,20 @@ function proceedCheckout() {
 window.AuraCraftCart = {
   async addProduct(productId, quantity = 1, notes = "") {
     if (!window.AuraCraft || !window.AuraCraft.isLoggedIn()) {
-      window.location.href = "login.html";
-      return;
+      alert("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
+      window.location.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`;
+      return false;
     }
     try {
       await window.AuraCraft.apiPost("/cart", { productId, quantity, customNotes: notes });
-      alert("Đã thêm vào giỏ hàng thành công!");
+      alert("Đã thêm sản phẩm vào giỏ hàng thành công!");
+      if (window.AuraCraft?.updateCartBadge) {
+        await window.AuraCraft.updateCartBadge();
+      }
+      return true;
     } catch (err) {
       alert("Không thể thêm vào giỏ: " + err.message);
+      return false;
     }
   }
 };
