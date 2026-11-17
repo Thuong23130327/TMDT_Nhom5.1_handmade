@@ -158,6 +158,16 @@ class AuthServiceImplTest {
     }
 
     @Test
+    void requestPasswordResetThrowsWhenEmailNotRegistered() {
+        com.example.Handmade.dto.request.ForgotPasswordRequest request = new com.example.Handmade.dto.request.ForgotPasswordRequest();
+        request.setEmail("notfound@example.com");
+        when(userRepository.findByEmailForUpdate("notfound@example.com")).thenReturn(Optional.empty());
+
+        AppException exception = assertThrows(AppException.class, () -> authService.requestPasswordReset(request));
+        assertEquals(ErrorCode.EMAIL_NOT_REGISTERED, exception.getErrorCode());
+    }
+
+    @Test
     void logoutWithoutRefreshTokenIsSafe() {
         authService.logout(null);
 

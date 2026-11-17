@@ -20,6 +20,7 @@ public enum ErrorCode {
     PASSWORD_REUSED(1012, "Mật khẩu mới không được trùng mật khẩu hiện tại", HttpStatus.BAD_REQUEST),
     INVALID_REFRESH_TOKEN(1013, "Refresh token không hợp lệ hoặc đã hết hạn", HttpStatus.UNAUTHORIZED),
     PASSWORD_TOO_LONG(1014, "Mật khẩu không được vượt quá 72 byte UTF-8", HttpStatus.BAD_REQUEST),
+    EMAIL_NOT_REGISTERED(1016, "Email này chưa được đăng ký tài khoản trong hệ thống", HttpStatus.NOT_FOUND),
     SYSTEM_ERROR(9999, "Hệ thống gặp sự cố, vui lòng thử lại sau", HttpStatus.INTERNAL_SERVER_ERROR);
 
     private final int code;

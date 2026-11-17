@@ -63,3 +63,5 @@ desktop.ini
 # 6. File môi trường bí mật
 .env
 .env.local
+**/application-local.properties
+application-local.properties
