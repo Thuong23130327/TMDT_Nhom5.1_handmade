@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Chi tiết sản phẩm — AuraCraft</title>
+<title>Chi tiết sản phẩm - AuraCraft</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="../assets/css/style.css">
 <link rel="stylesheet" href="../assets/css/header-footer.css">
@@ -14,21 +14,21 @@
 <main class="container pd-wrap">
 
   <nav class="breadcrumb">
-    <a href="products.html">Sản phẩm</a> / <span id="pdBreadType">—</span> / <span id="pdBreadName">—</span>
+    <a href="products.html">Sản phẩm</a> / <span id="pdBreadType">-</span> / <span id="pdBreadName">-</span>
   </nav>
 
   <section class="pd-top">
     <div class="pd-gallery">
       <div class="pd-gallery-main" id="pdGalleryMain">
         <div class="pd-gallery-zoom" id="pdGalleryZoom"></div>
-        —
+        -
       </div>
       <div class="pd-gallery-thumbs" id="pdThumbs"></div>
     </div>
 
     <div class="pd-info">
-      <span class="tag" id="pdTag">—</span>
-      <h1 id="pdTitle">—</h1>
+      <span class="tag" id="pdTag">-</span>
+      <h1 id="pdTitle">-</h1>
       <div class="pd-rating" id="pdRating"></div>
       <div class="pd-price" id="pdPrice"></div>
       <p id="pdDesc"></p>
@@ -56,7 +56,7 @@
       <div class="pd-qty-row">
         <label for="qty">Số lượng</label>
         <div class="stepper">
-          <button type="button" id="qtyMinus" aria-label="Giảm">−</button>
+          <button type="button" id="qtyMinus" aria-label="Giảm">-</button>
           <input type="number" id="qty" value="1" min="1">
           <button type="button" id="qtyPlus" aria-label="Tăng">+</button>
         </div>
@@ -68,7 +68,7 @@
       </div>
 
       <a href="#" class="custom-cta" id="pdCustomCta">
-        <span class="custom-cta-icon">✎</span>
+        <span class="custom-cta-icon">✦</span>
         <span>
           <strong id="pdCustomCtaTitle">Custom sản phẩm này</strong>
           <small id="pdCustomCtaSub">Kéo thả vật liệu, charm vào đúng vị trí mong muốn</small>
@@ -85,7 +85,7 @@
         <strong class="pd-shop-name" id="pdShopName">Tên shop</strong>
         <span class="pd-shop-meta" id="pdShopMeta">★ 4.9 · 82 đơn Custom</span>
       </span>
-      <span class="pd-shop-arrow">›</span>
+      <span class="pd-shop-arrow">&gt;</span>
     </a>
   </section>
 
@@ -105,34 +105,69 @@
         <div class="review-head"><strong>Minh Anh</strong><span>★★★★★</span></div>
         <p>Sản phẩm đẹp hơn ảnh, giao hàng nhanh, đóng gói cẩn thận.</p>
         <div class="review-images">
-          <img src="https://myumemories.com/wp-content/uploads/2026/01/z7461915860226_00fb3ad756b0b24c78c89caf38ad44ba-768x512.jpg" alt="Ảnh thực tế do khách gửi kèm đánh giá">
+          <img src="../assets/img/products/bracelet_01.jpg" alt="Ảnh thực tế do khách gửi kèm đánh giá">
         </div>
       </article>
       <article class="review-card card">
         <div class="review-head"><strong>Thảo Vy</strong><span>★★★★★</span></div>
         <p>Chất lượng tốt, đúng như mô tả, sẽ ủng hộ shop tiếp.</p>
         <div class="review-images">
-          <img src="https://myumemories.com/wp-content/uploads/2026/02/3-1-300x300.png" alt="Ảnh thực tế do khách gửi kèm đánh giá">
-          <img src="https://myumemories.com/wp-content/uploads/2025/11/8-28-300x300.png" alt="Ảnh thực tế do khách gửi kèm đánh giá">
+          <img src="../assets/img/products/bracelet_02.jpg" alt="Ảnh thực tế do khách gửi kèm đánh giá">
+          <img src="../assets/img/products/necklace_04.jpg" alt="Ảnh thực tế do khách gửi kèm đánh giá">
         </div>
       </article>
       <article class="review-card card">
-        <div class="review-head"><strong>Gia Bảo</strong><span>★★★★☆</span></div>
+        <div class="review-head"><strong>Gia Bảo</strong><span>★★★★★</span></div>
         <p>Ổn trong tầm giá, mong shop ra thêm nhiều mẫu mới.</p>
         <div class="review-images">
-          <img src="https://myumemories.com/wp-content/uploads/2026/01/2-11-300x300.png" alt="Ảnh thực tế do khách gửi kèm đánh giá">
+          <img src="../assets/img/products/anket_01.jpg" alt="Ảnh thực tế do khách gửi kèm đánh giá">
         </div>
       </article>
     </div>
   </section>
+  <!-- AI RECOMMENDATION (COSINE SIMILARITY) -->
+  <section class="ai-recommendations-section" id="aiRecommendationsSection" hidden>
+    <div class="ai-sec-header">
+      <div class="ai-sec-title-wrap">
+        <span class="ai-pill-tag"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Gợi ý thông minh</span>
+        <h2 class="ai-sec-title">Sản phẩm tương tự được AI đề xuất</h2>
+        <p class="ai-sec-subtitle">Phân tích không gian vector đặc trưng (chất liệu, kiểu dáng, mức giá) qua thuật toán <b>Cosine Similarity</b></p>
+      </div>
+      <button type="button" class="btn-ai-explain" id="btnAiExplain">
+        <i class="fa-solid fa-brain"></i> Giải thích thuật toán AI
+      </button>
+    </div>
+    <div class="ai-recommend-grid" id="aiRecommendationsGrid"></div>
+  </section>
+
+  <!-- MODAL GIẢI THÍCH THUẬT TOÁN COSINE -->
+  <div class="ai-modal-overlay" id="aiExplainModal">
+    <div class="ai-modal-box">
+      <div class="ai-modal-head">
+        <div class="ai-modal-head-title">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+          <h3>Cơ chế thuật toán AI Cosine Similarity - AuraCraft</h3>
+        </div>
+        <button type="button" class="ai-modal-close" id="aiExplainClose" aria-label="Đóng">&times;</button>
+      </div>
+      <div class="ai-modal-body" id="aiExplainContent">
+        <!-- Render tự động bởi AuraCraftAI -->
+      </div>
+    </div>
+  </div>
+
   <section class="pd-shop-suggestions" id="pdShopSuggestions" hidden>
-    <h2 class="section-title">Sản phẩm tương tự</h2>
+    <h2 class="section-title">Sản phẩm khác từ các nghệ nhân</h2>
     <div class="shop-suggest-grid" id="pdShopSuggestGrid"></div>
   </section>
 
 </main>
 <div id="footer-placeholder"></div>
+<!-- Đầy đủ script: data, AI recommendation, auth, cart, detail -->
 <script src="../assets/js/products-data.js"></script>
+<script src="../assets/js/ai-recommendation.js"></script>
+<script src="../assets/js/auth.js"></script>
+<script src="../assets/js/cart.js"></script>
 <script src="../assets/js/product-detail.js"></script>
 <script>
         fetch('../components/header.html').then(response => response.text()).then(data => { let html = data.replace(/href="index\.html"/g, 'href="../index.html"'); document.getElementById('header-placeholder').innerHTML = html; }).catch(error => console.error('Error loading header:', error));
