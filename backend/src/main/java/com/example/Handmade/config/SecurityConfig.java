@@ -47,7 +47,8 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers("/", "/index.html", "/**/*.html", "/**/*.css", "/**/*.js", "/**/*.png",
                         "/**/*.jpg", "/**/*.jpeg", "/**/*.svg", "/**/*.ico").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/products", "/api/products/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/products", "/api/products/**", "/api/v1/products", "/api/v1/products/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/orders/my-orders", "/api/v1/orders/my-orders", "/api/orders/buyer/**", "/api/v1/orders/buyer/**").permitAll()
                 .antMatchers("/api/payment/**").permitAll()
                 .antMatchers("/api/v1/admin/**").permitAll()
                 .anyRequest().authenticated();

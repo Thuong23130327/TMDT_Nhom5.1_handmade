@@ -4,11 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lịch sử mua hàng - AuraCraft</title>
+    <!-- Font Awesome (Dành cho Header & Footer Icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/header-footer.css">
     <link rel="stylesheet" href="../assets/css/pages/profile.css">
+    <style>
+        .btn-view-detail {
+            background-color: #425B9A !important;
+            color: #ffffff !important;
+            border: 1px solid #425B9A !important;
+            font-weight: 600 !important;
+            box-shadow: 0 2px 6px rgba(66, 91, 154, 0.2);
+            transition: all 0.2s ease !important;
+        }
+        .btn-view-detail:hover {
+            background-color: #334677 !important;
+            border-color: #334677 !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(66, 91, 154, 0.3);
+        }
+
+        /* Định dạng in Biên lai / Hóa đơn sạch đẹp */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #orderDetailModal, #orderDetailModal * {
+                visibility: visible;
+            }
+            #orderDetailModal {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                background: none !important;
+                padding: 0 !important;
+            }
+            .order-modal-dialog {
+                box-shadow: none !important;
+                border: 1px solid #ddd !important;
+                max-width: 100% !important;
+                width: 100% !important;
+            }
+            #btnCloseOrderModal, #btnPrintReceipt, #btnModalCloseAction {
+                display: none !important;
+            }
+        }
+    </style>
 </head>
 <body>
 <div id="header-placeholder"></div>
@@ -33,7 +78,7 @@
         </div>
 
         <div>
-            <a href="/products" class="btn btn-primary" style="padding: 8px 18px; font-size: 13.5px; border-radius: 8px;">
+            <a href="products.html" class="btn btn-primary" style="padding: 8px 18px; font-size: 13.5px; border-radius: 8px;">
                 <i class="bi bi-bag-plus"></i> Khám phá mua sắm
             </a>
         </div>
@@ -45,19 +90,19 @@
         <aside class="profile-sidebar">
             <ul class="profile-nav-menu">
                 <li class="profile-nav-item">
-                    <a href="/profile-info">
+                    <a href="profile-info.html">
                         <i class="bi bi-person"></i>
                         <span>Thông tin cá nhân</span>
                     </a>
                 </li>
                 <li class="profile-nav-item active">
-                    <a href="/profile">
+                    <a href="profile.html">
                         <i class="bi bi-bag-check"></i>
                         <span>Đơn hàng đã mua</span>
                     </a>
                 </li>
                 <li class="profile-nav-item">
-                    <a href="/pages/profile-favorites.html">
+                    <a href="profile-favorites.html">
                         <i class="bi bi-heart"></i>
                         <span>Sản phẩm yêu thích</span>
                     </a>
@@ -114,11 +159,29 @@
     </div>
 </main>
 
+<!-- MODAL XEM CHI TIẾT ĐƠN HÀNG CHUYÊN NGHIỆP -->
+<div class="order-modal-backdrop" id="orderDetailModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:9999; align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(3px);">
+    <div class="order-modal-dialog" style="background:#ffffff; border-radius:16px; width:100%; max-width:680px; max-height:90vh; overflow-y:auto; box-shadow:0 12px 40px rgba(0,0,0,0.25); border:1px solid #ebdcd3; display:flex; flex-direction:column;">
+        <div class="order-modal-header" style="padding:16px 20px; border-bottom:1px solid #f0ece6; display:flex; justify-content:space-between; align-items:center; background:#faf6f4; border-radius:16px 16px 0 0;">
+            <div>
+                <h3 style="margin:0; font-size:1.15rem; color:#425B9A; display:flex; align-items:center; gap:8px;">
+                    <i class="bi bi-receipt-cutoff"></i> Chi Tiết Đơn Hàng <span id="modalOrderCode" style="color:#7b5144; font-weight:700;">#ORD-...</span>
+                </h3>
+                <p style="margin:3px 0 0; font-size:0.82rem; color:#888;" id="modalOrderDate">Đặt lúc ...</p>
+            </div>
+            <button type="button" id="btnCloseOrderModal" style="background:none; border:none; font-size:1.6rem; color:#888; cursor:pointer; line-height:1; padding:0 4px;" aria-label="Đóng">&times;</button>
+        </div>
+        <div class="order-modal-body" id="modalOrderContent" style="padding:20px; font-size:0.9rem;">
+            <!-- Render tự động bởi profile-orders.js -->
+        </div>
+    </div>
+</div>
+
 <div id="footer-placeholder"></div>
 
 <script src="../assets/js/auth.js"></script>
 <script src="../assets/js/profile-sync.js"></script>
-<script src="../assets/js/profile-orders.js"></script>
+<script src="../assets/js/profile-orders.js?v=20261119_v4"></script>
 <script>
     fetch('../components/header.html')
         .then(r => r.text())
