@@ -47,8 +47,8 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers("/", "/index.html", "/**/*.html", "/**/*.css", "/**/*.js", "/**/*.png",
                         "/**/*.jpg", "/**/*.jpeg", "/**/*.svg", "/**/*.ico").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/products", "/api/products/**").permitAll()
-                .antMatchers("/api/payment/**").permitAll()
+                .antMatchers("/products", "/products/**", "/cart", "/checkout", "/customizer", "/buyer-requests").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/products", "/api/products/**").permitAll()  .antMatchers("/api/payment/**").permitAll()
                 .antMatchers("/api/v1/admin/**").permitAll()
                 .anyRequest().authenticated();
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

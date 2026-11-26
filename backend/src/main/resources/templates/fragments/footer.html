@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- ĐỊNH NGHĨA FRAGMENT: siteFooter -->
+<footer th:fragment="siteFooter" class="site-footer">
+    <div class="container">
+        <div class="footer-inner">
+            <div class="footer-col">
+                <a th:href="@{/}" class="logo-footer">
+                    <span class="logo-icon">A</span>uraCraft
+                </a>
+                <p>Nền tảng thương mại điện tử kết nối người mua và nghệ nhân chế tác đồ thủ công độc bản.</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4>Khám phá</h4>
+                <a th:href="@{/products}">Tất cả sản phẩm</a>
+                <a th:href="@{/customizer}">Tự tay thiết kế</a>
+                <a th:href="@{/buyer-requests}">Chợ báo giá</a>
+            </div>
+
+            <div class="footer-col">
+                <h4>Hỗ trợ</h4>
+                <a href="#">Chính sách giao hàng</a>
+                <a href="#">Chính sách bảo hành</a>
+                <a href="#">Hướng dẫn thanh toán</a>
+            </div>
+
+            <div class="footer-col">
+                <h4>Liên hệ</h4>
+                <p>Email: contact@auracraft.vn</p>
+                <p>Hotline: 0901 234 567</p>
+                <p>Địa chỉ: TP. Hồ Chí Minh</p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 AuraCraft — Nhóm 5.1 TMĐT. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

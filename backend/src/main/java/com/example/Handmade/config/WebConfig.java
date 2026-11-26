@@ -33,5 +33,13 @@ public class WebConfig implements WebMvcConfigurer {
 
         registry.addResourceHandler("/frontend/**")
                 .addResourceLocations(frontendLocation, "file:frontend/", "file:../frontend/");
+
+        File assetsDir = new File(frontendDir, "assets");
+        String assetsLocation = assetsDir.exists()
+                ? assetsDir.toURI().toString()
+                : "file:frontend/assets/";
+
+        registry.addResourceHandler("/assets/**")
+                .addResourceLocations(assetsLocation, "file:frontend/assets/", "file:../frontend/assets/");
     }
 }

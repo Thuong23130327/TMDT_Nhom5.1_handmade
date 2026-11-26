@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public class AnalyticsDtos {
-
     @Getter
     @Setter
     @NoArgsConstructor
@@ -21,12 +20,7 @@ public class AnalyticsDtos {
         private String startDate;
         private String endDate;
     }
-
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
+    @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class CategoryChartResponse {
         private List<String> labels;
         private List<BigDecimal> data;
@@ -34,18 +28,7 @@ public class AnalyticsDtos {
         private BigDecimal totalAmount;
     }
 
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    public static class AnalyticsSummaryResponse {
-        private BigDecimal totalGmv;
-        private BigDecimal totalFee;
-        private BigDecimal paidToArtisans;
-        private Long totalOrders;
-        private Long completedOrders;
-        private Long totalUsers;
-    }
-}
 
+
+
+}

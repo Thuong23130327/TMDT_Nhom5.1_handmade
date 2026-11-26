@@ -13,11 +13,19 @@ public class ApiResponse<T> {
     private T result;
 
     public static <T> ApiResponse<T> ok(T data) {
-        return new ApiResponse<>(1000, "Thành công", data);
+        return new ApiResponse<>(200, "Thành công", data);
     }
 
     public static <T> ApiResponse<T> ok(String message, T data) {
-        return new ApiResponse<>(1000, message, data);
+        return new ApiResponse<>(200, message, data);
+    }
+
+    public static <T> ApiResponse<T> created(T data) {
+        return new ApiResponse<>(201, "Tạo mới thành công", data);
+    }
+
+    public static <T> ApiResponse<T> created(String message, T data) {
+        return new ApiResponse<>(201, message, data);
     }
 
     public static <T> ApiResponse<T> error(String message) {
@@ -26,5 +34,9 @@ public class ApiResponse<T> {
 
     public static <T> ApiResponse<T> error(int code, String message, T result) {
         return new ApiResponse<>(code, message, result);
+    }
+
+    public boolean isSuccess() {
+        return code == 200 || code == 201;
     }
 }

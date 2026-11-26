@@ -22,7 +22,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     List<Order> findByCreatedAtBetweenOrderByCreatedAtAsc(LocalDateTime start, LocalDateTime end);
 
-    @Query(value = "SELECT COALESCE(c.name, 'Thủ công tổng hợp') AS cat_name, " +
+    @Query(value = "SELECT COALESCE(c.name, 'Thủ công khác') AS cat_name, " +
             "COALESCE(SUM(oi.quantity * oi.unit_price), 0) AS total_revenue " +
             "FROM orders o " +
             "JOIN order_items oi ON oi.order_id = o.id " +
