@@ -22,7 +22,13 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     List<Order> findByCreatedAtBetweenOrderByCreatedAtAsc(LocalDateTime start, LocalDateTime end);
 
+
+    @Query("SELECT o FROM Order o JOIN FETCH o.items i LEFT JOIN FETCH i.product " +
+           "WHERE o.paymentStatus = 'PAID' AND o.status != 'CANCELLED'")
+    List<Order> findAllPaidAndNotCancelled();
+
     @Query(value = "SELECT COALESCE(c.name, 'Thủ công khác') AS cat_name, " +
+
             "COALESCE(SUM(oi.quantity * oi.unit_price), 0) AS total_revenue " +
             "FROM orders o " +
             "JOIN order_items oi ON oi.order_id = o.id " +

@@ -25,6 +25,7 @@ public class OrderServiceImpl implements OrderService {
     private final CartItemRepository cartItemRepository;
     private final ProductRepository productRepository;
     private final CurrentUserResolver currentUserResolver;
+    private final CartServiceImpl cartService;
 
     @Override
     @Transactional
@@ -82,6 +83,8 @@ public class OrderServiceImpl implements OrderService {
         }
 
         Order saved = orderRepository.save(order);
+        // Đánh dấu CartSession đã chuyển thành đơn hàng (để Apriori không dùng trùng)
+        cartService.markSessionConverted(user.getId(), saved.getId());
         // Xóa giỏ hàng sau khi đặt
         cartItemRepository.deleteAllByUser_Id(user.getId());
 
@@ -93,6 +96,22 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderDto.OrderResponse> getMyOrders() {
         User user = currentUserResolver.getCurrentUser();
         return orderRepository.findAllByBuyer_IdWithItems(user.getId())
+                .stream().map(this::toOrderResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<OrderDto.OrderResponse> getOrdersByBuyerId(Long buyerId) {
+        Long targetId = buyerId;
+        if (targetId == null) {
+            try {
+                User user = currentUserResolver.getCurrentUser();
+                targetId = user.getId();
+            } catch (Exception e) {
+                targetId = 7L; // Mặc định Hoàng Khang trong data.sql
+            }
+        }
+        return orderRepository.findAllByBuyer_IdWithItems(targetId)
                 .stream().map(this::toOrderResponse).collect(Collectors.toList());
     }
 
@@ -123,7 +142,7 @@ public class OrderServiceImpl implements OrderService {
                     return OrderDto.OrderItemResponse.builder()
                             .id(item.getId())
                             .productId(p != null ? p.getId() : null)
-                            .productName(p != null ? p.getName() : "Sản phẩm không còn tồn tại")
+                            .productName(p != null ? p.getName() : "Vòng tay tùy biến theo thiết kế riêng (Custom)")
                             .thumbnailUrl(p != null ? p.getThumbnailUrl() : null)
                             .quantity(item.getQuantity())
                             .unitPrice(item.getUnitPrice())

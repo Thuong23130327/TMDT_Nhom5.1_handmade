@@ -11,7 +11,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/orders")
+@RequestMapping({"/api/orders", "/api/v1/orders"})
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderService orderService;
@@ -25,6 +25,14 @@ public class OrderController {
     @GetMapping
     public ApiResponse<List<OrderDto.OrderResponse>> getMyOrders() {
         return ApiResponse.ok("Lấy danh sách đơn hàng thành công", orderService.getMyOrders());
+    }
+
+    @GetMapping({"/my-orders", "/buyer/{buyerId}"})
+    public ApiResponse<List<OrderDto.OrderResponse>> getBuyerOrders(
+            @RequestParam(required = false) Long userId,
+            @PathVariable(required = false) Long buyerId) {
+        Long targetId = userId != null ? userId : buyerId;
+        return ApiResponse.ok("Lấy lịch sử mua hàng thành công", orderService.getOrdersByBuyerId(targetId));
     }
 
     @GetMapping("/{orderCode}")

@@ -25,6 +25,7 @@ public enum ErrorCode {
     // Auth / User
     UNAUTHENTICATED(1016, "Chưa xác thực", HttpStatus.UNAUTHORIZED),
     USER_NOT_FOUND(1017, "Không tìm thấy người dùng", HttpStatus.NOT_FOUND),
+    EMAIL_NOT_REGISTERED(1018, "Email này chưa được đăng ký tài khoản trong hệ thống", HttpStatus.NOT_FOUND),
 
     // Product / Cart / Order
     PRODUCT_NOT_FOUND(2001, "Không tìm thấy sản phẩm", HttpStatus.NOT_FOUND),

@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khám phá Gian Hàng & Xưởng Thủ Công - AuraCraft</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/header-footer.css">
+    <style>
+        :root {
+            --primary-blue: #425B9A;
+            --primary-brown: #7b5144;
+            --primary-brown-dark: #5c3826;
+            --accent-gold: #c5a059;
+            --bg-cream: #faf6f4;
+            --card-border: #ebdcd3;
+        }
+
+        body {
+            background-color: #fcfbf9;
+            color: #2b1f1d;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .shops-page-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px 16px 60px;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb-trail {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: #887d7b;
+            margin-bottom: 20px;
+        }
+        .breadcrumb-trail a {
+            color: #887d7b;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .breadcrumb-trail a:hover {
+            color: var(--primary-blue);
+        }
+        .breadcrumb-trail .separator {
+            font-size: 0.75rem;
+            color: #c4b9b4;
+        }
+        .breadcrumb-trail .current {
+            color: var(--primary-brown-dark);
+            font-weight: 600;
+        }
+
+        /* Hero Banner */
+        .shops-hero-banner {
+            background: linear-gradient(135deg, #425B9A 0%, #2f416e 50%, #5c3826 100%);
+            border-radius: 20px;
+            padding: 40px 36px;
+            color: #ffffff;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 30px rgba(66, 91, 154, 0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shops-hero-banner::after {
+            content: '';
+            position: absolute;
+            right: -30px;
+            top: -40px;
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            pointer-events: none;
+        }
+
+        .shops-hero-content {
+            max-width: 680px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .shops-hero-content h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.1rem;
+            margin: 0 0 10px;
+            font-weight: 700;
+            line-height: 1.25;
+            letter-spacing: -0.5px;
+        }
+
+        .shops-hero-content p {
+            margin: 0;
+            font-size: 0.95rem;
+            opacity: 0.92;
+            line-height: 1.5;
+        }
+
+        .shops-hero-stats {
+            display: flex;
+            gap: 20px;
+            background: rgba(255, 255, 255, 0.12);
+            padding: 14px 22px;
+            border-radius: 14px;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-stat-item {
+            text-align: center;
+        }
+        .hero-stat-item strong {
+            display: block;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+        .hero-stat-item span {
+            font-size: 0.78rem;
+            opacity: 0.85;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Thanh Tìm Kiếm & Lọc Gian Hàng */
+        .shops-control-bar {
+            background: #ffffff;
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 18px 22px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 18px rgba(92, 56, 38, 0.04);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .search-sort-row {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .shop-search-box {
+            flex: 1;
+            min-width: 280px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            border: 1px solid #d4c8c2;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #faf8f6;
+            transition: all 0.2s ease;
+        }
+
+        .shop-search-box:focus-within {
+            border-color: var(--primary-blue);
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(66, 91, 154, 0.1);
+        }
+
+        .shop-search-box i.search-icon {
+            position: absolute;
+            left: 14px;
+            color: #887d7b;
+            font-size: 0.95rem;
+        }
+
+        .shop-search-box input {
+            width: 100%;
+            border: none;
+            outline: none;
+            background: transparent;
+            padding: 11px 40px 11px 40px;
+            font-size: 0.9rem;
+            color: #2b1f1d;
+        }
+
+        .shop-search-box button.btn-clear-search {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            color: #a48c82;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .shop-sort-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .shop-sort-box label {
+            font-size: 0.85rem;
+            color: #776c69;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .shop-sort-select {
+            padding: 10px 14px;
+            border: 1px solid #d4c8c2;
+            border-radius: 10px;
+            font-size: 0.86rem;
+            background: #ffffff;
+            color: #333;
+            outline: none;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .shop-sort-select:focus {
+            border-color: var(--primary-blue);
+        }
+
+        /* Filter Pills Thể Loại */
+        .specialty-pills-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .specialty-pills-row::-webkit-scrollbar {
+            height: 4px;
+        }
+        .specialty-pills-row::-webkit-scrollbar-thumb {
+            background: #e0d4cd;
+            border-radius: 4px;
+        }
+
+        .filter-pill-btn {
+            background: #f5ede8;
+            border: 1px solid #e5d8d0;
+            color: var(--primary-brown-dark);
+            font-size: 0.82rem;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .filter-pill-btn:hover {
+            background: #ebdcd3;
+            color: var(--primary-brown-dark);
+        }
+
+        .filter-pill-btn.active {
+            background: var(--primary-blue);
+            border-color: var(--primary-blue);
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(66, 91, 154, 0.25);
+        }
+
+        /* Header Danh Sách Gian Hàng */
+        .shops-list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .shops-list-header h2 {
+            font-size: 1.35rem;
+            color: var(--primary-brown-dark);
+            margin: 0;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .shops-count-badge {
+            font-size: 0.85rem;
+            color: #776c69;
+            font-weight: 500;
+        }
+
+        /* Lưới Gian Hàng (Shops Grid) */
+        .shops-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 24px;
+        }
+
+        /* Card Gian Hàng (Shop Card) */
+        .shop-card {
+            background: #ffffff;
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(92, 56, 38, 0.05);
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .shop-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(92, 56, 38, 0.12);
+            border-color: var(--primary-brown);
+        }
+
+        .shop-card-top {
+            padding: 20px 22px 14px;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            border-bottom: 1px solid #f6f1ed;
+        }
+
+        .shop-avatar-circle {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #2f416e 100%);
+            color: #ffffff;
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border: 3px solid #fdfbf7;
+            box-shadow: 0 3px 10px rgba(66, 91, 154, 0.2);
+        }
+
+        .shop-card-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .shop-card-header-line {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+            flex-wrap: wrap;
+        }
+
+        .shop-card-title {
+            font-size: 1.12rem;
+            font-weight: 700;
+            color: var(--primary-brown-dark);
+            margin: 0;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .shop-card-title:hover {
+            color: var(--primary-blue);
+        }
+
+        .badge-verified-artisan {
+            background: #ecfdf5;
+            color: #059669;
+            border: 1px solid #a7f3d0;
+            font-size: 11px;
+            padding: 2px 7px;
+            border-radius: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .shop-card-specialty {
+            font-size: 0.83rem;
+            color: var(--primary-brown);
+            font-weight: 600;
+            margin: 0 0 6px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .shop-card-stats {
+            display: flex;
+            gap: 12px;
+            font-size: 0.78rem;
+            color: #776c69;
+            flex-wrap: wrap;
+        }
+
+        .shop-card-stats span {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .shop-card-stats .star-rating {
+            color: #f59e0b;
+            font-weight: 700;
+        }
+
+        .shop-card-body {
+            padding: 14px 22px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .shop-card-intro {
+            font-size: 0.85rem;
+            color: #554a47;
+            line-height: 1.45;
+            margin: 0 0 14px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Sản phẩm tiêu biểu trong shop (Preview Grid) */
+        .shop-products-preview {
+            margin-bottom: 16px;
+        }
+
+        .preview-title {
+            font-size: 0.76rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #887d7b;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .preview-thumbs-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .preview-thumb-item {
+            aspect-ratio: 1 / 1;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f7f3f0;
+            border: 1px solid #ebdcd3;
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .preview-thumb-item:hover {
+            transform: scale(1.05);
+            border-color: var(--primary-blue);
+        }
+
+        .preview-thumb-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Footer Shop Card */
+        .shop-card-footer {
+            padding: 12px 22px 18px;
+            background: #fdfbf9;
+            border-top: 1px solid #f6f1ed;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-follow-shop {
+            background: #ffffff;
+            border: 1px solid #d4c8c2;
+            color: #5c3826;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-follow-shop:hover {
+            border-color: #bfaea5;
+            background: #fbf7f5;
+        }
+
+        .btn-follow-shop.is-following {
+            background: #fef2f2;
+            border-color: #fca5a5;
+            color: #dc2626;
+        }
+
+        .btn-visit-shop {
+            background: var(--primary-blue);
+            border: 1px solid var(--primary-blue);
+            color: #ffffff;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 0.84rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-visit-shop:hover {
+            background: #334677;
+            border-color: #334677;
+            box-shadow: 0 4px 12px rgba(66, 91, 154, 0.25);
+            transform: translateY(-1px);
+        }
+
+        /* Empty state */
+        .empty-shops-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px dashed var(--card-border);
+        }
+
+        .empty-shops-state i {
+            font-size: 3.5rem;
+            color: #d0c8be;
+            margin-bottom: 14px;
+            display: block;
+        }
+
+        .empty-shops-state h3 {
+            color: var(--primary-brown-dark);
+            margin: 0 0 6px;
+            font-size: 1.25rem;
+        }
+
+        .empty-shops-state p {
+            color: #776c69;
+            font-size: 0.9rem;
+            margin: 0 0 18px;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .shops-grid {
+                grid-template-columns: 1fr;
+            }
+            .shops-hero-banner {
+                padding: 30px 24px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .shops-hero-banner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .shops-hero-content h1 {
+                font-size: 1.6rem;
+            }
+            .search-sort-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .shop-sort-box {
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header Placeholder -->
+    <div id="header-placeholder"></div>
+
+    <main class="shops-page-wrapper">
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb-trail" aria-label="Đường dẫn trang">
+            <a href="../index.html"><i class="fa-solid fa-house"></i> Trang chủ</a>
+            <span class="separator">/</span>
+            <span class="current">Gian hàng & Xưởng nghệ nhân</span>
+        </nav>
+
+        <!-- Hero Banner -->
+        <section class="shops-hero-banner">
+            <div class="shops-hero-content">
+                <h1>Không Gian Chế Tác & Gian Hàng Thủ Công</h1>
+                <p>Khám phá các xưởng chế tác thủ công tinh xảo, gặp gỡ những nghệ nhân tận tâm và đặt làm các mẫu trang sức mang đậm dấu ấn độc bản của bạn.</p>
+            </div>
+            <div class="shops-hero-stats">
+                <div class="hero-stat-item">
+                    <strong id="statTotalShops">10</strong>
+                    <span>Xưởng chế tác</span>
+                </div>
+                <div class="hero-stat-item" style="border-left: 1px solid rgba(255,255,255,0.2); padding-left: 20px;">
+                    <strong>100%</strong>
+                    <span>Thủ công độc bản</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Control Bar: Tìm kiếm, Lọc Thể Loại, Sắp Xếp -->
+        <section class="shops-control-bar">
+            <!-- Row 1: Tìm kiếm + Sắp xếp -->
+            <div class="search-sort-row">
+                <div class="shop-search-box">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" id="shopSearchInput" placeholder="Tìm tên xưởng, nghệ nhân, chất liệu (Gỗ, Bạc, Charm Ý, Resin, Len móc...)..." autocomplete="off">
+                    <button type="button" class="btn-clear-search" id="btnClearShopSearch" title="Xóa tìm kiếm">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <div class="shop-sort-box">
+                    <label for="shopSortSelect"><i class="fa-solid fa-arrow-down-wide-short"></i> Sắp xếp:</label>
+                    <select id="shopSortSelect" class="shop-sort-select">
+                        <option value="rating">Đánh giá cao nhất (★)</option>
+                        <option value="custom">Nhiều đơn Custom nhất</option>
+                        <option value="products">Nhiều sản phẩm nhất</option>
+                        <option value="name">Tên xưởng (A - Z)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Row 2: Filter Pills Danh Mục Sở Trường -->
+            <div class="specialty-pills-row" id="specialtyPillsContainer">
+                <button type="button" class="filter-pill-btn active" data-specialty="ALL">Tất cả thể loại</button>
+                <button type="button" class="filter-pill-btn" data-specialty="CHARM">Charm Ý & Bạc S925</button>
+                <button type="button" class="filter-pill-btn" data-specialty="WOOD">Gỗ trầm & Phong thủy</button>
+                <button type="button" class="filter-pill-btn" data-specialty="BEACH">Lắc chân & Đi biển</button>
+                <button type="button" class="filter-pill-btn" data-specialty="RESIN">Resin Art & Pha lê</button>
+                <button type="button" class="filter-pill-btn" data-specialty="KNIT">Len móc & Phụ kiện</button>
+            </div>
+        </section>
+
+        <!-- Tiêu đề danh sách & số lượng -->
+        <div class="shops-list-header">
+            <h2><i class="fa-solid fa-store" style="color: var(--primary-blue);"></i> Danh sách các gian hàng đối tác</h2>
+            <span class="shops-count-badge" id="shopsCountDisplay">Đang tải danh sách gian hàng...</span>
+        </div>
+
+        <!-- Lưới Gian Hàng -->
+        <div class="shops-grid" id="shopsGridContainer">
+            <!-- Nạp động qua shops.js -->
+        </div>
+    </main>
+
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <script src="../assets/js/products-data.js"></script>
+    <script src="../assets/js/shops.js?v=20261119_v1"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/popup.js"></script>
+    <script>
+        // Nạp Header & Footer dùng chung
+        fetch('../components/header.html')
+            .then(res => res.text())
+            .then(html => {
+                const el = document.getElementById('header-placeholder');
+                if (el) el.innerHTML = html.replace(/href="index\.html"/g, 'href="../index.html"');
+            })
+            .catch(err => console.error('Lỗi tải Header:', err));
+
+        fetch('../components/footer.html')
+            .then(res => res.text())
+            .then(html => {
+                const el = document.getElementById('footer-placeholder');
+                if (el) el.innerHTML = html.replace(/href="index\.html"/g, 'href="../index.html"');
+            })
+            .catch(err => console.error('Lỗi tải Footer:', err));
+    </script>
+</body>
+</html>
+
