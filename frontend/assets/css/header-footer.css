@@ -334,3 +334,28 @@
         grid-template-columns: 1fr;
     }
 }
+
+
+/* Cart Badge Notification */
+.cart-icon-btn {
+    position: relative !important;
+}
+
+.cart-badge {
+    position: absolute;
+    top: -5px;
+    right: -7px;
+    background-color: #e53935;
+    color: #ffffff !important;
+    font-size: 11px;
+    font-weight: 700;
+    min-width: 18px;
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+    border-radius: 9px;
+    padding: 0 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+    pointer-events: none;
+    z-index: 10;
+}

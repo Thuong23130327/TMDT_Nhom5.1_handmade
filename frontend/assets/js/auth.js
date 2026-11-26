@@ -1,30 +1,130 @@
-// Dữ liệu tài khoản mặc định phục vụ kiểm thử phân quyền
-const MOCK_USERS = [
-  {
-    email: "admin@auracraft.com",
-    password: "password123",
-    role: "admin",
-    fullName: "Quản Trị Viên",
-  },
-  {
-    email: "artisan@auracraft.com",
-    password: "password123",
-    role: "artisan",
-    fullName: "Thợ Thủ Công",
-  },
-  {
-    email: "buyer@auracraft.com",
-    password: "password123",
-    role: "buyer",
-    fullName: "Khách Hàng",
-  },
-];
+const API_BASE = "http://localhost:8080/api";
+
+function saveSession(data) {
+  localStorage.setItem("auracraft_token", data.accessToken);
+  localStorage.setItem("auracraft_refresh", data.refreshToken);
+  localStorage.setItem("auracraft_user", JSON.stringify(data.userSummary));
+  localStorage.setItem("currentUser", JSON.stringify({
+    fullName: data.userSummary.fullName,
+    email: data.userSummary.email,
+    role: (data.userSummary.role || "").replace("ROLE_", "").toLowerCase()
+  }));
+}
+
+function getToken() {
+  return localStorage.getItem("auracraft_token");
+}
+
+function getCurrentUser() {
+  try {
+    const raw = localStorage.getItem("auracraft_user");
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+function isLoggedIn() {
+  return !!getToken() && !!getCurrentUser();
+}
+
+function logout() {
+  const token = localStorage.getItem("auracraft_refresh");
+  if (token) {
+    fetch(`${API_BASE}/auth/logout`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${getToken()}` },
+      body: JSON.stringify({ refreshToken: token })
+    }).catch(() => {});
+  }
+  localStorage.removeItem("auracraft_token");
+  localStorage.removeItem("auracraft_refresh");
+  localStorage.removeItem("auracraft_user");
+  localStorage.removeItem("currentUser");
+  sessionStorage.clear();
+
+  const pathname = window.location.pathname;
+  const isPagesDir = pathname.includes("/pages/");
+  const needsAuthPage = pathname.includes("profile") || pathname.includes("checkout") || pathname.includes("admin") || pathname.includes("seller");
+
+  if (needsAuthPage) {
+    window.location.href = isPagesDir ? "login.html" : "pages/login.html";
+  } else {
+    window.location.reload();
+  }
+}
+
+window.logout = logout;
+
+// ---- Cập nhật số lượng sản phẩm trên icon Giỏ hàng ----
+async function updateCartBadge() {
+  const badge = document.getElementById("cartBadge");
+  if (!badge) return;
+  if (!isLoggedIn()) {
+    badge.style.display = "none";
+    badge.textContent = "0";
+    return;
+  }
+  try {
+    const res = await apiFetch("GET", "/cart");
+    if (res && res.items && res.items.length > 0) {
+      const totalQty = res.items.reduce((sum, item) => sum + (item.quantity || 1), 0);
+      if (totalQty > 0) {
+        badge.textContent = totalQty > 99 ? "99+" : totalQty;
+        badge.style.display = "inline-block";
+      } else {
+        badge.style.display = "none";
+        badge.textContent = "0";
+      }
+    } else {
+      badge.style.display = "none";
+      badge.textContent = "0";
+    }
+  } catch (e) {
+    badge.style.display = "none";
+  }
+}
+
+// ---- Expose global API helper ----
+window.AuraCraft = {
+  API_BASE,
+  getToken,
+  getCurrentUser,
+  isLoggedIn,
+  logout,
+  updateCartBadge,
+  apiGet: (path) => apiFetch("GET", path),
+  apiPost: (path, body) => apiFetch("POST", path, body),
+  apiPut: (path, body) => apiFetch("PUT", path, body),
+  apiDelete: (path) => apiFetch("DELETE", path),
+};
+
+async function apiFetch(method, path, body) {
+  const headers = { "Content-Type": "application/json" };
+  const token = getToken();
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+  const res = await fetch(`${API_BASE}${path}`, {
+    method,
+    headers,
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  const json = await res.json();
+  if (!res.ok) {
+    if (res.status === 401) {
+      localStorage.removeItem("auracraft_token");
+      localStorage.removeItem("auracraft_user");
+      localStorage.removeItem("currentUser");
+    }
+    const msg = json?.message || `Lỗi ${res.status}`;
+    throw new Error(msg);
+  }
+  return json.result;
+}
 
 function togglePass(inputId, btn) {
   const input = document.getElementById(inputId);
   if (!input) return;
   const icon = btn.querySelector("i");
-
   if (input.type === "password") {
     input.type = "text";
     if (icon) icon.className = "fa-regular fa-eye-slash";
@@ -38,19 +138,85 @@ function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+function redirectByRole(role) {
+  const params = new URLSearchParams(window.location.search);
+  const redirect = params.get("redirect");
+  if (redirect) {
+    window.location.href = redirect;
+    return;
+  }
+  const r = (role || "").toUpperCase();
+  if (r === "ROLE_ADMIN") {
+    window.location.href = "admin-orders.html";
+  } else if (r === "ROLE_ARTISAN") {
+    window.location.href = "seller-dashboard.html";
+  } else {
+    window.location.href = "../index.html";
+  }
+}
+
+function syncHeaderAuth() {
+  if (window.location.pathname.includes("/pages/")) {
+    document.querySelectorAll('a[href="index.html"]').forEach(a => {
+      a.setAttribute("href", "../index.html");
+    });
+  }
+
+  const navLogin = document.getElementById("nav-login");
+  const navProfile = document.getElementById("nav-profile");
+  const navLogout = document.getElementById("nav-logout");
+
+  if (isLoggedIn()) {
+    if (navLogin) navLogin.style.display = "none";
+    if (navProfile) {
+      navProfile.style.display = "inline-flex";
+      const user = getCurrentUser();
+      if (user && user.fullName) {
+        navProfile.setAttribute("title", user.fullName + " (" + (user.role || "") + ")");
+      }
+    }
+    if (navLogout) navLogout.style.display = "inline-flex";
+    updateCartBadge();
+  } else {
+    if (navLogin) navLogin.style.display = "";
+    if (navProfile) navProfile.style.display = "none";
+    if (navLogout) navLogout.style.display = "none";
+    const badge = document.getElementById("cartBadge");
+    if (badge) badge.style.display = "none";
+  }
+}
+
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest('[data-action="logout"], .logout-item a, #nav-logout, #btnLogout');
+  if (btn) {
+    e.preventDefault();
+    logout();
+  }
+});
+
 document.addEventListener("DOMContentLoaded", () => {
+  const hp = document.getElementById("header-placeholder");
+  if (hp) {
+    const observer = new MutationObserver(() => syncHeaderAuth());
+    observer.observe(hp, { childList: true, subtree: true });
+  }
+  setTimeout(syncHeaderAuth, 300);
+  setTimeout(syncHeaderAuth, 800);
+
+  // Form dang nhap
   const loginForm = document.getElementById("loginForm");
   if (loginForm) {
     loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const emailInput = document.getElementById("email");
       const passInput = document.getElementById("password");
-      let isValid = true;
+      const btnSubmit = document.getElementById("btnSubmit");
+      const btnSpinner = document.getElementById("btnSpinner");
 
       const emailVal = emailInput.value.trim();
       const passVal = passInput.value;
+      let isValid = true;
 
-      // Validate email/username
       if (!emailVal) {
         emailInput.closest(".input-group").classList.add("invalid");
         isValid = false;
@@ -58,7 +224,6 @@ document.addEventListener("DOMContentLoaded", () => {
         emailInput.closest(".input-group").classList.remove("invalid");
       }
 
-      // Validate password length
       if (passVal.length < 6) {
         passInput.closest(".input-group").classList.add("invalid");
         isValid = false;
@@ -68,109 +233,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!isValid) return;
 
-      const btnSubmit = document.getElementById("btnSubmit");
-      const btnSpinner = document.getElementById("btnSpinner");
       if (btnSubmit) btnSubmit.disabled = true;
       if (btnSpinner) btnSpinner.style.display = "block";
 
       try {
-        // Thử kết nối API Backend trước
-        let loginSuccess = false;
-        try {
-          const res = await fetch("http://localhost:8080/api/auth/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ usernameOrEmail: emailVal, password: passVal }),
-          });
-          const json = await res.json().catch(() => null);
+        const res = await fetch(`${API_BASE}/auth/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ usernameOrEmail: emailVal, password: passVal }),
+        });
+        const json = await res.json();
 
-          if (!res.ok) {
-            const msg = json?.message || "Tài khoản hoặc mật khẩu không chính xác.";
-            emailInput.closest(".input-group").classList.add("invalid");
-            const errEl = emailInput.closest(".input-group").querySelector(".error-msg");
-            if (errEl) errEl.textContent = msg;
-            return;
-          }
-
-          if (json && json.result) {
-            const authData = json.result;
-            if (authData.accessToken) localStorage.setItem("auracraft_token", authData.accessToken);
-            if (authData.refreshToken) localStorage.setItem("auracraft_refresh", authData.refreshToken);
-            const userSummary = authData.userSummary || {};
-            const cleanRole = (userSummary.role || "ROLE_BUYER").replace("ROLE_", "").toLowerCase();
-            const currentUser = {
-              fullName: userSummary.fullName || emailVal,
-              email: userSummary.email || emailVal,
-              role: cleanRole
-            };
-            localStorage.setItem("currentUser", JSON.stringify(currentUser));
-            loginSuccess = true;
-
-            alert(`Đăng nhập thành công! Chào mừng ${currentUser.fullName}.`);
-            switch (currentUser.role) {
-              case "admin":
-                window.location.href = "admin-orders.html";
-                break;
-              case "artisan":
-                window.location.href = "seller-dashboard.html";
-                break;
-              case "buyer":
-              default:
-                window.location.href = "../index.html";
-                break;
-            }
-            return;
-          }
-        } catch (apiErr) {
-          // Backend offline -> Fallback vào LocalStorage / Mock
-          console.warn("[AuraCraft] Backend offline, chuyển sang kiểm tra tài khoản cục bộ:", apiErr);
-        }
-
-        // Lấy danh sách user đã đăng ký (từ localStorage) kết hợp với tài khoản mặc định
-        const registeredUsers =
-          JSON.parse(localStorage.getItem("AuraCraftUsers")) || [];
-        const allUsers = [...MOCK_USERS, ...registeredUsers];
-
-        // Tìm kiếm user phù hợp
-        const matchedUser = allUsers.find(
-          (u) =>
-            u.email.toLowerCase() === emailVal.toLowerCase() &&
-            u.password === passVal,
-        );
-
-        if (!matchedUser) {
+        if (!res.ok) {
+          const msg = json?.message || "Tên đăng nhập hoặc mật khẩu không chính xác.";
           emailInput.closest(".input-group").classList.add("invalid");
-          const errorMsg = emailInput
-            .closest(".input-group")
-            .querySelector(".error-msg");
-          if (errorMsg)
-            errorMsg.textContent = "Tài khoản hoặc mật khẩu không chính xác.";
+          const errEl = emailInput.closest(".input-group").querySelector(".error-msg");
+          if (errEl) errEl.textContent = msg;
           return;
         }
 
-        // Lưu thông tin phiên đăng nhập (Session)
-        const currentUser = {
-          fullName: matchedUser.fullName,
-          email: matchedUser.email,
-          role: matchedUser.role,
-        };
-        localStorage.setItem("currentUser", JSON.stringify(currentUser));
-
-        alert(`Đăng nhập thành công! Chào mừng ${currentUser.fullName}.`);
-
-        // Điều hướng dựa trên vai trò (Role-based Routing)
-        switch (currentUser.role) {
-          case "admin":
-            window.location.href = "admin-orders.html";
-            break;
-          case "artisan":
-            window.location.href = "seller-dashboard.html";
-            break;
-          case "buyer":
-          default:
-            window.location.href = "../index.html";
-            break;
-        }
+        saveSession(json.result);
+        const user = json.result.userSummary;
+        redirectByRole(user.role);
+      } catch (err) {
+        const errEl = emailInput.closest(".input-group").querySelector(".error-msg");
+        if (errEl) errEl.textContent = "Không thể kết nối máy chủ. Vui lòng thử lại.";
+        emailInput.closest(".input-group").classList.add("invalid");
       } finally {
         if (btnSubmit) btnSubmit.disabled = false;
         if (btnSpinner) btnSpinner.style.display = "none";
@@ -178,30 +266,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Khởi tạo hệ thống quản lý user giả lập cho trang đăng ký
-  window.AuraCraftUsers = {
-    create: (newUser) => {
-      const existingUsers =
-        JSON.parse(localStorage.getItem("AuraCraftUsers")) || [];
-      const isExist = [...MOCK_USERS, ...existingUsers].some(
-        (u) => u.email.toLowerCase() === newUser.email.toLowerCase(),
-      );
-
-      if (isExist) {
-        throw new Error("Email này đã được sử dụng.");
-      }
-
-      existingUsers.push(newUser);
-      localStorage.setItem("AuraCraftUsers", JSON.stringify(existingUsers));
-      return newUser;
-    },
-  };
-
+  // Form dang ky
   const registerForm = document.getElementById("registerForm");
   if (registerForm) {
     const accountRole = document.getElementById("accountRole");
     const artisanFields = document.getElementById("artisanFields");
-    const updateArtisanFields = () => {
+
+    function updateArtisanFields() {
       if (!accountRole || !artisanFields) return;
       const isArtisan = accountRole.value === "artisan";
       artisanFields.hidden = !isArtisan;
@@ -209,89 +280,94 @@ document.addEventListener("DOMContentLoaded", () => {
       const port = document.getElementById("portfolio");
       if (intro) intro.required = isArtisan;
       if (port) port.required = isArtisan;
-    };
+    }
 
     if (accountRole) {
       accountRole.addEventListener("change", updateArtisanFields);
       updateArtisanFields();
     }
 
-    registerForm.addEventListener("submit", (e) => {
+    registerForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const fullName = document.getElementById("fullName");
-      const email = document.getElementById("email");
-      const password = document.getElementById("password");
-      const confirmPassword = document.getElementById("confirmPassword");
-      const accountRole = document.getElementById("accountRole");
-      const introduction = document.getElementById("introduction");
-      const portfolio = document.getElementById("portfolio");
+
+      const fullNameEl = document.getElementById("fullName");
+      const emailEl = document.getElementById("email");
+      const passwordEl = document.getElementById("password");
+      const confirmPasswordEl = document.getElementById("confirmPassword");
+      const usernameEl = document.getElementById("username");
+      const phoneEl = document.getElementById("phone");
       let isValid = true;
 
-      if (!fullName.value.trim()) {
-        fullName.closest(".input-group").classList.add("invalid");
+      if (!fullNameEl.value.trim()) {
+        fullNameEl.closest(".input-group").classList.add("invalid");
         isValid = false;
       } else {
-        fullName.closest(".input-group").classList.remove("invalid");
+        fullNameEl.closest(".input-group").classList.remove("invalid");
       }
 
-      if (!isValidEmail(email.value.trim())) {
-        email.closest(".input-group").classList.add("invalid");
+      if (!isValidEmail(emailEl.value.trim())) {
+        emailEl.closest(".input-group").classList.add("invalid");
+        const errEl = emailEl.closest(".input-group").querySelector(".error-msg");
+        if (errEl) errEl.textContent = "Vui lòng nhập email hợp lệ.";
         isValid = false;
       } else {
-        email.closest(".input-group").classList.remove("invalid");
-        email.closest(".input-group").querySelector(".error-msg").textContent = "Vui lòng nhập email hợp lệ.";
+        emailEl.closest(".input-group").classList.remove("invalid");
       }
 
-      if (password.value.length < 6) {
-        password.closest(".input-group").classList.add("invalid");
+      if (passwordEl.value.length < 6) {
+        passwordEl.closest(".input-group").classList.add("invalid");
         isValid = false;
       } else {
-        password.closest(".input-group").classList.remove("invalid");
+        passwordEl.closest(".input-group").classList.remove("invalid");
       }
 
-      if (!confirmPassword.value || confirmPassword.value !== password.value) {
-        confirmPassword.closest(".input-group").classList.add("invalid");
+      if (!confirmPasswordEl.value || confirmPasswordEl.value !== passwordEl.value) {
+        confirmPasswordEl.closest(".input-group").classList.add("invalid");
         isValid = false;
       } else {
-        confirmPassword.closest(".input-group").classList.remove("invalid");
+        confirmPasswordEl.closest(".input-group").classList.remove("invalid");
       }
 
-      if (accountRole && accountRole.value === "artisan") {
-        const introductionGroup = introduction.closest(".input-group");
-        const portfolioGroup = portfolio.closest(".input-group");
-        const validPortfolio = portfolio.checkValidity();
-        introductionGroup.classList.toggle(
-          "invalid",
-          !introduction.value.trim(),
-        );
-        portfolioGroup.classList.toggle("invalid", !validPortfolio);
-        isValid =
-          Boolean(introduction.value.trim()) && validPortfolio && isValid;
-      }
+      if (!isValid) return;
 
-      if (isValid) {
-        try {
-          const user = window.AuraCraftUsers.create({
-            fullName: fullName.value,
-            email: email.value,
-            password: password.value,
-            role: accountRole ? accountRole.value : "buyer",
-            introduction: introduction ? introduction.value : "",
-            portfolio: portfolio ? portfolio.value : "",
-          });
-          const successMessage =
-            user.role === "artisan"
-              ? "Đăng ký thành công. Tài khoản thợ đang chờ admin duyệt trước khi nhận đơn."
-              : "Đăng ký thành công. Vui lòng đăng nhập.";
-          alert(successMessage);
-          window.location.href = "login.html";
-        } catch (error) {
-          const emailGroup = email.closest(".input-group");
-          emailGroup.classList.add("invalid");
-          const errEl = emailGroup.querySelector(".error-msg");
-          if (errEl) errEl.textContent = error.message;
-          email.focus();
+      const usernameVal = usernameEl && usernameEl.value.trim() 
+        ? usernameEl.value.trim() 
+        : emailEl.value.split("@")[0].replace(/[^a-zA-Z0-9]/g, "").substring(0, 20);
+
+      const payload = {
+        username: usernameVal,
+        email: emailEl.value.trim(),
+        password: passwordEl.value,
+        fullName: fullNameEl.value.trim(),
+        phone: phoneEl ? phoneEl.value.trim() : "",
+      };
+
+      const btnSubmit = document.getElementById("btnSubmit");
+      if (btnSubmit) btnSubmit.disabled = true;
+
+      try {
+        const res = await fetch(`${API_BASE}/auth/register`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const json = await res.json();
+
+        if (!res.ok) {
+          const msg = json?.message || "Đăng ký không thành công.";
+          emailEl.closest(".input-group").classList.add("invalid");
+          const errEl = emailEl.closest(".input-group").querySelector(".error-msg");
+          if (errEl) errEl.textContent = msg;
+          return;
         }
+
+        saveSession(json.result);
+        alert("Đăng ký tài khoản thành công!");
+        window.location.href = "../index.html";
+      } catch (err) {
+        alert("Không thể kết nối máy chủ. Vui lòng thử lại sau.");
+      } finally {
+        if (btnSubmit) btnSubmit.disabled = false;
       }
     });
   }
@@ -304,7 +380,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const resetPasswordForm = document.getElementById("resetPasswordForm");
 
   if (forgotEmailForm || verifyOtpForm || resetPasswordForm) {
-    const API_BASE_AUTH = "http://localhost:8080/api/auth";
+    const API_BASE_AUTH = `${API_BASE}/auth`;
     let recoveryEmail = "";
     let verifiedOtpCode = "";
     let resendCountdown = 60;

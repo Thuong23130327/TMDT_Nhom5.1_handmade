@@ -38,8 +38,11 @@ public class JwtTokenProvider {
 
     private String createToken(User user, String type, long expirationMs) {
         Date now = new Date();
+        String subject = (user.getEmail() != null && !user.getEmail().trim().isEmpty())
+                ? user.getEmail().trim().toLowerCase(java.util.Locale.ROOT)
+                : (user.getUsername() != null ? user.getUsername() : String.valueOf(user.getId()));
         return Jwts.builder()
-                .setSubject(user.getUsername())
+                .setSubject(subject)
                 .setId(UUID.randomUUID().toString())
                 .claim("type", type)
                 .claim("role", toAuthority(user.getRole()))

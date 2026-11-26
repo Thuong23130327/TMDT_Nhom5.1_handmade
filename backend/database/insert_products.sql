@@ -1,0 +1,13 @@
+﻿INSERT INTO products (id, artisan_id, category_id, name, description, price, old_price, stock_quantity, color, thumbnail_url, is_customizable, status)
+VALUES
+(3, 2, 1, 'Vòng tay charm trái tim', 'Vòng tay dây da phối charm trái tim bạc, nhỏ gọn tinh tế, custom được vị trí charm.', 110000, NULL, 25, '#E9C7C2', 'assets/images/bracelet-sample-1.jpg', 1, 'ACTIVE'),
+(4, 3, 3, 'Dây chuyền charm cỏ 4 lá', 'Dây chuyền bạc 925 đính charm cỏ 4 lá may mắn, custom được độ dài dây và loại charm.', 150000, 180000, 30, '#C9D6C0', 'assets/images/necklace-sample-1.jpg', 1, 'ACTIVE'),
+(5, 3, 3, 'Dây chuyền mặt trăng đá tự nhiên', 'Mặt dây chuyền hình trăng khuyết đính đá thạch anh tự nhiên, có thể custom loại đá và dây.', 210000, NULL, 15, '#B9C4DE', 'assets/images/necklace-sample-2.jpg', 1, 'ACTIVE'),
+(6, 2, 1, 'Nhẫn bạc khắc tên theo yêu cầu', 'Nhẫn bạc 925 có thể khắc tên hoặc ngày kỷ niệm riêng, custom size và nội dung khắc.', 180000, 220000, 20, '#DAD2C8', 'assets/images/ring-sample-1.jpg', 1, 'ACTIVE'),
+(7, 2, 1, 'Nhẫn đôi trơn tối giản', 'Thiết kế nhẫn đôi trơn, phong cách tối giản, phù hợp làm quà tặng, custom được size 2 nhẫn.', 160000, NULL, 20, '#EADFD0', 'assets/images/ring-sample-2.jpg', 1, 'ACTIVE'),
+(8, 4, 2, 'Móc khóa điện thoại gấu bông mini', 'Móc khóa điện thoại hình gấu bông len, mềm mại, nhiều màu - hàng có sẵn tại shop.', 65000, NULL, 40, '#F0C9A0', 'https://myumemories.com/wp-content/uploads/2026/01/2-11-300x300.png', 0, 'ACTIVE'),
+(9, 4, 2, 'Móc khóa điện thoại hoa cúc', 'Móc khóa len móc thủ công hình hoa cúc, đính charm nhỏ - hàng có sẵn tại shop.', 55000, 70000, 50, '#F5D6E0', 'https://myumemories.com/wp-content/uploads/2026/01/3-10-300x300.png', 0, 'ACTIVE'),
+(10, 4, 2, 'Móc khóa điện thoại ngôi sao', 'Móc khóa hình ngôi sao lấp lánh, có thể đính thêm chuông nhỏ - hàng có sẵn tại shop.', 60000, NULL, 35, '#D8E4F0', 'https://myumemories.com/wp-content/uploads/2026/01/8-10-300x300.png', 0, 'ACTIVE'),
+(11, 4, 2, 'Móc khóa điện thoại mèo cam', 'Móc khóa hình mèo cam len móc tay, đi kèm dây đeo chắc chắn - hàng có sẵn tại shop.', 58000, NULL, 40, '#F3DCA8', 'https://myumemories.com/wp-content/uploads/2026/02/2-1-300x300.png', 0, 'ACTIVE'),
+(12, 3, 3, 'Dây chuyền charm ngôi sao mini', 'Dây chuyền bạc mảnh phối charm ngôi sao mini, custom được số lượng charm.', 135000, NULL, 25, '#CFE0DA', 'assets/images/necklace-sample-3.jpg', 1, 'ACTIVE')
+ON DUPLICATE KEY UPDATE name=VALUES(name), price=VALUES(price), stock_quantity=VALUES(stock_quantity);

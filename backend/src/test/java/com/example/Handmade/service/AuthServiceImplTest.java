@@ -66,11 +66,11 @@ class AuthServiceImplTest {
 
         AuthenticationResponse response = authService.register(request);
 
-        assertEquals("ROLE_CUSTOMER", response.getUserSummary().getRole());
+        assertEquals("ROLE_BUYER", response.getUserSummary().getRole());
         org.mockito.ArgumentCaptor<User> savedUser = forClass(User.class);
         verify(userRepository).save(savedUser.capture());
         assertEquals("bcrypt-hash", savedUser.getValue().getPassword());
-        assertEquals(User.Role.ROLE_CUSTOMER, savedUser.getValue().getRole());
+        assertEquals(User.Role.ROLE_BUYER, savedUser.getValue().getRole());
         verify(refreshTokenRepository).save(any());
     }
 
