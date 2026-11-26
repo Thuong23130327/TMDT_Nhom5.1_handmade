@@ -142,6 +142,7 @@ CREATE TABLE `custom_designs` (
 -- ------------------------------------------------------------------------------
 CREATE TABLE `cart_items` (
     `id` BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT 'Mã dòng giỏ hàng',
+    `username` VARCHAR(50) DEFAULT NULL COMMENT 'Tên đăng nhập',
     `user_id` BIGINT NOT NULL COMMENT 'Người sở hữu giỏ hàng (FK trỏ tới users.id)',
     `product_id` BIGINT DEFAULT NULL COMMENT 'Sản phẩm có sẵn (FK trỏ tới products.id, NULL nếu là đồ custom)',
     `custom_design_id` BIGINT DEFAULT NULL COMMENT 'Bản thiết kế custom (FK trỏ tới custom_designs.id, NULL nếu là đồ có sẵn)',

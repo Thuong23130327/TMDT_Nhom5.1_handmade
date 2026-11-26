@@ -229,15 +229,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     let backendOrders = [];
 
     try {
-      const res = await fetch(`http://localhost:8080/api/v1/orders/my-orders?userId=${userId}`);
+      const res = await fetch(`http://localhost:8080/api/orders/my-orders?userId=${userId}`);
       if (res.ok) {
         const json = await res.json();
-        if (json.code === 1000 && Array.isArray(json.result)) {
-          backendOrders = json.result;
+        const ordersData = json.result || json.data;
+        if (Array.isArray(ordersData) && ordersData.length > 0) {
+          backendOrders = ordersData;
         }
       }
     } catch (err) {
-      console.warn("Backend API chưa kết nối, sử dụng dữ liệu phong phú tích hợp sẵn:", err);
+      console.warn("Backend API chưa kết nối hoặc chưa bật, sử dụng dữ liệu phong phú tích hợp sẵn:", err);
     }
 
     // Kết hợp: Đơn thực tế mới nhất luôn xếp lên đầu, sau đó là các kịch bản mẫu
@@ -370,21 +371,21 @@ document.addEventListener("DOMContentLoaded", async () => {
               .join("")}
           </div>
 
-          <!-- Footer đơn hàng: Địa chỉ, Tổng tiền & Nút xem biên nhận -->
+          <!-- Footer đơn hàng: Địa chỉ, Tổng tiền & Nút xem chi tiết / biên nhận -->
           <div class="order-card-footer">
             <div class="order-address-box">
               <i class="bi bi-geo-alt" style="color: var(--primary-brown);"></i> Địa chỉ:
               <span>${order.address || order.shippingAddress || "45 Lê Lợi, Quận 1, TP.HCM"}</span>
             </div>
-            <div class="order-action-group">
+            <div class="order-action-group" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
               <div class="order-total-display">
                 <span>Tổng thanh toán</span>
                 <strong>${formatVND(order.totalAmount)}</strong>
               </div>
-              <a href="success.html?orderCode=${encodeURIComponent(order.orderCode)}" class="btn btn-outline"
-                 style="font-size: 13px; padding: 7px 15px; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px;">
-                <i class="bi bi-receipt"></i> Xem biên nhận
-              </a>
+              <button type="button" class="btn btn-primary btn-view-detail" data-order-code="${order.orderCode}"
+                 style="font-size: 13px; padding: 7px 16px; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
+                <i class="bi bi-eye"></i> Xem chi tiết
+              </button>
             </div>
           </div>
         </div>
@@ -392,6 +393,168 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     ordersContainer.innerHTML = html;
+
+    // Gắn sự kiện nút Xem chi tiết
+    document.querySelectorAll(".btn-view-detail").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const code = btn.dataset.orderCode;
+        openOrderDetailModal(code);
+      });
+    });
+  }
+
+  // 9. Hiển thị Modal chi tiết đơn hàng
+  function openOrderDetailModal(orderCode) {
+    const order = allOrders.find((o) => o.orderCode === orderCode);
+    if (!order) return;
+
+    const modal = document.getElementById("orderDetailModal");
+    const codeEl = document.getElementById("modalOrderCode");
+    const dateEl = document.getElementById("modalOrderDate");
+    const contentEl = document.getElementById("modalOrderContent");
+
+    if (!modal || !contentEl) return;
+
+    if (codeEl) codeEl.textContent = `#${order.orderCode}`;
+    if (dateEl) dateEl.textContent = `Đặt lúc: ${formatOrderDate(order.createdAt)}`;
+
+    const orderBadge = getStatusBadge(order.status);
+    const payBadge = getPaymentBadge(order.paymentStatus, order.paymentMethod);
+
+    // Tính trạng thái timeline 4 bước
+    const s = String(order.status || "").toUpperCase();
+    const isStep1 = true;
+    const isStep2 = s === "PROCESSING" || s === "CRAFTING" || s === "SHIPPING" || s === "DELIVERED" || s === "COMPLETED";
+    const isStep3 = s === "SHIPPING" || s === "DELIVERED" || s === "COMPLETED";
+    const isStep4 = s === "DELIVERED" || s === "COMPLETED";
+    const isCancelled = s === "CANCELLED";
+
+    const items = order.items && order.items.length > 0 ? order.items : [
+      {
+        productName: "Vòng Tay Charm Ý Romance Hoa Cúc",
+        thumbnailUrl: "../assets/img/products/bracelet_01.jpg",
+        quantity: 1,
+        price: order.totalAmount || 380000,
+        customNotes: order.note || ""
+      }
+    ];
+
+    contentEl.innerHTML = `
+      <!-- Tiến trình đơn hàng (Timeline) -->
+      ${isCancelled ? `
+        <div style="background:#fee2e2; border:1px solid #fca5a5; padding:12px; border-radius:10px; color:#b91c1c; margin-bottom:18px; display:flex; align-items:center; gap:8px;">
+          <i class="bi bi-x-circle-fill" style="font-size:18px;"></i>
+          <div><strong>Đơn hàng đã hủy</strong>: Đơn hàng này không còn hiệu lực thực hiện.</div>
+        </div>
+      ` : `
+        <div style="background:#fdfaf7; border:1px solid #ebdcd3; border-radius:12px; padding:16px; margin-bottom:18px;">
+          <div style="font-size:0.8rem; font-weight:700; color:#5c3826; text-transform:uppercase; margin-bottom:12px; letter-spacing:0.5px;">
+            <i class="bi bi-truck"></i> Tiến độ đơn hàng
+          </div>
+          <div style="display:flex; justify-content:space-between; position:relative; text-align:center;">
+            <div style="flex:1;">
+              <div style="width:28px; height:28px; border-radius:50%; background:${isStep1 ? '#425B9A' : '#ddd'}; color:#fff; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; margin-bottom:4px;">1</div>
+              <div style="font-size:0.75rem; font-weight:600; color:${isStep1 ? '#425B9A' : '#888'};">Đã đặt hàng</div>
+            </div>
+            <div style="flex:1;">
+              <div style="width:28px; height:28px; border-radius:50%; background:${isStep2 ? '#425B9A' : '#ddd'}; color:#fff; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; margin-bottom:4px;">2</div>
+              <div style="font-size:0.75rem; font-weight:600; color:${isStep2 ? '#425B9A' : '#888'};">Đang chế tác</div>
+            </div>
+            <div style="flex:1;">
+              <div style="width:28px; height:28px; border-radius:50%; background:${isStep3 ? '#425B9A' : '#ddd'}; color:#fff; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; margin-bottom:4px;">3</div>
+              <div style="font-size:0.75rem; font-weight:600; color:${isStep3 ? '#425B9A' : '#888'};">Đang giao</div>
+            </div>
+            <div style="flex:1;">
+              <div style="width:28px; height:28px; border-radius:50%; background:${isStep4 ? '#27ae60' : '#ddd'}; color:#fff; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; margin-bottom:4px;">4</div>
+              <div style="font-size:0.75rem; font-weight:600; color:${isStep4 ? '#27ae60' : '#888'};">Thành công</div>
+            </div>
+          </div>
+        </div>
+      `}
+
+      <!-- Thông tin nhận hàng & thanh toán -->
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:18px;">
+        <div style="background:#fff; border:1px solid #ebdcd3; border-radius:10px; padding:12px;">
+          <strong style="color:#5c3826; font-size:0.85rem; display:block; margin-bottom:6px;"><i class="bi bi-person-badge"></i> Người nhận hàng:</strong>
+          <div style="font-weight:600; color:#222;">${order.fullName || order.recipientName || "Khách hàng"}</div>
+          <div style="color:#666; font-size:0.82rem; margin:2px 0;">SĐT: ${order.phone || order.recipientPhone || "0987654321"}</div>
+          <div style="color:#666; font-size:0.82rem;"><i class="bi bi-geo-alt"></i> ${order.address || order.shippingAddress || "Số 45, Đường 3/2, Quận 10, TP.HCM"}</div>
+        </div>
+
+        <div style="background:#fff; border:1px solid #ebdcd3; border-radius:10px; padding:12px;">
+          <strong style="color:#5c3826; font-size:0.85rem; display:block; margin-bottom:6px;"><i class="bi bi-credit-card"></i> Thanh toán & Trạng thái:</strong>
+          <div style="margin-bottom:6px;">
+            <span style="background:${payBadge.bg}; color:${payBadge.color}; border:1px solid ${payBadge.color}33; font-size:11px; padding:3px 8px; border-radius:12px; font-weight:600;">
+              <i class="bi ${payBadge.icon}"></i> ${payBadge.label}
+            </span>
+          </div>
+          <div>
+            <span style="background:${orderBadge.bg}; color:${orderBadge.color}; border:1px solid ${orderBadge.color}33; font-size:11px; padding:3px 8px; border-radius:12px; font-weight:600;">
+              <i class="bi ${orderBadge.icon}"></i> ${orderBadge.label}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Danh sách sản phẩm trong đơn -->
+      <div style="border:1px solid #ebdcd3; border-radius:10px; overflow:hidden; margin-bottom:18px;">
+        <div style="background:#faf6f4; padding:10px 14px; font-size:0.85rem; font-weight:700; color:#5c3826; border-bottom:1px solid #ebdcd3;">
+          <i class="bi bi-box-seam"></i> Các sản phẩm trong kiện hàng (${items.length} món)
+        </div>
+        <div style="padding:10px 14px;">
+          ${items.map((it) => {
+            const img = resolveProductImage(it.thumbnailUrl, "../assets/img/products/bracelet_01.jpg", it.productId);
+            const price = it.price || it.unitPrice || (order.totalAmount / (it.quantity || 1));
+            return `
+              <div style="display:flex; gap:12px; align-items:center; padding:10px 0; border-bottom:1px dashed #eee;">
+                <img src="${img}" style="width:54px; height:54px; border-radius:8px; object-fit:cover; border:1px solid #eee;" onerror="this.src='../assets/img/products/bracelet_01.jpg'">
+                <div style="flex:1;">
+                  <strong style="color:#222; font-size:0.9rem; display:block;">${it.productName || "Sản phẩm thủ công"}</strong>
+                  ${it.customNotes ? `<div style="font-size:0.8rem; color:#7b5144; margin-top:2px;"><i class="bi bi-brush"></i> Ghi chú: ${it.customNotes}</div>` : ""}
+                  <div style="font-size:0.8rem; color:#888;">Số lượng: <b>x${it.quantity || 1}</b> · Đơn giá: ${formatVND(price)}</div>
+                </div>
+                <div style="font-weight:700; color:#425B9A; font-size:0.95rem;">
+                  ${formatVND(price * (it.quantity || 1))}
+                </div>
+              </div>
+            `;
+          }).join("")}
+        </div>
+        <div style="background:#fdfbf9; padding:12px 14px; border-top:1px solid #ebdcd3; display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-weight:600; color:#555;">Tổng tiền thanh toán:</span>
+          <strong style="font-size:1.15rem; color:#425B9A;">${formatVND(order.totalAmount)}</strong>
+        </div>
+      </div>
+
+      <!-- Nút thao tác dưới cùng -->
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+        <button type="button" class="btn btn-outline" id="btnPrintReceipt" style="padding:8px 16px; border-radius:8px; font-size:0.85rem; display:inline-flex; align-items:center; gap:6px; cursor:pointer;">
+          <i class="bi bi-printer"></i> In biên lai đơn hàng
+        </button>
+        <button type="button" class="btn btn-primary" id="btnModalCloseAction" style="padding:8px 20px; border-radius:8px; font-size:0.85rem; cursor:pointer;">
+          Đóng cửa sổ
+        </button>
+      </div>
+    `;
+
+    modal.style.display = "flex";
+
+    // Gắn sự kiện in và đóng modal
+    const closeBtn = document.getElementById("btnCloseOrderModal");
+    const closeAction = document.getElementById("btnModalCloseAction");
+    const printBtn = document.getElementById("btnPrintReceipt");
+
+    if (printBtn) {
+      printBtn.onclick = () => {
+        window.print();
+      };
+    }
+    if (closeBtn) closeBtn.onclick = () => (modal.style.display = "none");
+    if (closeAction) closeAction.onclick = () => (modal.style.display = "none");
+
+    modal.onclick = (e) => {
+      if (e.target === modal) modal.style.display = "none";
+    };
   }
 
   // 9. Xử lý các tab lọc

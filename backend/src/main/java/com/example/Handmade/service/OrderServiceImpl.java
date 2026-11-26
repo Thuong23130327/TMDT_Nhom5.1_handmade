@@ -101,6 +101,22 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<OrderDto.OrderResponse> getOrdersByBuyerId(Long buyerId) {
+        Long targetId = buyerId;
+        if (targetId == null) {
+            try {
+                User user = currentUserResolver.getCurrentUser();
+                targetId = user.getId();
+            } catch (Exception e) {
+                targetId = 7L; // Mặc định Hoàng Khang trong data.sql
+            }
+        }
+        return orderRepository.findAllByBuyer_IdWithItems(targetId)
+                .stream().map(this::toOrderResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public OrderDto.OrderResponse getOrderByCode(String orderCode) {
         User user = currentUserResolver.getCurrentUser();
         Order order = orderRepository.findByOrderCodeWithItems(orderCode)
@@ -126,7 +142,7 @@ public class OrderServiceImpl implements OrderService {
                     return OrderDto.OrderItemResponse.builder()
                             .id(item.getId())
                             .productId(p != null ? p.getId() : null)
-                            .productName(p != null ? p.getName() : "Sản phẩm không còn tồn tại")
+                            .productName(p != null ? p.getName() : "Vòng tay tùy biến theo thiết kế riêng (Custom)")
                             .thumbnailUrl(p != null ? p.getThumbnailUrl() : null)
                             .quantity(item.getQuantity())
                             .unitPrice(item.getUnitPrice())

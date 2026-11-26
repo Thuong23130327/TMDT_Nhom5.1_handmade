@@ -20,8 +20,8 @@
   <section class="pd-top">
     <div class="pd-gallery">
       <div class="pd-gallery-main" id="pdGalleryMain">
+        <img id="pdMainImg" class="pd-main-image" src="../assets/images/bracelet-sample-1.jpg" alt="Chi tiết sản phẩm" onerror="this.src='../assets/img/products/bracelet_01.jpg'">
         <div class="pd-gallery-zoom" id="pdGalleryZoom"></div>
-        -
       </div>
       <div class="pd-gallery-thumbs" id="pdThumbs"></div>
     </div>
@@ -87,6 +87,32 @@
       </span>
       <span class="pd-shop-arrow">&gt;</span>
     </a>
+  </section>
+
+  <!-- APRIORI FREQUENTLY BOUGHT TOGETHER (KHAI PHÁ DỮ LIỆU) -->
+  <section class="pd-apriori-section card" id="pdAprioriSection" hidden>
+    <div class="apriori-header">
+      <div class="apriori-tag"><i class="fa-solid fa-basket-shopping"></i> Khai phá dữ liệu (Data Mining - Apriori)</div>
+      <h2 class="section-title">Thường được mua cùng nhau</h2>
+      <p class="apriori-desc" id="aprioriRuleExplain">Phát hiện luật kết hợp từ lịch sử giỏ hàng đơn hàng hoàn tất</p>
+    </div>
+    <div class="apriori-combo-wrap">
+      <div class="apriori-item" id="aprioriMainItem"></div>
+      <div class="apriori-plus">+</div>
+      <div class="apriori-item" id="aprioriComboItem"></div>
+      <div class="apriori-equals">=</div>
+      <div class="apriori-summary">
+        <div class="apriori-price-row">
+          <span class="apriori-label">Tổng giá Combo (Tiết kiệm 10%):</span>
+          <span class="apriori-combo-price" id="aprioriComboPrice">0 đ</span>
+          <span class="apriori-old-price" id="aprioriOldPrice">0 đ</span>
+        </div>
+        <div class="apriori-save-badge" id="aprioriSaveBadge">Tiết kiệm 0 đ</div>
+        <button type="button" class="btn btn-primary btn-add-combo" id="btnAddComboToCart">
+          <i class="fa-solid fa-cart-plus"></i> Thêm cả 2 vào giỏ hàng
+        </button>
+      </div>
+    </div>
   </section>
 
   <section class="pd-desc card">

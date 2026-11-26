@@ -4,492 +4,711 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sản phẩm - AuraCraft</title>
+    <title>Tất cả sản phẩm thủ công - AuraCraft</title>
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Main Style -->
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/header-footer.css">
-    <!-- Products Page Style -->
-    <link rel="stylesheet" href="../assets/css/pages/styleProducts.css">
+
+    <!-- CSS NỘI BỘ TỐI ƯU MULTI-SELECT DROPDOWN & CHỐNG CACHE -->
+    <style>
+        .products-page {
+            padding: 30px 0 60px;
+            background-color: #fdfbf9;
+            min-height: 85vh;
+        }
+
+        .products-layout {
+            display: flex;
+            gap: 28px;
+            align-items: flex-start;
+        }
+
+        /* ---- SIDEBAR BỘ LỌC MULTI-SELECT DROPDOWN ---- */
+        .sidebar-filter {
+            width: 275px;
+            flex-shrink: 0;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 14px;
+            border: 1px solid #ebdcd3;
+            box-shadow: 0 4px 18px rgba(92, 56, 38, 0.05);
+            position: sticky;
+            top: 20px;
+        }
+
+        .filter-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid #f0ece6;
+        }
+
+        .filter-title-main {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #5c3826;
+        }
+
+        .btn-clear-all {
+            background: #fee2e2;
+            border: 1px solid #fca5a5;
+            color: #b91c1c;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 5px 10px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-clear-all:hover {
+            background: #fecaca;
+            color: #991b1b;
+        }
+
+        .filter-dropdown-group {
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        .filter-dropdown-group label.group-label {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #3e2b26;
+            margin-bottom: 6px;
+        }
+
+        .filter-dropdown-group label.group-label i {
+            color: #887d7b;
+            font-size: 0.85rem;
+        }
+
+        /* Multi-Select Box Trigger */
+        .ms-display-box {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid #d4c8c2;
+            border-radius: 8px;
+            background-color: #ffffff;
+            font-size: 0.86rem;
+            color: #2b1f1d;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease;
+            user-select: none;
+            box-sizing: border-box;
+        }
+
+        .ms-display-box:hover {
+            border-color: #a48c82;
+            background-color: #faf6f4;
+        }
+
+        .ms-display-box.is-active {
+            border-color: #425B9A;
+            box-shadow: 0 0 0 3px rgba(66, 91, 154, 0.12);
+        }
+
+        .ms-display-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 190px;
+        }
+
+        .ms-chevron {
+            color: #887d7b;
+            font-size: 0.78rem;
+            transition: transform 0.2s ease;
+        }
+
+        .ms-display-box.is-active .ms-chevron {
+            transform: rotate(180deg);
+        }
+
+        .ms-count-badge {
+            background: #425B9A;
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: auto;
+            margin-right: 6px;
+        }
+
+        /* Popup Menu Xổ Xuống */
+        .ms-menu-panel {
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            right: 0;
+            background: #ffffff;
+            border: 1px solid #d4c8c2;
+            border-radius: 10px;
+            box-shadow: 0 10px 26px rgba(0, 0, 0, 0.14);
+            z-index: 100;
+            display: none;
+            padding: 8px;
+            animation: fadeInMenu 0.15s ease;
+        }
+
+        .ms-menu-panel.is-show {
+            display: block;
+        }
+
+        @keyframes fadeInMenu {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .ms-action-row {
+            display: flex;
+            justify-content: space-between;
+            padding-bottom: 6px;
+            margin-bottom: 6px;
+            border-bottom: 1px dashed #eee;
+        }
+
+        .ms-btn-action {
+            background: none;
+            border: none;
+            font-size: 0.75rem;
+            color: #425B9A;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 2px 4px;
+        }
+        .ms-btn-action:hover {
+            text-decoration: underline;
+        }
+
+        .ms-options-list {
+            max-height: 190px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .ms-options-list::-webkit-scrollbar {
+            width: 4px;
+        }
+        .ms-options-list::-webkit-scrollbar-thumb {
+            background: #d4c8c2;
+            border-radius: 4px;
+        }
+
+        .ms-option-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 8px;
+            font-size: 0.84rem;
+            color: #333;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background 0.15s;
+            user-select: none;
+        }
+
+        .ms-option-item:hover {
+            background: #f5ece8;
+            color: #425B9A;
+        }
+
+        .ms-option-item input[type="checkbox"] {
+            accent-color: #425B9A;
+            cursor: pointer;
+            width: 15px;
+            height: 15px;
+        }
+
+        /* Native Select cho Giá & Đánh giá */
+        .filter-select {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid #d4c8c2;
+            border-radius: 8px;
+            background-color: #ffffff;
+            font-size: 0.86rem;
+            color: #2b1f1d;
+            cursor: pointer;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            appearance: auto;
+            -webkit-appearance: auto;
+            box-sizing: border-box;
+        }
+
+        .filter-select:focus {
+            border-color: #425B9A;
+            box-shadow: 0 0 0 3px rgba(66, 91, 154, 0.12);
+        }
+
+        .custom-price-wrap {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px dashed #ebdcd3;
+        }
+
+        .custom-price-wrap span {
+            font-size: 0.78rem;
+            color: #776c69;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .custom-price-inputs {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .custom-price-inputs input {
+            width: 48%;
+            padding: 6px 8px;
+            font-size: 0.82rem;
+            border: 1px solid #d4c8c2;
+            border-radius: 6px;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .custom-price-inputs input:focus {
+            border-color: #425B9A;
+        }
+
+        .btn-apply-custom-price {
+            width: 100%;
+            margin-top: 6px;
+            padding: 6px;
+            background: #f5ece8;
+            border: 1px solid #d4c8c2;
+            color: #5c3826;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-apply-custom-price:hover {
+            background: #ebdcd3;
+        }
+
+        /* ---- MAIN PRODUCTS SECTION ---- */
+        .products-main {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .products-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .products-header h1 {
+            font-size: 1.6rem;
+            color: #5c3826;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .products-tools {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-box-wrap {
+            position: relative;
+            display: flex;
+            border: 1px solid #d4c8c2;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #ffffff;
+            transition: border-color 0.2s;
+        }
+
+        .search-box-wrap:focus-within {
+            border-color: #425B9A;
+        }
+
+        .search-box-wrap input {
+            border: none;
+            padding: 8px 12px;
+            font-size: 0.88rem;
+            outline: none;
+            min-width: 220px;
+        }
+
+        .search-box-wrap button {
+            border: none;
+            background: #425B9A;
+            color: #ffffff;
+            padding: 0 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .search-box-wrap button:hover {
+            background: #334677;
+        }
+
+        .sort-box select {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #d4c8c2;
+            outline: none;
+            font-size: 0.88rem;
+            color: #333;
+            background: #ffffff;
+            cursor: pointer;
+        }
+
+        /* ---- PRODUCT GRID & CARD ---- */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background: #ffffff;
+            border: 1px solid #ebdcd3;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 22px rgba(123, 81, 68, 0.12);
+            border-color: #7b5144;
+        }
+
+        .product-card-img-wrap {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+            background: #fbf7f5;
+        }
+
+        .product-card-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+            display: block;
+        }
+
+        .product-card:hover .product-card-img-wrap img {
+            transform: scale(1.05);
+        }
+
+        .badge-custom {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(66, 91, 154, 0.92);
+            color: #ffffff;
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+            z-index: 2;
+        }
+
+        .product-card-info {
+            padding: 12px 14px 16px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .product-card-cat {
+            font-size: 0.78rem;
+            color: #887d7b;
+            margin-bottom: 4px;
+        }
+
+        .product-card-title {
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: #2b1f1d;
+            margin: 0 0 6px;
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 2.5em;
+        }
+
+        .product-card-shop {
+            font-size: 0.82rem;
+            color: #7b5144;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .product-card-shop i {
+            color: #425B9A;
+            margin-right: 4px;
+        }
+
+        .product-card-rating {
+            color: #f59e0b;
+            font-size: 0.82rem;
+            margin-bottom: 8px;
+        }
+
+        .product-card-price-row {
+            margin-top: auto;
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+        }
+
+        .product-card-price {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #425B9A;
+        }
+
+        .product-card-old-price {
+            font-size: 0.82rem;
+            color: #999;
+            text-decoration: line-through;
+        }
+
+        /* ---- RESPONSIVE ---- */
+        @media (max-width: 1100px) {
+            .product-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 820px) {
+            .products-layout {
+                flex-direction: column;
+            }
+            .sidebar-filter {
+                width: 100%;
+                position: static;
+            }
+            .product-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 520px) {
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+            .products-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .search-box-wrap input {
+                min-width: 160px;
+            }
+        }
+    </style>
 </head>
 
 <body>
+    <!-- Header Placeholder -->
     <div id="header-placeholder"></div>
 
     <main class="products-page">
         <div class="container products-layout">
+            <!-- SIDEBAR BỘ LỌC MULTI-SELECT DROPDOWN (CHỌN NHIỀU LOẠI, NHIỀU SHOP CÙNG LÚC) -->
             <aside class="sidebar-filter">
-                <div class="filter-group">
-                    <h3 class="filter-title">Danh mục</h3>
-                    <ul class="filter-list">
-                        <li><label><input type="checkbox" value="vòng tay" checked> Vòng tay</label></li>
-                        <li><label><input type="checkbox" value="dây chuyền" checked> Dây chuyền</label></li>
-                        <li><label><input type="checkbox" value="lắc chân" checked> Lắc chân (Anklet)</label></li>
-                        <li><label><input type="checkbox" value="armlet|vòng tay bắp" checked> Vòng tay bắp
-                                (Armlet)</label></li>
-                        <li><label><input type="checkbox" value="vòng bụng" checked> Vòng bụng (Belly)</label></li>
-                        <li><label><input type="checkbox" value="dây đeo đt" checked> Dây đeo điện thoại</label></li>
-                    </ul>
+                <div class="filter-header-top">
+                    <div class="filter-title-main">
+                        <i class="fa-solid fa-sliders"></i>
+                        <span>Bộ Lọc</span>
+                    </div>
+                    <button type="button" class="btn-clear-all" id="btn-clear-filters" title="Xóa toàn bộ bộ lọc và hiện tất cả sản phẩm">
+                        <i class="fa-solid fa-rotate-left"></i> Xóa lọc
+                    </button>
                 </div>
 
-                <div class="filter-group">
-                    <h3 class="filter-title">Mức giá</h3>
-                    <ul class="filter-list">
-                        <li><label><input type="radio" name="price" value="0-100000"> Dưới 100.000đ</label></li>
-                        <li><label><input type="radio" name="price" value="100000-300000"> 100.000đ - 300.000đ</label>
-                        </li>
-                        <li><label><input type="radio" name="price" value="300000-500000"> 300.000đ - 500.000đ</label>
-                        </li>
-                        <li><label><input type="radio" name="price" value="500000-99999999"> Trên 500.000đ</label></li>
-                    </ul>
+                <!-- 1. Multi-Select Dropdown: Loại sản phẩm (Chọn được nhiều loại) -->
+                <div class="filter-dropdown-group" id="group-category">
+                    <label class="group-label"><i class="fa-solid fa-layer-group"></i> Loại sản phẩm (chọn nhiều)</label>
+                    <div class="ms-display-box" id="box-category" tabindex="0">
+                        <span class="ms-display-text" id="text-category">-- Tất cả loại sản phẩm --</span>
+                        <span class="ms-count-badge" id="badge-category" style="display:none;">0</span>
+                        <i class="fa-solid fa-chevron-down ms-chevron"></i>
+                    </div>
+                    <div class="ms-menu-panel" id="menu-category">
+                        <div class="ms-action-row">
+                            <button type="button" class="ms-btn-action" id="btn-select-all-cat">Chọn tất cả</button>
+                            <button type="button" class="ms-btn-action" id="btn-clear-cat" style="color:#b91c1c;">Bỏ chọn</button>
+                        </div>
+                        <div class="ms-options-list" id="list-category">
+                            <label class="ms-option-item"><input type="checkbox" value="vong-tay|vòng tay"> Vòng tay & Lắc tay</label>
+                            <label class="ms-option-item"><input type="checkbox" value="day-chuyen|dây chuyền"> Dây chuyền & Mặt đá</label>
+                            <label class="ms-option-item"><input type="checkbox" value="lac-chan|lắc chân"> Lắc chân (Anklet)</label>
+                            <label class="ms-option-item"><input type="checkbox" value="armlet|bắp"> Vòng bắp tay (Armlet)</label>
+                            <label class="ms-option-item"><input type="checkbox" value="belly|bụng"> Vòng bụng (Belly)</label>
+                            <label class="ms-option-item"><input type="checkbox" value="phone|strap|dây đeo"> Dây đeo điện thoại</label>
+                            <label class="ms-option-item"><input type="checkbox" value="gau-bong|len"> Gấu bông & Đồ len móc</label>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="filter-group">
-                    <h3 class="filter-title">Đánh giá</h3>
-                    <ul class="filter-list">
-                        <li><label><input type="radio" name="rating" value="5"> Từ 5 sao</label></li>
-                        <li><label><input type="radio" name="rating" value="4"> Từ 4 sao trở lên</label></li>
-                        <li><label><input type="radio" name="rating" value="3"> Từ 3 sao trở lên</label></li>
-                    </ul>
+                <!-- 2. Multi-Select Dropdown: Thương hiệu / Shop (Chọn được nhiều shop) -->
+                <div class="filter-dropdown-group" id="group-brand">
+                    <label class="group-label"><i class="fa-solid fa-store"></i> Thương hiệu / Shop (chọn nhiều)</label>
+                    <div class="ms-display-box" id="box-brand" tabindex="0">
+                        <span class="ms-display-text" id="text-brand">-- Tất cả thương hiệu / shop --</span>
+                        <span class="ms-count-badge" id="badge-brand" style="display:none;">0</span>
+                        <i class="fa-solid fa-chevron-down ms-chevron"></i>
+                    </div>
+                    <div class="ms-menu-panel" id="menu-brand">
+                        <div class="ms-action-row">
+                            <button type="button" class="ms-btn-action" id="btn-select-all-brand">Chọn tất cả</button>
+                            <button type="button" class="ms-btn-action" id="btn-clear-brand" style="color:#b91c1c;">Bỏ chọn</button>
+                        </div>
+                        <div class="ms-options-list" id="list-brand">
+                            <label class="ms-option-item"><input type="checkbox" value="anna|nguyễn"> Shop Anna (Charm Ý S925)</label>
+                            <label class="ms-option-item"><input type="checkbox" value="mộc an"> Xưởng Mộc An (Gỗ trầm)</label>
+                            <label class="ms-option-item"><input type="checkbox" value="silver soul"> Silver Soul Studio (Bạc Ý)</label>
+                            <label class="ms-option-item"><input type="checkbox" value="handmade by my"> Handmade By My (Lắc chân)</label>
+                            <label class="ms-option-item"><input type="checkbox" value="vintage vibes"> Vintage Vibes (Armlet)</label>
+                            <label class="ms-option-item"><input type="checkbox" value="beachy"> Beachy Crafts (Đi biển)</label>
+                            <label class="ms-option-item"><input type="checkbox" value="trần bảo"> Trần Bảo (Resin Art)</label>
+                            <label class="ms-option-item"><input type="checkbox" value="vũ đức minh|minh"> Vũ Đức Minh (Gấu bông len)</label>
+                        </div>
+                    </div>
                 </div>
 
-                <button class="btn-filter" id="btn-apply-filter">Áp dụng Lọc</button>
+                <!-- 3. Dropdown: Mức giá -->
+                <div class="filter-dropdown-group">
+                    <label class="group-label" for="filter-price"><i class="fa-solid fa-tag"></i> Khoảng giá</label>
+                    <select id="filter-price" class="filter-select">
+                        <option value="">-- Tất cả mức giá --</option>
+                        <option value="0-100000">Dưới 100.000đ</option>
+                        <option value="100000-300000">100.000đ - 300.000đ</option>
+                        <option value="300000-500000">300.000đ - 500.000đ</option>
+                        <option value="500000-99999999">Trên 500.000đ</option>
+                    </select>
+
+                    <div class="custom-price-wrap">
+                        <span>Hoặc tự nhập khoảng giá:</span>
+                        <div class="custom-price-inputs">
+                            <input type="number" id="price-min-input" placeholder="Từ đ" min="0">
+                            <span>-</span>
+                            <input type="number" id="price-max-input" placeholder="Đến đ" min="0">
+                        </div>
+                        <button type="button" class="btn-apply-custom-price" id="btn-apply-price">Áp dụng giá</button>
+                    </div>
+                </div>
+
+                <!-- 4. Dropdown: Đánh giá sao -->
+                <div class="filter-dropdown-group">
+                    <label class="group-label" for="filter-rating"><i class="fa-solid fa-star"></i> Đánh giá</label>
+                    <select id="filter-rating" class="filter-select">
+                        <option value="0">-- Tất cả đánh giá --</option>
+                        <option value="5">Từ 5 sao (★★★★★)</option>
+                        <option value="4">Từ 4 sao trở lên (★★★★☆)</option>
+                        <option value="3">Từ 3 sao trở lên (★★★☆☆)</option>
+                    </select>
+                </div>
             </aside>
 
+            <!-- KHU VỰC HIỂN THỊ DANH SÁCH SẢN PHẨM -->
             <div class="products-main">
                 <div class="products-header">
-                    <h1>Tất cả sản phẩm</h1>
-                    <div class="sort-box">
-                        <select id="sort-select">
-                            <option value="default">Phù hợp nhất</option>
-                            <option value="price-asc">Giá từ thấp đến cao</option>
-                            <option value="price-desc">Giá từ cao đến thấp</option>
-                            <option value="rating-desc">Đánh giá cao nhất</option>
-                        </select>
+                    <div>
+                        <h1>Tất cả tác phẩm thủ công</h1>
+                        <p id="product-count-display" style="font-size: 0.9rem; color: #776c69; margin: 4px 0 0;">
+                            Đang kết nối danh mục...
+                        </p>
+                    </div>
+
+                    <!-- Thanh tìm kiếm & Sắp xếp -->
+                    <div class="products-tools">
+                        <div class="search-box-wrap">
+                            <input type="text" id="product-search-input" placeholder="Tìm theo tên, chất liệu, shop...">
+                            <button type="button" id="btn-product-search" title="Tìm kiếm">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </button>
+                        </div>
+
+                        <div class="sort-box">
+                            <select id="sort-select">
+                                <option value="default">Phù hợp nhất</option>
+                                <option value="price-asc">Giá: Thấp đến Cao</option>
+                                <option value="price-desc">Giá: Cao đến Thấp</option>
+                                <option value="rating-desc">Đánh giá cao nhất</option>
+                                <option value="popular">Bán chạy nhất</option>
+                                <option value="newest">Mới nhất</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
-                <div class="product-grid">
-                    <!-- Products 1-4 -->
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html?id=1'"
-                        style="cursor: pointer;">
-                        <img src="../assets/img/products/bracelet_01.jpg" alt="Vòng tay hạt gỗ thơm & Charm bạc">
-                        <div class="product-info">
-                            <h3>Vòng tay hạt gỗ thơm & Charm bạc</h3>
-                            <p class="product-shop"><i class="fa-solid fa-store"></i> Xưởng Mộc An</p>
-                            <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star-half-stroke"></i>
-                                <span class="rating-score">4.8</span>
-                            </div>
-                            <p class="price">120.000đ <span
-                                    style="text-decoration: line-through; color: #999; margin-left: 10px; font-size: 0.9em;">150.000đ</span>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
-                        style="cursor: pointer;">
-                        <img src="../assets/img/products/necklace_02.jpg" alt="Dây chuyền Charm">
-                        <div class="product-info">
-                            <h3>Dây chuyền mặt trăng</h3>
-                            <p class="product-shop"><i class="fa-solid fa-store"></i> Silver Soul Studio</p>
-                            <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i>
-                                <span class="rating-score">5.0</span>
-                            </div>
-                            <p class="price">350.000đ</p>
-                        </div>
-                    </div>
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
-                        style="cursor: pointer;">
-                        <img src="../assets/img/products/anket_01.jpg" alt="Lắc chân Bạc">
-                        <div class="product-info">
-                            <h3>Lắc chân chuông bạc</h3>
-                            <p class="product-shop"><i class="fa-solid fa-store"></i> Handmade By My</p>
-                            <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-regular fa-star"></i>
-                                <span class="rating-score">4.0</span>
-                            </div>
-                            <p class="price">220.000đ</p>
-                        </div>
-                    </div>
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
-                        style="cursor: pointer;">
-                        <img src="../assets/img/products/armlet_01.jpg" alt="Vòng tay bắp">
-                        <div class="product-info">
-                            <h3>Armlet Bohemian</h3>
-                            <p class="product-shop"><i class="fa-solid fa-store"></i> Vintage Vibes</p>
-                            <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star-half-stroke"></i>
-                                <span class="rating-score">4.6</span>
-                            </div>
-                            <p class="price">180.000đ</p>
-                        </div>
-                    </div>
-
-                    <!-- Products 5-8 -->
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
-                        style="cursor: pointer;">
-                        <img src="../assets/img/products/belly_01.jpg" alt="Vòng bụng">
-                        <div class="product-info">
-                            <h3>Vòng bụng hạt cườm</h3>
-                            <p class="product-shop"><i class="fa-solid fa-store"></i> Beachy Crafts</p>
-                            <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-regular fa-star"></i>
-                                <span class="rating-score">4.2</span>
-                            </div>
-                            <p class="price">130.000đ</p>
-                        </div>
-                    </div>
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
-                        style="cursor: pointer;">
-                        <img src="../assets/img/products/phoneStrap_01.jpg" alt="Dây đeo điện thoại">
-                        <div class="product-info">
-                            <h3>Dây đeo đt Custom</h3>
-                            <p class="product-shop"><i class="fa-solid fa-store"></i> Cute Phone</p>
-                            <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i>
-                                <span class="rating-score">4.9</span>
-                            </div>
-                            <p class="price">90.000đ</p>
-                        </div>
-                    </div>
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
-                        style="cursor: pointer;">
-                        <img src="../assets/img/products/bracelet_02.jpg" alt="Vòng tay">
-                        <div class="product-info">
-                            <h3>Vòng tay vintage</h3>
-                            <p class="product-shop"><i class="fa-solid fa-store"></i> Xu?ng M?c An</p>
-                            <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-regular fa-star"></i>
-                                <span class="rating-score">4.1</span>
-                            </div>
-                            <p class="price">120.000đ</p>
-                        </div>
-                    </div>
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
-                        style="cursor: pointer;">
-                        <img src="../assets/img/products/necklace_03.jpg" alt="Dây chuyền">
-                        <div class="product-info">
-                            <h3>Dây chuyền đá quý</h3>
-                            <p class="product-shop"><i class="fa-solid fa-store"></i> Ngọc Craft</p>
-                            <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i>
-                                <span class="rating-score">4.9</span>
-                            </div>
-                            <p class="price">450.000đ</p>
-                        </div>
-                    </div>
-
-                    <!-- Products 9-12 -->
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
-                        style="cursor: pointer;">
-                        <img src="../assets/img/products/anket_02.jpg" alt="Lắc chân">
-                        <div class="product-info">
-                            <h3>Lắc chân biển</h3>
-                            <p class="product-shop"><i class="fa-solid fa-store"></i> Handmade By My</p>
-                            <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star-half-stroke"></i>
-                                <span class="rating-score">4.5</span>
-                            </div>
-                            <p class="price">190.000đ</p>
-                        </div>
-                    </div>
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
-                        style="cursor: pointer;">
-                        <img src="../assets/img/products/armlet_02.jpg" alt="Vòng tay bắp">
-                        <div class="product-info">
-                            <h3>Vòng tay bắp cá tính</h3>
-                            <p class="product-shop"><i class="fa-solid fa-store"></i> Vintage Vibes</p>
-                            <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i>
-                                <span class="rating-score">5.0</span>
-                            </div>
-                            <p class="price">210.000đ</p>
-                        </div>
-                    </div>
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
-                        style="cursor: pointer;">
-                        <img src="../assets/img/products/belly_02.jpg" alt="Vòng bụng">
-                        <div class="product-info">
-                            <h3>Vòng bụng đi biển</h3>
-                            <p class="product-shop"><i class="fa-solid fa-store"></i> Beachy Crafts</p>
-                            <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-regular fa-star"></i>
-                                <span class="rating-score">4.0</span>
-                            </div>
-                            <p class="price">145.000đ</p>
-                        </div>
-                    </div>
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
-                        style="cursor: pointer;">
-                        <img src="../assets/img/products/phoneStrap_02.jpg" alt="Dây đeo điện thoại">
-                        <div class="product-info">
-                            <h3>Dây đeo đt hạt cườm</h3>
-                            <p class="product-shop"><i class="fa-solid fa-store"></i> Cute Phone</p>
-                            <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star-half-stroke"></i>
-                                <span class="rating-score">4.7</span>
-                            </div>
-                            <p class="price">85.000đ</p>
-                        </div>
-                    </div>
-
-                    <!-- Products 13-16 -->
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
-                        style="cursor: pointer;">
-                        <img src="../assets/img/products/bracelet_03.jpg" alt="Vòng tay Handmade">
-                        <div class="product-info">
-                            <h3>Vòng tay chỉ đỏ may mắn</h3>
-                            <p class="product-shop"><i class="fa-solid fa-store"></i> Xu?ng M?c An</p>
-                            <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i>
-                                <span class="rating-score">5.0</span>
-                            </div>
-                            <p class="price">99.000đ</p>
-                        </div>
-                    </div>
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
-                        style="cursor: pointer;">
-                        <img src="../assets/img/products/necklace_04.jpg" alt="Dây chuyền Charm">
-                        <div class="product-info">
-                            <h3>Dây chuyền bạc 925</h3>
-                            <p class="product-shop"><i class="fa-solid fa-store"></i> Silver Soul Studio</p>
-                            <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i>
-                                <span class="rating-score">4.9</span>
-                            </div>
-                            <p class="price">550.000đ</p>
-                        </div>
-                    </div>
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
-                        style="cursor: pointer;">
-                        <img src="../assets/img/products/anket_03.jpg" alt="Lắc chân">
-                        <div class="product-info">
-                            <h3>Lắc chân vintage</h3>
-                            <p class="product-shop"><i class="fa-solid fa-store"></i> Handmade By My</p>
-                            <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-regular fa-star"></i>
-                                <span class="rating-score">4.3</span>
-                            </div>
-                            <p class="price">160.000đ</p>
-                        </div>
-                    </div>
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
-                        style="cursor: pointer;">
-                        <img src="../assets/img/products/belly_03.jpg" alt="Vòng bụng">
-                        <div class="product-info">
-                            <h3>Vòng bụng kim loại</h3>
-                            <p class="product-shop"><i class="fa-solid fa-store"></i> Vintage Vibes</p>
-                            <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star-half-stroke"></i>
-                                <span class="rating-score">4.6</span>
-                            </div>
-                            <p class="price">250.000đ</p>
-                        </div>
-                    </div>
-
-                    <!-- Products 17-20 -->
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
-                        style="cursor: pointer;">
-                        <img src="../assets/img/products/phoneStrap_03.jpg" alt="Dây đeo điện thoại">
-                        <div class="product-info">
-                            <h3>Dây đeo đt gấu bông</h3>
-                            <p class="product-shop"><i class="fa-solid fa-store"></i> Cute Phone</p>
-                            <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i>
-                                <span class="rating-score">4.9</span>
-                            </div>
-                            <p class="price">110.000đ</p>
-                        </div>
-                    </div>
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
-                        style="cursor: pointer;">
-                        <img src="../assets/img/products/bracelet_04.jpg" alt="Vòng tay Handmade">
-                        <div class="product-info">
-                            <h3>Vòng tay ngọc trai</h3>
-                            <p class="product-shop"><i class="fa-solid fa-store"></i> Xu?ng M?c An</p>
-                            <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star-half-stroke"></i>
-                                <span class="rating-score">4.8</span>
-                            </div>
-                            <p class="price">320.000đ</p>
-                        </div>
-                    </div>
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
-                        style="cursor: pointer;">
-                        <img src="../assets/img/products/necklace_05.jpg" alt="Dây chuyền">
-                        <div class="product-info">
-                            <h3>Dây chuyền titan</h3>
-                            <p class="product-shop"><i class="fa-solid fa-store"></i> Silver Soul Studio</p>
-                            <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i>
-                                <span class="rating-score">5.0</span>
-                            </div>
-                            <p class="price">280.000đ</p>
-                        </div>
-                    </div>
-                    <div class="product-card has-image" onclick="window.location.href='product-detail.html'"
-                        style="cursor: pointer;">
-                        <img src="../assets/img/products/bracelet_05.jpg" alt="Vòng tay Handmade">
-                        <div class="product-info">
-                            <h3>Vòng tay mix hạt</h3>
-                            <p class="product-shop"><i class="fa-solid fa-store"></i> Xu?ng M?c An</p>
-                            <div class="product-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-regular fa-star"></i>
-                                <span class="rating-score">4.2</span>
-                            </div>
-                            <p class="price">150.000đ</p>
-                        </div>
-                    </div>
+                <!-- LƯỚI SẢN PHẨM DỰNG ĐỘNG -->
+                <div class="product-grid" id="productGridContainer">
+                    <!-- Được render tự động bởi products.js -->
                 </div>
             </div>
         </div>
     </main>
 
+    <!-- Footer Placeholder -->
     <div id="footer-placeholder"></div>
 
+    <!-- Script Tải Header & Footer Dùng Chung -->
     <script>
         fetch('../components/header.html')
-            .then(response => response.text())
-            .then(data => {
-                let html = data.replace(/href="index\.html"/g, 'href="../index.html"');
-                document.getElementById('header-placeholder').innerHTML = html;
+            .then(res => res.text())
+            .then(html => {
+                const el = document.getElementById('header-placeholder');
+                if (el) el.innerHTML = html.replace(/href="index\.html"/g, 'href="../index.html"');
             })
-            .catch(error => console.error('Error loading header:', error));
+            .catch(err => console.error('Lỗi nạp header:', err));
 
         fetch('../components/footer.html')
-            .then(response => response.text())
-            .then(data => {
-                let html = data.replace(/href="index\.html"/g, 'href="../index.html"');
-                document.getElementById('footer-placeholder').innerHTML = html;
+            .then(res => res.text())
+            .then(html => {
+                const el = document.getElementById('footer-placeholder');
+                if (el) el.innerHTML = html.replace(/href="index\.html"/g, 'href="../index.html"');
             })
-            .catch(error => console.error('Error loading footer:', error));
-
-        // Filter and Sort Logic
-        document.addEventListener('DOMContentLoaded', () => {
-            const productGrid = document.querySelector('.product-grid');
-            const products = Array.from(productGrid.querySelectorAll('.product-card'));
-
-            // Function to extract numerical price
-            const getPrice = (card) => {
-                const priceText = card.querySelector('.price').innerText;
-                return parseInt(priceText.replace(/[^0-9]/g, ''), 10);
-            };
-
-            // Function to extract rating
-            const getRating = (card) => {
-                const ratingText = card.querySelector('.rating-score').innerText;
-                return parseFloat(ratingText);
-            };
-
-            // Function to extract title
-            const getTitle = (card) => {
-                return card.querySelector('h3').innerText.toLowerCase();
-            };
-
-            // Apply Filters and Sorting
-            const applyFilterAndSort = () => {
-                // Get filter values
-                const checkedCategories = Array.from(document.querySelectorAll('.filter-list input[type="checkbox"]:checked')).map(cb => cb.value.split('|'));
-                const selectedPrice = document.querySelector('.filter-list input[name="price"]:checked')?.value;
-                const selectedRating = document.querySelector('.filter-list input[name="rating"]:checked')?.value;
-                const sortValue = document.getElementById('sort-select').value;
-
-                // Filter products
-                let filteredProducts = products.filter(card => {
-                    const title = getTitle(card);
-                    const price = getPrice(card);
-                    const rating = getRating(card);
-
-                    // Category filter
-                    let categoryMatch = checkedCategories.length === 0; // if none checked, show nothing or everything? Usually if none checked, maybe show all, but here we assume checked means show. Let's do: if at least one matches.
-                    for (let keys of checkedCategories) {
-                        if (keys.some(k => title.includes(k))) {
-                            categoryMatch = true;
-                            break;
-                        }
-                    }
-
-                    // Price filter
-                    let priceMatch = true;
-                    if (selectedPrice) {
-                        const [min, max] = selectedPrice.split('-').map(Number);
-                        if (price < min || price > max) priceMatch = false;
-                    }
-
-                    // Rating filter
-                    let ratingMatch = true;
-                    if (selectedRating) {
-                        if (rating < parseFloat(selectedRating)) ratingMatch = false;
-                    }
-
-                    return categoryMatch && priceMatch && ratingMatch;
-                });
-
-                // Sort products
-                if (sortValue === 'price-asc') {
-                    filteredProducts.sort((a, b) => getPrice(a) - getPrice(b));
-                } else if (sortValue === 'price-desc') {
-                    filteredProducts.sort((a, b) => getPrice(b) - getPrice(a));
-                } else if (sortValue === 'rating-desc') {
-                    filteredProducts.sort((a, b) => getRating(b) - getRating(a));
-                }
-                // 'default' does not sort (preserves original order roughly, but since we filtered, we just append them)
-
-                // Update DOM
-                productGrid.innerHTML = '';
-                if (filteredProducts.length > 0) {
-                    filteredProducts.forEach(product => productGrid.appendChild(product));
-                } else {
-                    productGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 50px 0;">Không tìm thấy sản phẩm nào phù hợp.</p>';
-                }
-            };
-
-            document.getElementById('btn-apply-filter').addEventListener('click', applyFilterAndSort);
-            document.getElementById('sort-select').addEventListener('change', applyFilterAndSort);
-        });
+            .catch(err => console.error('Lỗi nạp footer:', err));
     </script>
+    <script src="../assets/js/products-data.js"></script>
+    <script src="../assets/js/products.js"></script>
+    <script src="../assets/js/cart.js"></script>
     <script src="../assets/js/auth.js"></script>
     <script src="../assets/js/popup.js"></script>
     <script src="../assets/js/ai-chat.js"></script>
