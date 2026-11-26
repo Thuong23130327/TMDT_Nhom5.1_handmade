@@ -44,6 +44,13 @@
   overflow:hidden;
   cursor:zoom-in;
 }
+.pd-main-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+  display: block;
+}
 .pd-gallery-zoom{
   position:absolute;inset:0;
   background-repeat:no-repeat;
@@ -62,6 +69,9 @@
   display:flex;align-items:center;justify-content:center;
   color:var(--color-text-muted);font-size:.8rem;
   border:2px solid transparent;
+  overflow:hidden;
+  padding:0;
+  cursor:pointer;
   transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease, color .15s ease;
 }
 .pd-thumb:hover{
@@ -255,14 +265,16 @@
    AI RECOMMENDATIONS (COSINE SIMILARITY) STYLING
    ============================================================ */
 .ai-recommendations-section {
-  margin: 40px 0 20px;
+  margin: 36px 0 20px;
   background: linear-gradient(135deg, #ffffff 0%, #faf6f4 100%);
   border: 1px solid #ebdcd3;
   border-radius: var(--radius-lg, 16px);
-  padding: 30px;
+  padding: 24px 20px;
   box-shadow: 0 4px 20px rgba(123, 81, 68, 0.05);
   position: relative;
   overflow: hidden;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .ai-recommendations-section::before {
@@ -279,7 +291,7 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   flex-wrap: wrap;
   gap: 16px;
 }
@@ -290,7 +302,7 @@
   gap: 6px;
   background: linear-gradient(135deg, #6c35de 0%, #905cf5 100%);
   color: #fff;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -300,14 +312,14 @@
 }
 
 .ai-sec-title {
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   color: #2b1f1d;
   margin: 4px 0 6px;
   font-weight: 700;
 }
 
 .ai-sec-subtitle {
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   color: #776c69;
   margin: 0;
 }
@@ -320,9 +332,9 @@
   color: #6c35de;
   border: 1.5px solid #d4c3f7;
   border-radius: 10px;
-  padding: 10px 18px;
+  padding: 8px 16px;
   font-weight: 600;
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 2px 8px rgba(108, 53, 222, 0.08);
@@ -338,69 +350,84 @@
 
 .ai-recommend-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.ai-recommend-card {
+.ai-recommend-card, .ai-card {
   background: #ffffff;
   border: 1px solid #ebdcd3;
-  border-radius: 14px;
+  border-radius: 12px;
   overflow: hidden;
   cursor: pointer;
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-.ai-recommend-card:hover {
+.ai-recommend-card:hover, .ai-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 10px 24px rgba(123, 81, 68, 0.12);
+  box-shadow: 0 8px 20px rgba(123, 81, 68, 0.12);
   border-color: #7b5144;
 }
 
-.ai-card-thumb-wrap {
+.ai-card-thumb-wrap, .ai-card-img-wrap {
   position: relative;
   width: 100%;
-  aspect-ratio: 1 / 1;
+  height: 180px;
+  max-height: 180px;
   background: #fbf7f5;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.ai-card-thumb-wrap img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.ai-card-thumb-wrap img, .ai-card-img-wrap img, .ai-card-img {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
   transition: transform 0.3s ease;
 }
 
-.ai-recommend-card:hover .ai-card-thumb-wrap img {
-  transform: scale(1.04);
+.ai-recommend-card:hover .ai-card-thumb-wrap img,
+.ai-card:hover .ai-card-img-wrap img {
+  transform: scale(1.05);
 }
 
-.ai-cosine-badge {
+.ai-cosine-badge, .ai-score-badge {
   position: absolute;
-  top: 10px;
-  left: 10px;
+  top: 8px;
+  left: 8px;
   background: rgba(43, 31, 29, 0.85);
   backdrop-filter: blur(4px);
   color: #ffde59;
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 14px;
+  padding: 3px 8px;
+  border-radius: 12px;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   z-index: 2;
   border: 1px solid rgba(255, 222, 89, 0.4);
 }
 
 .ai-card-body {
-  padding: 14px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
   flex: 1;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .ai-card-meta {
@@ -421,39 +448,40 @@
   font-weight: 700;
 }
 
-.ai-card-title {
-  font-size: 0.92rem;
+.ai-card-title, .ai-card-name {
+  font-size: 0.88rem;
   font-weight: 600;
   color: #2b1f1d;
-  margin: 0 0 10px;
-  line-height: 1.4;
+  margin: 0 0 8px;
+  line-height: 1.35;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  min-height: 2.6em;
+  min-height: 2.4em;
+  word-break: break-word;
 }
 
-.ai-card-reasons {
+.ai-card-reasons, .ai-reasons-list {
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  margin-bottom: 12px;
+  gap: 4px;
+  margin-bottom: 10px;
   background: #faf6f4;
-  padding: 8px 10px;
-  border-radius: 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
 }
 
-.ai-reason-pill {
-  font-size: 0.75rem;
+.ai-reason-pill, .ai-reason-badge {
+  font-size: 0.72rem;
   color: #554440;
   display: flex;
   align-items: center;
-  gap: 5px;
-  line-height: 1.3;
+  gap: 4px;
+  line-height: 1.25;
 }
 
-.ai-reason-pill i {
+.ai-reason-pill i, .ai-reason-badge i {
   color: #10b981;
   font-size: 10px;
 }
@@ -468,20 +496,20 @@
 }
 
 .ai-card-price {
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: #7b5144;
 }
 
 .ai-card-old-price {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: #a89f9d;
   text-decoration: line-through;
-  margin-left: 6px;
+  margin-left: 4px;
 }
 
 .ai-btn-view {
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 700;
   color: #6c35de;
 }
@@ -671,7 +699,7 @@
 
 @media (max-width: 992px) {
   .ai-recommend-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .ai-features-grid {
     grid-template-columns: 1fr;
@@ -680,7 +708,7 @@
 
 @media (max-width: 576px) {
   .ai-recommend-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .ai-sec-header {
     flex-direction: column;
@@ -690,3 +718,137 @@
     justify-content: center;
   }
 }
+
+/* ---- Apriori Frequently Bought Together Section ---- */
+.pd-apriori-section {
+  padding: 24px;
+  margin-bottom: 40px;
+  background: #ffffff;
+  border-radius: var(--radius-lg, 16px);
+  border: 1px solid #ebdcd3;
+}
+.apriori-header {
+  margin-bottom: 20px;
+}
+.apriori-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(224, 159, 103, 0.15);
+  color: #a45a2a;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  margin-bottom: 8px;
+}
+.apriori-desc {
+  font-size: 0.9rem;
+  color: #7A6F6E;
+  margin-top: 4px;
+}
+.apriori-combo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.apriori-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #faf6f4;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid #ebdcd3;
+  flex: 1;
+  min-width: 220px;
+}
+.apriori-img {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background-size: cover;
+  background-position: center;
+}
+.apriori-info {
+  display: flex;
+  flex-direction: column;
+}
+.apriori-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #2c3e50;
+  line-height: 1.3;
+  margin-bottom: 4px;
+}
+.apriori-price {
+  font-weight: 700;
+  color: var(--color-primary, #425B9A);
+}
+.apriori-plus, .apriori-equals {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #a45a2a;
+}
+.apriori-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #fdfaf8;
+  padding: 16px 20px;
+  border-radius: 12px;
+  border: 1px solid #ebdcd3;
+  min-width: 250px;
+}
+.apriori-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.apriori-label {
+  font-size: 0.85rem;
+  color: #7A6F6E;
+  width: 100%;
+}
+.apriori-combo-price {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #d9534f;
+}
+.apriori-old-price {
+  font-size: 0.9rem;
+  color: #999;
+  text-decoration: line-through;
+}
+.apriori-save-badge {
+  display: inline-block;
+  background: #eef8f2;
+  color: #0d8a57;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+  align-self: flex-start;
+}
+.btn-add-combo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  background: var(--color-primary, #425B9A);
+  color: #fff;
+  border: none;
+  transition: opacity .2s;
+}
+.btn-add-combo:hover {
+  opacity: 0.9;
+}
+
