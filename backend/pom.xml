@@ -94,6 +94,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>  <!-- 👈 BẠN THÊM DÒNG NÀY VÀO -->
 		<!-- HTTP client for Gemini AI API calls -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

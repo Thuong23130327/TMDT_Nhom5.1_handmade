@@ -36,4 +36,18 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "LEFT JOIN categories c ON c.id = p.category_id " +
             "GROUP BY c.id, c.name", nativeQuery = true)
     List<Object[]> getRevenueByCategory();
+
+    @Query("SELECT DISTINCT o FROM Order o JOIN FETCH o.items i LEFT JOIN FETCH i.product p " +
+           "WHERE p.artisan.id = :artisanId ORDER BY o.createdAt DESC")
+    List<Order> findOrdersByArtisanId(@Param("artisanId") Long artisanId);
+
+    @Query("SELECT COALESCE(SUM(oi.quantity * oi.unitPrice), 0) " +
+           "FROM OrderItem oi " +
+           "WHERE oi.product.artisan.id = :artisanId AND oi.order.status = 'COMPLETED'")
+    java.math.BigDecimal calculateCompletedRevenueByArtisanId(@Param("artisanId") Long artisanId);
+
+    @Query("SELECT COALESCE(SUM(oi.quantity * oi.unitPrice), 0) " +
+           "FROM OrderItem oi " +
+           "WHERE oi.product.artisan.id = :artisanId AND oi.order.status <> 'CANCELLED'")
+    java.math.BigDecimal calculateTotalRevenueByArtisanId(@Param("artisanId") Long artisanId);
 }
