@@ -66,6 +66,8 @@ public class ProductDto {
         private Double liftValue;
         private Double supportValue;
         private String explanation;
+    }
+
     @Getter @Setter @Builder @NoArgsConstructor @AllArgsConstructor
     public static class FrequentlyBoughtTogetherResponse {
         private Long mainProductId;

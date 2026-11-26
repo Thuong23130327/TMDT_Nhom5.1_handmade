@@ -59,6 +59,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET, "/api/orders/my-orders", "/api/v1/orders/my-orders", "/api/orders/buyer/**", "/api/v1/orders/buyer/**").permitAll()
                 .antMatchers("/api/payment/**").permitAll()
                 .antMatchers("/api/v1/admin/**").permitAll()
+                .antMatchers("/api/v1/seller/**").permitAll()
                 .anyRequest().authenticated();
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
