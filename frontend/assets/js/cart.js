@@ -89,6 +89,14 @@ function renderCart(cart, container, summaryEl) {
             <h3 class="cart-item-title">${item.productName}</h3>
             ${item.customNotes ? `<p class="cart-item-variant">Tùy biến: ${item.customNotes}</p>` : ""}
             <div class="cart-item-price-mobile">${formatVND(item.unitPrice)}</div>
+            <button type="button" class="apriori-cart-btn"
+                    data-product-id="${item.productId}"
+                    data-product-name="${(item.productName || "").replace(/"/g, "&quot;")}"
+                    data-product-price="${item.unitPrice}"
+                    data-product-img="${imgUrl}"
+                    style="margin-top:8px;display:inline-flex;align-items:center;gap:6px;padding:5px 12px;font-size:12.5px;font-weight:600;color:#7b5144;background:#faf6f4;border:1px solid #d9c5b8;border-radius:6px;cursor:pointer;">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> Gợi ý sản phẩm mua kèm
+            </button>
           </div>
         </div>
         <div class="cart-item-middle">
@@ -172,6 +180,19 @@ function attachCartEvents() {
     btn.addEventListener("click", async () => {
       const id = parseInt(btn.dataset.id);
       await removeCartItem(id);
+    });
+  });
+
+  document.querySelectorAll(".apriori-cart-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      if (typeof window.openAprioriModal === "function") {
+        window.openAprioriModal(
+          parseInt(btn.dataset.productId, 10),
+          btn.dataset.productName || "",
+          Number(btn.dataset.productPrice || 0),
+          btn.dataset.productImg || ""
+        );
+      }
     });
   });
 }
