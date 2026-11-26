@@ -66,11 +66,11 @@ class AuthServiceImplTest {
 
         AuthenticationResponse response = authService.register(request);
 
-        assertEquals("ROLE_CUSTOMER", response.getUserSummary().getRole());
+        assertEquals("ROLE_BUYER", response.getUserSummary().getRole());
         org.mockito.ArgumentCaptor<User> savedUser = forClass(User.class);
         verify(userRepository).save(savedUser.capture());
         assertEquals("bcrypt-hash", savedUser.getValue().getPassword());
-        assertEquals(User.Role.ROLE_CUSTOMER, savedUser.getValue().getRole());
+        assertEquals(User.Role.ROLE_BUYER, savedUser.getValue().getRole());
         verify(refreshTokenRepository).save(any());
     }
 
@@ -155,6 +155,16 @@ class AuthServiceImplTest {
         authService.logout(refreshToken);
 
         verify(refreshTokenRepository).deleteByTokenHash(expectedHash.toString());
+    }
+
+    @Test
+    void requestPasswordResetThrowsWhenEmailNotRegistered() {
+        com.example.Handmade.dto.request.ForgotPasswordRequest request = new com.example.Handmade.dto.request.ForgotPasswordRequest();
+        request.setEmail("notfound@example.com");
+        when(userRepository.findByEmailForUpdate("notfound@example.com")).thenReturn(Optional.empty());
+
+        AppException exception = assertThrows(AppException.class, () -> authService.requestPasswordReset(request));
+        assertEquals(ErrorCode.EMAIL_NOT_REGISTERED, exception.getErrorCode());
     }
 
     @Test

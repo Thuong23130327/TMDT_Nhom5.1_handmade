@@ -25,6 +25,7 @@ public class OrderServiceImpl implements OrderService {
     private final CartItemRepository cartItemRepository;
     private final ProductRepository productRepository;
     private final CurrentUserResolver currentUserResolver;
+    private final CartServiceImpl cartService;
 
     @Override
     @Transactional
@@ -82,6 +83,8 @@ public class OrderServiceImpl implements OrderService {
         }
 
         Order saved = orderRepository.save(order);
+        // Đánh dấu CartSession đã chuyển thành đơn hàng (để Apriori không dùng trùng)
+        cartService.markSessionConverted(user.getId(), saved.getId());
         // Xóa giỏ hàng sau khi đặt
         cartItemRepository.deleteAllByUser_Id(user.getId());
 

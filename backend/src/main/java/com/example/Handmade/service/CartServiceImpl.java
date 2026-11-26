@@ -4,26 +4,31 @@ import com.example.Handmade.config.CurrentUserResolver;
 import com.example.Handmade.dto.CartDto;
 import com.example.Handmade.exception.AppException;
 import com.example.Handmade.exception.ErrorCode;
-import com.example.Handmade.model.CartItem;
-import com.example.Handmade.model.Product;
-import com.example.Handmade.model.User;
+import com.example.Handmade.model.*;
 import com.example.Handmade.repository.CartItemRepository;
+import com.example.Handmade.repository.CartSessionItemRepository;
+import com.example.Handmade.repository.CartSessionRepository;
 import com.example.Handmade.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
     private final CartItemRepository cartItemRepository;
     private final ProductRepository productRepository;
     private final CurrentUserResolver currentUserResolver;
+    private final CartSessionRepository cartSessionRepository;
+    private final CartSessionItemRepository cartSessionItemRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -73,7 +78,10 @@ public class CartServiceImpl implements CartService {
                     .customNotes(request.getCustomNotes())
                     .build();
         }
-        return toItemResponse(cartItemRepository.save(item));
+        CartItem saved = cartItemRepository.save(item);
+        // Sync tới cart_sessions để thu thập dữ liệu cho Apriori
+        syncCartSession(user);
+        return toItemResponse(saved);
     }
 
     @Override
@@ -86,7 +94,9 @@ public class CartServiceImpl implements CartService {
             throw new AppException(ErrorCode.INSUFFICIENT_STOCK);
         }
         item.setQuantity(request.getQuantity());
-        return toItemResponse(cartItemRepository.save(item));
+        cartItemRepository.save(item);
+        syncCartSession(user);
+        return toItemResponse(item);
     }
 
     @Override
@@ -96,6 +106,7 @@ public class CartServiceImpl implements CartService {
         CartItem item = cartItemRepository.findByIdAndUser_Id(cartItemId, user.getId())
                 .orElseThrow(() -> new AppException(ErrorCode.CART_ITEM_NOT_FOUND));
         cartItemRepository.delete(item);
+        syncCartSession(user);
     }
 
     @Override
@@ -103,6 +114,66 @@ public class CartServiceImpl implements CartService {
     public void clearCart() {
         User user = currentUserResolver.getCurrentUser();
         cartItemRepository.deleteAllByUser_Id(user.getId());
+        // Không xóa cart_session ở đây — OrderService sẽ mark CONVERTED_TO_ORDER
+    }
+
+    // =====================================================
+    // CART SESSION SYNC — Thu thập dữ liệu cho Apriori
+    // =====================================================
+    public void syncCartSession(User user) {
+        try {
+            // Lấy giỏ hàng hiện tại
+            List<CartItem> currentItems = cartItemRepository.findAllByUser_Id(user.getId());
+
+            // Tìm hoặc tạo CartSession ACTIVE
+            CartSession session = cartSessionRepository
+                    .findByUser_IdAndStatus(user.getId(), CartSession.CartSessionStatus.ACTIVE)
+                    .orElseGet(() -> {
+                        CartSession newSession = CartSession.builder()
+                                .user(user)
+                                .status(CartSession.CartSessionStatus.ACTIVE)
+                                .lastActivityAt(LocalDateTime.now())
+                                .build();
+                        return cartSessionRepository.save(newSession);
+                    });
+
+            // Cập nhật lastActivityAt
+            session.setLastActivityAt(LocalDateTime.now());
+
+            // Xóa toàn bộ items cũ và ghi lại từ cart_items hiện tại
+            cartSessionItemRepository.deleteAllByCartSession_Id(session.getId());
+            session.getItems().clear();
+
+            for (CartItem cartItem : currentItems) {
+                CartSessionItem si = CartSessionItem.builder()
+                        .cartSession(session)
+                        .product(cartItem.getProduct())
+                        .quantity(cartItem.getQuantity())
+                        .build();
+                session.getItems().add(si);
+            }
+
+            cartSessionRepository.save(session);
+        } catch (Exception e) {
+            // Không được để lỗi sync làm hỏng thao tác giỏ hàng chính
+            log.warn("CartSession sync failed for user {}: {}", user.getId(), e.getMessage());
+        }
+    }
+
+    // =====================================================
+    // Đánh dấu CartSession đã được chuyển thành đơn hàng
+    // =====================================================
+    public void markSessionConverted(Long userId, Long orderId) {
+        try {
+            cartSessionRepository.findByUser_IdAndStatus(userId, CartSession.CartSessionStatus.ACTIVE)
+                    .ifPresent(session -> {
+                        session.setStatus(CartSession.CartSessionStatus.CONVERTED_TO_ORDER);
+                        session.setOrderId(orderId);
+                        cartSessionRepository.save(session);
+                    });
+        } catch (Exception e) {
+            log.warn("CartSession mark-converted failed for user {}: {}", userId, e.getMessage());
+        }
     }
 
     private CartDto.CartItemResponse toItemResponse(CartItem item) {

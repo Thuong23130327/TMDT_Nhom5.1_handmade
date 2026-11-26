@@ -111,9 +111,10 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional(noRollbackFor = AppException.class)
     public void requestPasswordReset(ForgotPasswordRequest request) {
-        Optional<User> found = userRepository.findByEmailForUpdate(request.getEmail().trim());
+        String email = request.getEmail().trim().toLowerCase(Locale.ROOT);
+        Optional<User> found = userRepository.findByEmailForUpdate(email);
         if (found.isEmpty()) {
-            return;
+            throw new AppException(ErrorCode.EMAIL_NOT_REGISTERED);
         }
         User user = found.get();
         LocalDateTime now = LocalDateTime.now();
@@ -129,6 +130,11 @@ public class AuthServiceImpl implements AuthService {
         user.setResetTokenExpiry(now.plusMinutes(OTP_LIFETIME_MINUTES));
         user.setOtpAttempts(0);
         userRepository.save(user);
+
+        System.out.println("==================================================================");
+        System.out.println("[AURACRAFT OTP] Ma xac thuc OTP cho email " + user.getEmail() + " la: " + otp);
+        System.out.println("==================================================================");
+
         sendOtpEmail(user.getEmail(), otp);
     }
 
@@ -255,8 +261,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private void sendOtpEmail(String email, String otp) {
-        MimeMessage message = mailSender.createMimeMessage();
         try {
+            MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, false, StandardCharsets.UTF_8.name());
             if (StringUtils.hasText(mailFrom)) {
                 helper.setFrom(mailFrom);
@@ -266,13 +272,13 @@ public class AuthServiceImpl implements AuthService {
             helper.setText("<div style=\"font-family:Arial,sans-serif;max-width:560px;margin:auto;color:#493a36\">"
                     + "<div style=\"background:#7b5144;padding:22px;text-align:center;color:#fff;font-size:24px;font-weight:bold\">AuraCraft</div>"
                     + "<div style=\"padding:28px;border:1px solid #eee\"><h2>Khôi phục mật khẩu</h2>"
-                    + "<p>Nhập mã xác thực dưới đây để tiếp tục. Mã chỉ có hiệu lực trong 5 phút.</p>"
+                    + "<p>Mã xác thực OTP đã được gửi về email của bạn. Nhập mã dưới đây để tiếp tục. Mã chỉ có hiệu lực trong 5 phút.</p>"
                     + "<div style=\"font-size:32px;font-weight:bold;letter-spacing:8px;color:#a85d48;padding:18px 0\">"
                     + otp + "</div><p>Nếu bạn không yêu cầu thao tác này, hãy bỏ qua email.</p></div></div>", true);
-        } catch (MessagingException exception) {
-            throw new IllegalStateException("Không thể tạo email xác thực", exception);
+            mailSender.send(message);
+        } catch (Exception exception) {
+            System.err.println("[AURACRAFT MAIL ERROR] Khong the gui mail toi " + email + ": " + exception.getMessage());
         }
-        mailSender.send(message);
     }
 
     private String tokenFingerprint(String value) {

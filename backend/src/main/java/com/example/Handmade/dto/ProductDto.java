@@ -50,6 +50,22 @@ public class ProductDto {
         private String explanation;
     }
 
+    // ===================================================
+    // FR-21: Apriori Recommendation Item
+    // ===================================================
+    @Getter @Setter @Builder @NoArgsConstructor @AllArgsConstructor
+    public static class RecommendationItem {
+        private Long id;
+        private String name;
+        private BigDecimal price;
+        private BigDecimal oldPrice;
+        private String thumbnailUrl;
+        private String artisanName;
+        private Integer stockQuantity;
+        private Double confidenceValue;
+        private Double liftValue;
+        private Double supportValue;
+        private String explanation;
     @Getter @Setter @Builder @NoArgsConstructor @AllArgsConstructor
     public static class FrequentlyBoughtTogetherResponse {
         private Long mainProductId;

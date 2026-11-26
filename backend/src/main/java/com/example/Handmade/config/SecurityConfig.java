@@ -19,6 +19,11 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 
 import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Collections;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @RequiredArgsConstructor
@@ -47,6 +52,8 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers("/", "/index.html", "/**/*.html", "/**/*.css", "/**/*.js", "/**/*.png",
                         "/**/*.jpg", "/**/*.jpeg", "/**/*.svg", "/**/*.ico").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/recommendations/complementary/**", "/api/v1/recommendations/explanation").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/v1/ai/chat").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/products", "/api/products/**", "/api/v1/products", "/api/v1/products/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/orders/my-orders", "/api/v1/orders/my-orders", "/api/orders/buyer/**", "/api/v1/orders/buyer/**").permitAll()
                 .antMatchers("/api/payment/**").permitAll()
@@ -54,6 +61,19 @@ public class SecurityConfig {
                 .anyRequest().authenticated();
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOriginPattern("*");
+        configuration.addAllowedOrigin("null");
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Collections.singletonList("*"));
+        configuration.setExposedHeaders(Collections.singletonList("Authorization"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     @Bean
