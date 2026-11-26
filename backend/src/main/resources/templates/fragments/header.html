@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- ĐỊNH NGHĨA FRAGMENT: siteHeader -->
+<header th:fragment="siteHeader" class="site-header">
+    <div class="container header-inner">
+        <!-- Logo về Trang chủ -->
+        <a th:href="@{/}" class="logo">
+            <span class="logo-icon">A</span>uraCraft
+        </a>
+
+        <!-- Hộp tìm kiếm -->
+        <div class="search-box">
+            <input type="text" placeholder="Tìm kiếm vật liệu, sản phẩm...">
+            <button class="btn-search">Tìm</button>
+        </div>
+
+        <!-- Nút mở Menu Mobile -->
+        <button class="menu-toggle" onclick="document.getElementById('nav-menu-mobile').classList.add('active'); document.getElementById('menu-overlay').classList.add('active')">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <!-- Menu điều hướng -->
+        <nav class="nav-menu" id="nav-menu-mobile">
+            <button class="close-menu" onclick="document.getElementById('nav-menu-mobile').classList.remove('active'); document.getElementById('menu-overlay').classList.remove('active')"><i class="fa-solid fa-xmark"></i></button>
+
+            <!-- CÁC LINK ĐÃ BỎ ĐUÔI .HTML -->
+            <a th:href="@{/products}">Sản phẩm</a>
+            <a th:href="@{/customizer}">Thiết kế</a>
+            <a th:href="@{/buyer-requests}">Chợ báo giá</a>
+
+            <!-- Chưa đăng nhập -->
+            <a th:href="@{/login}" id="nav-login" class="nav-text-btn">Đăng nhập</a>
+
+            <!-- Đã đăng nhập -->
+            <a th:href="@{/profile}" id="nav-profile" class="icon-btn" style="display: none;" title="Trang cá nhân"><i class="fa-regular fa-user"></i></a>
+            <a href="javascript:void(0)" id="nav-logout" class="icon-btn" style="display: none;" title="Đăng xuất" data-action="logout"><i class="fa-solid fa-arrow-right-from-bracket"></i></a>
+
+            <!-- Giỏ hàng có badge hiển thị số lượng -->
+            <a th:href="@{/cart}" class="icon-btn cart-icon-btn" id="nav-cart" title="Giỏ hàng">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="cart-badge" id="cartBadge" style="display: none;">0</span>
+            </a>
+        </nav>
+    </div>
+    <div class="menu-overlay" id="menu-overlay" onclick="document.getElementById('nav-menu-mobile').classList.remove('active'); document.getElementById('menu-overlay').classList.remove('active')"></div>
+</header>
+
+</body>
+</html>
